@@ -1339,6 +1339,18 @@ body { overflow:hidden; }
   .rider-mobile-actions { grid-template-columns:1fr; }
 }
 
+
+/* ===== MODULE OVERHAUL: ADMIN DESKTOP, SCROLLING, NOTIFICATIONS ===== */
+.toast-wrap{position:fixed!important;top:22px!important;left:50%!important;right:auto!important;bottom:auto!important;transform:translateX(-50%)!important;z-index:99999!important;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;max-width:min(560px,calc(100vw - 32px));}
+.toast{pointer-events:auto;animation:gfToastIn .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 18px 45px rgba(15,23,42,.18);border-radius:14px;backdrop-filter:blur(12px)}
+.toast.fare-success{min-width:min(420px,calc(100vw - 32px));font-weight:800;text-align:center;border:1px solid rgba(22,163,74,.28);background:rgba(240,253,244,.98)}
+@keyframes gfToastIn{from{opacity:0;transform:translateY(-18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.admin-desktop-gate{display:none;position:fixed;inset:0;z-index:999999;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;padding:32px;align-items:center;justify-content:center;text-align:center}.admin-desktop-gate-card{max-width:520px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:34px;box-shadow:0 24px 80px rgba(0,0,0,.35)}.admin-desktop-gate h2{margin:0 0 10px;font-family:'Syne',sans-serif}.admin-desktop-gate p{margin:0;color:#cbd5e1;line-height:1.6}.admin-desktop-icon{font-size:46px;margin-bottom:12px}
+.admin-layout-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.72fr);gap:18px;align-items:start}.admin-layout-grid>*{min-width:0}.management-content{scrollbar-gutter:stable;scrollbar-width:thin}.management-content::-webkit-scrollbar,.panel.active::-webkit-scrollbar{width:10px;height:10px}.management-content::-webkit-scrollbar-thumb,.panel.active::-webkit-scrollbar-thumb{background:rgba(100,116,139,.42);border-radius:999px;border:3px solid transparent;background-clip:padding-box}.management-content::-webkit-scrollbar-track,.panel.active::-webkit-scrollbar-track{background:transparent}
+@media(max-width:1023px){html[data-role="admin"] .admin-desktop-gate{display:flex!important}html[data-role="admin"] #app{pointer-events:none;filter:blur(2px);user-select:none}.admin-layout-grid{grid-template-columns:1fr}}
+@media(min-width:1024px){#panel-admin .management-content,#panel-registered-riders .management-content,#panel-fare-admin .management-content,#panel-users .management-content,#panel-audit .management-content,#panel-route-records .management-content{padding-bottom:42px}.panel-header{position:sticky;top:0;background:var(--bg);z-index:20;padding-top:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}}
+.fare-admin-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.fare-admin-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.fare-admin-actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-top:12px}.fare-admin-actions .btn{min-height:42px}@media(max-width:760px){.fare-admin-form-grid,.fare-admin-meta{grid-template-columns:1fr}}
+
 </style>
 
 
@@ -1514,8 +1526,116 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(prefers-reduced-motion:reduce){.sos-btn{animation:none}.btn:before{display:none}.data-card:hover,.form-card:hover,.hero-stat:hover,.log-card:hover,.report-card:hover{transform:none}}
 </style>
 
+
+<style id="geofare-actual-ui-redesign">
+/* ================================================================
+   GeoFare ACTUAL UI Redesign
+   Visual system + reliable viewport scrolling. No JS/database logic.
+   ================================================================ */
+
+/* --- 1. Stable GeoFare brand contrast --- */
+:root{--gf-blue:#4d9ee8;--gf-blue-strong:#2f7fc7;--gf-navy:#0c1a2a;--gf-navy-2:#122438;--gf-panel:#162a3f;--gf-panel-2:#1a3149;--gf-line:#2a4763;--gf-white:#f7fbff;--gf-muted:#b7c7d7;}
+:root[data-theme="dark"] .logo{color:var(--gf-blue)!important;text-shadow:0 0 18px rgba(77,158,232,.12)}
+:root[data-theme="dark"] .logo span{color:#fff!important}
+:root[data-theme="dark"] #auth-view .logo{color:var(--gf-blue)!important}
+:root[data-theme="dark"] #auth-view .logo span{color:#fff!important}
+
+/* --- 2. Clean viewport hierarchy: ONE vertical scroller per active panel --- */
+html,body{width:100%;height:100%;overflow:hidden!important}
+#app,.app{height:100dvh!important;min-height:0!important;overflow:hidden!important}
+.sidebar{min-height:0!important;overflow:hidden!important}
+.nav-links{min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin}
+.main{min-width:0!important;min-height:0!important;height:100%!important;overflow:hidden!important}
+.panel{min-width:0!important;min-height:0!important;height:100%!important}
+.panel.active{min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;scroll-behavior:smooth;overscroll-behavior:contain}
+/* Content follows the panel scroll instead of competing with it. */
+.panel.active>.dashboard-wrap,
+.panel.active>.management-content,
+.panel.active>.matrix-content,
+.panel.active>.logs-content,
+.panel.active>.report-content,
+.panel.active>.about-content{overflow:visible!important;min-height:auto!important;height:auto!important;flex:0 0 auto!important}
+#panel-map{overflow:hidden!important}
+#panel-map .map-sidebar,#panel-map .map-wrapper{min-height:0!important}
+
+/* --- 3. Admin workspace: full-height, desktop-first, scrollable --- */
+#panel-admin,#panel-registered-riders,#panel-fare-admin,#panel-users,#panel-audit,#panel-route-records{background:var(--bg);}
+#panel-admin .management-content,#panel-registered-riders .management-content,#panel-fare-admin .management-content,#panel-users .management-content,#panel-audit .management-content,#panel-route-records .management-content{padding-bottom:56px!important}
+#panel-admin .panel-header,#panel-registered-riders .panel-header,#panel-fare-admin .panel-header,#panel-users .panel-header,#panel-audit .panel-header,#panel-route-records .panel-header{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);}
+@media(min-width:1025px){
+  #panel-admin .panel-header,#panel-registered-riders .panel-header,#panel-fare-admin .panel-header,#panel-users .panel-header,#panel-audit .panel-header,#panel-route-records .panel-header{padding:22px 28px 17px;}
+  #panel-admin .management-content,#panel-registered-riders .management-content,#panel-fare-admin .management-content,#panel-users .management-content,#panel-audit .management-content,#panel-route-records .management-content{padding-left:28px!important;padding-right:28px!important;}
+}
+
+/* Desktop-only admin gate. It keys off the authenticated role already synced by the page. */
+#gf-desktop-gate,.admin-desktop-gate{display:none!important}
+@media(max-width:1024px){
+  html[data-role="admin"] #gf-desktop-gate{display:flex!important}
+  html[data-role="admin"] .app{display:none!important}
+  html[data-role="admin"] .admin-desktop-gate{display:none!important}
+}
+
+/* --- 4. More visible, organized desktop surfaces --- */
+.panel-header{border-bottom:1px solid var(--border)!important}
+.dashboard-wrap,.management-content,.matrix-content,.logs-content,.report-content,.about-content{padding-bottom:42px!important}
+.form-card,.data-card,.stat-card,.hero-stat,.kpi,.qr-directory-card,.report-record-card,.safety-record{border-radius:16px!important;border:1px solid var(--border)!important;box-shadow:0 8px 24px rgba(8,28,48,.06)!important}
+.form-card,.data-card{overflow:visible}
+.data-card{margin-bottom:16px!important}
+.hero-grid,.dashboard-grid,.admin-grid{gap:18px!important}
+.kpi-grid,.stats-grid{gap:14px!important}
+.stat-card,.kpi{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.stat-card:hover,.kpi:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(8,28,48,.10)!important}
+
+/* --- 5. Navigation clarity --- */
+.nav-link{min-height:46px!important;border:1px solid transparent!important;border-radius:12px!important}
+.nav-link:hover{transform:translateX(2px)}
+.nav-link.active{border-color:color-mix(in srgb,var(--accent) 30%,transparent)!important;box-shadow:inset 3px 0 0 var(--accent),0 8px 18px rgba(20,80,130,.08)!important}
+
+/* --- 6. Modern controls and toggles without changing behavior --- */
+.btn{min-height:40px!important;border-radius:11px!important;transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important}
+.btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.03)}
+.btn:active:not(:disabled){transform:translateY(0) scale(.985)}
+.btn:focus-visible,.nav-link:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(77,158,232,.34)!important;outline-offset:2px!important}
+input,select,textarea,.form-input,.form-select,.form-textarea{border-radius:10px!important;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease!important}
+input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.form-textarea:focus{box-shadow:0 0 0 4px rgba(77,158,232,.12)!important}
+.toggle,.switch,input[type="checkbox"]{accent-color:var(--accent)}
+
+/* --- 7. Tables stay usable and do not break panel scrolling --- */
+.table-wrap,.table-scroll{max-width:100%!important;overflow-x:auto!important;overflow-y:visible!important;border-radius:14px!important;scrollbar-width:thin}
+.table-wrap table,.table-scroll table{min-width:max-content}
+.data-table th{position:sticky!important;top:0!important;z-index:5!important}
+.data-table td,.data-table th{vertical-align:middle!important}
+
+/* --- 8. Modern scrollbar, visible enough for admin work --- */
+.panel.active,.nav-links,.table-wrap,.table-scroll{scrollbar-color:var(--text3) transparent;scrollbar-width:thin}
+.panel.active::-webkit-scrollbar,.nav-links::-webkit-scrollbar,.table-wrap::-webkit-scrollbar,.table-scroll::-webkit-scrollbar{width:12px;height:12px}
+.panel.active::-webkit-scrollbar-track,.nav-links::-webkit-scrollbar-track,.table-wrap::-webkit-scrollbar-track,.table-scroll::-webkit-scrollbar-track{background:transparent}
+.panel.active::-webkit-scrollbar-thumb,.nav-links::-webkit-scrollbar-thumb,.table-wrap::-webkit-scrollbar-thumb,.table-scroll::-webkit-scrollbar-thumb{background:rgba(100,126,151,.55);border:3px solid transparent;background-clip:padding-box;border-radius:999px}
+.panel.active::-webkit-scrollbar-thumb:hover,.nav-links::-webkit-scrollbar-thumb:hover,.table-wrap::-webkit-scrollbar-thumb:hover,.table-scroll::-webkit-scrollbar-thumb:hover{background:var(--accent);border:3px solid transparent;background-clip:padding-box}
+
+/* --- 9. Dark mode contrast: readable surfaces, no washed-out text --- */
+:root[data-theme="dark"]{--bg:var(--gf-navy)!important;--surface:var(--gf-navy-2)!important;--surface2:var(--gf-panel)!important;--border:var(--gf-line)!important;--text:var(--gf-white)!important;--text2:#d1deea!important;--text3:#9db2c6!important;--accent:var(--gf-blue)!important;--accent2:var(--gf-blue-strong)!important;}
+:root[data-theme="dark"] .sidebar,:root[data-theme="dark"] .topbar,:root[data-theme="dark"] .panel-header{background:rgba(18,36,56,.96)!important}
+:root[data-theme="dark"] .form-card,:root[data-theme="dark"] .data-card,:root[data-theme="dark"] .stat-card,:root[data-theme="dark"] .kpi,:root[data-theme="dark"] .hero-stat,:root[data-theme="dark"] .auth-card{background:var(--gf-panel-2)!important;color:var(--gf-white)!important}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea,:root[data-theme="dark"] .form-input,:root[data-theme="dark"] .form-select,:root[data-theme="dark"] .form-textarea{background:#0f2235!important;color:#f7fbff!important;border-color:#42617e!important}
+:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#8ea5ba!important}
+:root[data-theme="dark"] .data-table th{background:#183149!important;color:#f7fbff!important}
+:root[data-theme="dark"] .data-table td{border-color:#294862!important}
+:root[data-theme="dark"] .data-table tr:hover td{background:rgba(77,158,232,.06)!important}
+
+/* --- 10. Login screen polish --- */
+#auth-view{background:radial-gradient(circle at 50% 20%,rgba(77,158,232,.10),transparent 34%),var(--bg)!important}
+.auth-card{border-radius:22px!important;box-shadow:0 24px 70px rgba(5,18,32,.16)!important}
+:root[data-theme="dark"] .auth-card{border-color:#31516d!important}
+
+/* --- 11. Motion is subtle and accessible --- */
+.panel.active{animation:gfPanelEnter .22s ease both!important}
+@keyframes gfPanelEnter{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
+<div class="admin-desktop-gate" id="admin-desktop-gate"><div class="admin-desktop-gate-card"><div class="admin-desktop-icon">🖥️</div><h2>Administrator Desktop Workspace</h2><p>The GeoFare Administrator and MFRTA management dashboard is optimized for desktop screens to safely manage riders, reports, fares, route records, and activity logs.</p><p style="margin-top:12px;font-size:12px">Please open GeoFare on a screen at least 1024px wide.</p></div></div>
 <button class="menu-toggle" onclick="toggleSidebar()" title="Menu">☰</button>
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
@@ -1948,7 +2068,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
         <div id="report-actions" style="display:none; margin-top:12px; flex-wrap:wrap; gap:8px;">
           <button class="btn btn-primary btn-sm" onclick="printReport()">🖨️ Print / Save as Image</button>
-          <button class="btn btn-secondary btn-sm" onclick="saveReportLog()">💾 Save to Records</button>
+          <button class="btn btn-secondary btn-sm" onclick="clearReport()">✕ Start New Report</button>
         </div>
 
         <!-- Saved Reports -->
@@ -2152,28 +2272,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   <div class="management-content">
     <div class="info-banner">Only authorized Administrator / MFRTA accounts may change the active fare matrix. The supplied prototype contains development values that must be verified against the official LGU record before production use.</div>
     <form id="fare-admin-form" class="form-card">
-      <div class="toolbar-row"><input class="form-input" type="number" min="1" id="fare-km" placeholder="Distance km"><input class="form-input" type="number" min="0" step="0.01" id="fare-regular" placeholder="Regular fare"><input class="form-input" type="number" min="0" step="0.01" id="fare-discount" placeholder="Discounted fare"><button class="btn btn-primary" type="submit">Add / Update Row</button></div>
+      <input type="hidden" id="fare-edit-id">
+      <div class="fare-admin-form-grid"><input class="form-input" type="number" min="0" step="0.01" id="fare-min" placeholder="Minimum distance (km)"><input class="form-input" type="number" min="0" step="0.01" id="fare-max" placeholder="Maximum distance (km)"><input class="form-input" type="text" id="fare-version" placeholder="Version code (e.g. MFRTA-2026-01)"></div>
+      <div class="fare-admin-meta"><input class="form-input" type="number" min="0" step="0.01" id="fare-regular" placeholder="Regular fare"><input class="form-input" type="number" min="0" step="0.01" id="fare-discount" placeholder="Discounted fare"><input class="form-input" type="datetime-local" id="fare-effective-from"></div>
+      <div class="fare-admin-actions"><select class="form-select" id="fare-status" aria-label="Fare rule status"><option value="active">Active</option></select><button class="btn btn-primary" id="fare-save-btn" type="submit">Save Fare Rule</button><button class="btn btn-secondary" id="fare-cancel-edit" type="button">Cancel Edit</button></div>
     </form>
+    <div class="info-banner">This single workspace combines the active fare matrix view and fare management CRUD. Editing updates the selected record instead of blindly inserting a duplicate.</div>
     <div id="fare-admin-table"></div>
-  </div>
-</div>
-
-<!-- ADMIN BARANGAY MANAGEMENT -->
-<div class="panel" id="panel-barangays">
-  <div class="panel-header"><div class="panel-title">Barangay Data Management</div><div class="panel-sub">Maintain barangay reference data used by management and route/fare records.</div></div>
-  <div class="management-content">
-    <div class="info-banner">Only authorized Administrator / MFRTA accounts can manage barangay reference data. Database deployments should expose a <b>barangays</b> table with appropriate Row Level Security.</div>
-    <form id="barangay-form" class="form-card" style="margin-bottom:16px">
-      <input type="hidden" id="barangay-id">
-      <div class="toolbar-row">
-        <input class="form-input" id="barangay-name" placeholder="Barangay name" required maxlength="120">
-        <input class="form-input" id="barangay-code" placeholder="Code / identifier" maxlength="30">
-        <select class="form-select" id="barangay-status"><option>Active</option><option>Inactive</option></select>
-      </div>
-      <div class="form-group"><label class="form-label">Description / service area notes</label><textarea class="form-textarea" id="barangay-description" maxlength="500" placeholder="Reference information for management use."></textarea></div>
-      <div class="table-actions"><button class="btn btn-primary" type="submit">Save Barangay</button><button class="btn btn-secondary" type="button" id="barangay-reset">Reset</button></div>
-    </form>
-    <div id="barangays-content"></div>
   </div>
 </div>
 
@@ -2412,7 +2517,8 @@ function navForRole(role){
     ['riders','✓','Verified Riders'],
     ['ratings','★','Ratings / Reviews'],
     ['safety','🆘','Safety & SOS'],
-    ['reports','⚠','My Reports'],
+    ['report','⚠','Report Rider'],
+    ['reports','🧾','My Reports'],
     ['logs','🕐','Fare History'],
     ['profile','◯','Profile'],
     ['about','ℹ','About']
@@ -2447,7 +2553,6 @@ function navForRole(role){
     ['reports','⚠','Incident Management'],
     ['safety','🆘','Safety Alert Management'],
     ['route-records','🗺️','Route Calculation Records'],
-    ['barangays','⌖','Barangay Data'],
     ['ratings','★','Ratings Monitoring'],
     ['users','◉','User Management'],
     ['audit','⌁','Activity / Audit Logs'],
@@ -2468,7 +2573,7 @@ function renderNav(){
 }
 
 function showPanel(panel){
-  const allowed=navForRole(state.role).map(x=>x[0]); if(!allowed.includes(panel)) panel=state.role==='admin'?'admin':'map';
+  const allowed=new Set(navForRole(state.role).map(x=>x[0])); if(state.role==='commuter') allowed.add('report'); if(!allowed.has(panel)) panel=state.role==='admin'?'admin':'map';
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   const target=$('panel-'+panel); if(target) target.classList.add('active');
   state.currentPanel=panel; renderNav();
@@ -2483,7 +2588,6 @@ function showPanel(panel){
   if(panel==='report') renderReportRiderDirectory();
   if(panel==='admin') renderAdmin();
   if(panel==='fare-admin') renderFareAdmin();
-  if(panel==='barangays') renderBarangays();
   if(panel==='users') renderUsers();
   if(panel==='audit') renderAudit();
   if(panel==='safety') renderSafety();
@@ -2520,7 +2624,6 @@ function startDataRealtime(){
       if(state.currentPanel==='ratings')renderRatings();
       if(state.currentPanel==='reports')renderReports();
       if(state.currentPanel==='route-records')renderRouteRecords();
-      if(state.currentPanel==='barangays')renderBarangays();
       if(state.currentPanel==='safety')renderSafety();
       if(state.currentPanel==='responder')renderResponder();
     }catch(e){console.warn('GeoFare admin realtime refresh:',e);}
@@ -2534,7 +2637,6 @@ function startDataRealtime(){
     .on('postgres_changes',{event:'*',schema:'public',table:'fare_calculations'},refreshAdmin)
     .on('postgres_changes',{event:'*',schema:'public',table:'audit_logs'},refreshAdmin)
     .on('postgres_changes',{event:'*',schema:'public',table:'safety_alerts'},refreshAdmin)
-    .on('postgres_changes',{event:'*',schema:'public',table:'barangays'},refreshAdmin)
     .subscribe(status=>console.debug('GeoFare admin realtime:',status));
 }
 
@@ -2752,16 +2854,15 @@ async function loadData(){
   const localProfiles=read(STORAGE.profiles,[]), localRiders=read(STORAGE.riders,[]);
   if(usingSupabase()){
     const safe=async(promise,fallback=[])=>{try{const r=await promise;return r?.error?{data:fallback,error:r.error}:{data:r.data||fallback,error:null};}catch(error){return {data:fallback,error};}};
-    const [fares,riders,ratings,reports,calculations,safety,profiles,audit,barangays]=await Promise.all([
-      safe(supabaseClient.from('fare_matrix_versions').select('*').eq('status','active').order('effective_from',{ascending:false})),
+    const [fares,riders,ratings,reports,calculations,safety,profiles,audit]=await Promise.all([
+      safe(state.role==='admin'?supabaseClient.from('fare_matrix_versions').select('*').order('effective_from',{ascending:false}):supabaseClient.from('fare_matrix_versions').select('*').eq('status','active').order('effective_from',{ascending:false})),
       safe(supabaseClient.from('rider_profiles').select('*')),
       safe(supabaseClient.from('ratings').select('*').limit(500)),
       safe(supabaseClient.from('incidents').select('*').order('created_at',{ascending:false})),
-      safe(state.role==='admin'?supabaseClient.from('fare_calculations').select('*').limit(500):supabaseClient.from('fare_calculations').select('*').eq('user_id',state.user.id).limit(100)),
-      safe(state.role==='admin'?supabaseClient.from('safety_alerts').select('*').limit(200):supabaseClient.from('safety_alerts').select('*').eq('user_id',state.user.id).limit(50)),
+      safe(state.role==='admin'?supabaseClient.from('fare_calculations').select('*').order('calculated_at',{ascending:false}).limit(500):supabaseClient.from('fare_calculations').select('*').eq('user_id',state.user.id).limit(100)),
+      safe(state.role==='admin'?supabaseClient.from('safety_alerts').select('*').order('created_at',{ascending:false}).limit(200):supabaseClient.from('safety_alerts').select('*').eq('user_id',state.user.id).order('created_at',{ascending:false}).limit(50)),
       safe(supabaseClient.from('profiles').select('id,full_name,email,role,status,contact_number,address,created_at,updated_at').limit(500)),
-      state.role==='admin'?safe(supabaseClient.from('audit_logs').select('*').limit(300)):{data:[],error:null},
-      state.role==='admin'?safe(supabaseClient.from('barangays').select('*').limit(300)):{data:[],error:null}
+      state.role==='admin'?safe(supabaseClient.from('audit_logs').select('*').order('created_at',{ascending:false}).limit(300)):{data:[],error:null}
     ]);
     state.fareMatrix=fares.data||[];
     const dbRiders=riders.data||[];
@@ -2819,17 +2920,27 @@ async function loadData(){
     state.safetyAlerts=(safety.data||[]).sort((a,b)=>new Date(b.created_at||b.updated_at||b.timestamp||0)-new Date(a.created_at||a.updated_at||a.timestamp||0));
     state.users=(profiles.data||[]).sort((a,b)=>new Date(b.updated_at||b.created_at||0)-new Date(a.updated_at||a.created_at||0));
     { const dbAudit=audit.data||[]; const localAudit=read(STORAGE.audit,[]); const seen=new Set(dbAudit.map(x=>`${x.action}|${x.target}|${x.created_at||x.timestamp||''}`)); state.audit=[...dbAudit,...localAudit.filter(x=>!seen.has(`${x.action}|${x.target}|${x.created_at||x.timestamp||''}`))].sort((a,b)=>new Date(b.created_at||b.timestamp||0)-new Date(a.created_at||a.timestamp||0)); }
-    state.barangays=(barangays.data||[]).sort((a,b)=>String(a.name||a.barangay_name||'').localeCompare(String(b.name||b.barangay_name||'')));
+    state.barangays=[];
   }else{
-    const profiles=read(STORAGE.profiles,[]); state.fareMatrix=read(STORAGE.fares,[]); state.riders=read(STORAGE.riders,[]).map(r=>({...r,profile:profiles.find(p=>p.id===r.profile_id)||{}})); state.ratings=read(STORAGE.ratings,[]); state.reports=read(STORAGE.reports,[]); state.calculations=read(STORAGE.calculations,[]).filter(x=>state.role==='admin'||x.user_id===state.user.id); state.safetyAlerts=read(STORAGE.safety,[]); state.users=read(STORAGE.users,[]); state.audit=read(STORAGE.audit,[]); state.barangays=read(STORAGE.barangays,[]);
+    const profiles=read(STORAGE.profiles,[]); state.fareMatrix=read(STORAGE.fares,[]); state.riders=read(STORAGE.riders,[]).map(r=>({...r,profile:profiles.find(p=>p.id===r.profile_id)||{}})); state.ratings=read(STORAGE.ratings,[]); state.reports=read(STORAGE.reports,[]); state.calculations=read(STORAGE.calculations,[]).filter(x=>state.role==='admin'||x.user_id===state.user.id); state.safetyAlerts=read(STORAGE.safety,[]); state.users=read(STORAGE.users,[]); state.audit=read(STORAGE.audit,[]); state.barangays=[];
   }
   if(typeof renderReportRiderDirectory==='function') renderReportRiderDirectory();
 }
 
+function fareRuleArchived(f){
+  const until=f?.effective_until;
+  return !!until && Number.isFinite(new Date(until).getTime()) && new Date(until).getTime()<=Date.now();
+}
 function activeFareRows(){
+  const now=Date.now();
   let rows=(state.fareMatrix||[]).filter(f=>{
     const status=String(f.status??'active').toLowerCase();
-    return status==='active'||status==='development'||!f.status;
+    const from=f.effective_from?new Date(f.effective_from).getTime():null;
+    const until=f.effective_until?new Date(f.effective_until).getTime():null;
+    if(!(status==='active'||status==='development'||!f.status))return false;
+    if(Number.isFinite(from) && from>now)return false;
+    if(Number.isFinite(until) && until<=now)return false;
+    return true;
   });
   rows.sort((a,b)=>Number(a.minimum_distance??a.km??1)-Number(b.minimum_distance??b.km??1));
   // If Supabase has no active rows yet, keep the calculator usable with the
@@ -2843,38 +2954,22 @@ function activeFareRows(){
 function getFare(km){
   const rows=activeFareRows();
   const distance=Number(km);
-  if(!Number.isFinite(distance)||distance<0)throw new Error('Invalid road distance.');
+  if(!Number.isFinite(distance)||distance<0) throw new Error('Invalid road distance.');
+  if(!rows.length) throw new Error('No active fare matrix is available.');
   const rounded=Math.max(1,Math.ceil(distance));
-
-  // Supports both point rows (km) and proper min/max distance ranges.
   const range=rows.find(f=>{
     const min=Number(f.minimum_distance??f.km??1);
     const max=Number(f.maximum_distance??f.km??min);
     return rounded>=min && rounded<=max;
   });
-  if(range){
-    const regular=Number(range.regular??range.regular_fare);
-    const discountRaw=range.discount??range.discounted_fare;
-    const discount=Number.isFinite(Number(discountRaw))?Number(discountRaw):Number((regular*.8).toFixed(2));
-    if(!Number.isFinite(regular))throw new Error('The active fare matrix contains an invalid fare amount.');
-    return {regular,discount,version:range.version||range.id||'ACTIVE'};
+  if(!range){
+    const maxConfigured=Math.max(...rows.map(f=>Number(f.maximum_distance??f.km??f.minimum_distance??0)));
+    throw new Error(`No official active fare rule applies to ${rounded} km. The current official matrix supports up to ${maxConfigured} km.`);
   }
-
-  // For distances beyond the last configured bracket, continue using the
-  // last-step increment instead of failing the entire calculation.
-  const max=rows[rows.length-1];
-  const maxKm=Number(max.maximum_distance??max.km??max.minimum_distance);
-  const maxReg=Number(max.regular??max.regular_fare);
-  if(Number.isFinite(maxKm)&&Number.isFinite(maxReg)&&rounded>maxKm){
-    const prev=rows.length>1?rows[rows.length-2]:max;
-    const prevReg=Number(prev.regular??prev.regular_fare??maxReg);
-    const prevKm=Number(prev.maximum_distance??prev.km??prev.minimum_distance??maxKm-1);
-    const increment=Math.max(0,maxReg-prevReg);
-    const stepKm=Math.max(1,maxKm-prevKm);
-    const reg=maxReg+Math.ceil((rounded-maxKm)/stepKm)*increment;
-    return {regular:reg,discount:Number((reg*.8).toFixed(2)),version:max.version||max.id||'ACTIVE'};
-  }
-  throw new Error('No applicable fare rule was found.');
+  const regular=Number(range.regular_fare??range.regular);
+  const discounted=Number(range.discounted_fare??range.discount);
+  if(!Number.isFinite(regular)||!Number.isFinite(discounted)) throw new Error('The active fare rule contains an invalid fare value.');
+  return {regular,discount:discounted,version:range.id||range.version_code||'ACTIVE'};
 }
 function renderMatrix(){
   const tb=$('matrix-tbody'); if(!tb)return; const rows=activeFareRows();
@@ -2993,36 +3088,44 @@ function saveLog(){
   if(usingSupabase()) saveCalculationSupabase(); else {const a=read(STORAGE.calculations,[]);a.unshift({...state.lastCalculation,id:'calc-'+Date.now()});write(STORAGE.calculations,a);state.calculations=state.role==='admin'?a:a.filter(x=>x.user_id===state.user.id);renderLogs();renderRouteRecords();toast('Calculation saved to history.','success');$('save-btn').style.display='none';}
 }
 async function saveCalculationSupabase(){
-  if(!state.lastCalculation||!state.user?.id)return;
+  if(!state.lastCalculation||!state.user?.id) return;
+  if(state.lastCalculation._saving) return;
+  state.lastCalculation._saving=true;
   setBusy(true,'Saving fare record…');
-  const base={...state.lastCalculation};
-  const candidates=[
-    base,
-    {user_id:state.user.id,pickup:base.pickup,dropoff:base.dropoff,pickup_lat:base.pickup_lat,pickup_lng:base.pickup_lng,dropoff_lat:base.dropoff_lat,dropoff_lng:base.dropoff_lng,distance_km:base.distance_km,regular_fare:base.regular_fare,discounted_fare:base.discounted_fare,fare_matrix_version:base.fare_matrix_version,created_at:base.created_at},
-    {user_id:state.user.id,pickup_address:base.pickup,dropoff_address:base.dropoff,distance_km:base.distance_km,regular_fare:base.regular_fare,discounted_fare:base.discounted_fare,created_at:base.created_at},
-    {user_id:state.user.id,distance_km:base.distance_km,regular_fare:base.regular_fare,discounted_fare:base.discounted_fare,created_at:base.created_at}
-  ];
+  const base=state.lastCalculation;
+  const payload={
+    user_id:state.user.id,
+    pickup:String(base.pickup||'Pickup'),
+    dropoff:String(base.dropoff||'Drop-off'),
+    pickup_lat:Number(base.pickup_lat), pickup_lng:Number(base.pickup_lng),
+    dropoff_lat:Number(base.dropoff_lat), dropoff_lng:Number(base.dropoff_lng),
+    distance_km:Number(base.distance_km),
+    regular_fare:Number(base.regular_fare), discounted_fare:Number(base.discounted_fare),
+    fare_matrix_version:base.fare_matrix_version||null,
+    routing_provider:base.route_method||'OSRM',
+    calculated_at:base.created_at||new Date().toISOString(),
+    timestamp:new Date().toISOString()
+  };
   try{
-    let saved=null,lastError=null;
-    for(const payload of candidates){
-      try{
-        const result=await supabaseClient.from('fare_calculations').insert(payload).select('*').maybeSingle();
-        if(!result.error){saved=result.data||payload;break;}
-        lastError=result.error;
-      }catch(e){lastError=e;}
+    for(const [key,value] of Object.entries(payload)){
+      if(['fare_matrix_version'].includes(key)) continue;
+      if(typeof value==='number'&&!Number.isFinite(value)) throw new Error(`Invalid ${key.replace(/_/g,' ')}.`);
+      if(value===''||value==null) throw new Error(`Missing ${key.replace(/_/g,' ')}.`);
     }
-    if(!saved)throw lastError||new Error('Fare record insert failed');
-    await addAudit('Fare calculation recorded',saved.id||base.created_at,{distance_km:base.distance_km,regular_fare:base.regular_fare});
-    await loadData(); renderLogs(); renderRouteRecords(); renderAdmin();
+    const {data,error}=await supabaseClient.from('fare_calculations').insert(payload).select('*').single();
+    if(error) throw error;
+    await addAudit('Fare calculation recorded',data.id,{target_type:'fare_calculation',distance_km:data.distance_km,regular_fare:data.regular_fare});
+    await loadData();
+    renderLogs(); renderRouteRecords(); renderAdmin();
     $('save-btn').style.display='none';
-    toast('Fare calculation saved and recorded for management.','success');
+    toast('Fare calculation saved to the shared database.','success');
   }catch(e){
-    console.error('Fare record save:',e);
-    // Keep the record visible locally so the user never loses the calculation.
-    const a=read(STORAGE.calculations,[]); const rec={...base,id:'calc-'+Date.now(),local_pending:true}; a.unshift(rec); write(STORAGE.calculations,a);
-    state.calculations=[rec,...(state.calculations||[])]; renderLogs(); renderRouteRecords();
-    toast('Fare calculation kept in local history, but the shared database rejected the record. Check fare_calculations INSERT policy/schema.','error');
-  }finally{setBusy(false);}
+    console.error('Fare calculation save failed:',e);
+    toast(`Fare calculation was not saved to Supabase: ${e.message||'database rejected the record'}. You may correct the issue and retry.`, 'error');
+  }finally{
+    state.lastCalculation._saving=false;
+    setBusy(false);
+  }
 }
 function renderLogs(){
   const el=$('logs-list'), logs=state.calculations||[];
@@ -3082,64 +3185,77 @@ $('rating-form').onsubmit=async e=>{
   if(state.role!=='commuter')return toast('Only commuter accounts can submit rider feedback.','error');
   const riderId=$('rating-rider')?.value;
   const vals={professionalism:Number($('rate-prof')?.value),safety:Number($('rate-safe')?.value),punctuality:Number($('rate-punct')?.value),service_quality:Number($('rate-service')?.value),comment:($('rate-comment')?.value||'').trim()};
-  if(!riderId||Object.values(vals).some(v=>!Number.isInteger(v)||v<1||v>5))return toast('Please provide valid 1–5 ratings for every criterion.','error');
+  const scores=[vals.professionalism,vals.safety,vals.punctuality,vals.service_quality];
+  if(!riderId||scores.some(v=>!Number.isInteger(v)||v<1||v>5))return toast('Please provide valid 1–5 ratings for every criterion.','error');
   const rider=findRider(riderId);
   if(!rider||!isRiderVisible(rider)||(rider.verification_status||'')!=='Verified')return toast('The selected rider is no longer available for rating.','error');
   setBusy(true,'Submitting rating…');
-  const now=new Date().toISOString();
   try{
-    const existing=state.ratings.find(x=>String(x.rider_id)===String(rider.id)&&String(x.commuter_id||x.user_id)===String(state.user.id));
-    let saved=null,lastError=null;
+    const existing=state.ratings.find(x=>String(x.rider_id)===String(rider.id)&&String(x.commuter_id)===String(state.user.id));
     if(usingSupabase()){
-      if(existing?.id){
-        const candidates=[
-          {...vals,updated_at:now},
-          {professionalism:vals.professionalism,safety:vals.safety,punctuality:vals.punctuality,service_quality:vals.service_quality,comment:vals.comment}
-        ];
-        for(const payload of candidates){const result=await supabaseClient.from('ratings').update(payload).eq('id',existing.id).select('*').maybeSingle();if(!result.error){saved=result.data||existing;break;}lastError=result.error;}
-      }else{
-        const candidates=[
-          {...vals,rider_id:rider.id,commuter_id:state.user.id,user_id:state.user.id,created_at:now},
-          {...vals,rider_id:rider.id,commuter_id:state.user.id,created_at:now},
-          {...vals,rider_id:rider.id,user_id:state.user.id,created_at:now}
-        ];
-        for(const payload of candidates){const result=await supabaseClient.from('ratings').insert(payload).select('*').maybeSingle();if(!result.error){saved=result.data||payload;break;}lastError=result.error;}
-      }
-      if(saved){await loadData();await addAudit(existing?'Rider rating updated':'Rider rating submitted',saved.id||rider.id,{rider_id:rider.id});}
-    }
-    if(!saved){
-      const a=read(STORAGE.ratings,[]);const i=a.findIndex(x=>String(x.rider_id)===String(rider.id)&&String(x.commuter_id||x.user_id)===String(state.user.id));
-      const rec={...(i>=0?a[i]:{}),...vals,rider_id:rider.id,commuter_id:state.user.id,user_id:state.user.id,created_at:i>=0?(a[i].created_at||now):now,updated_at:now,id:i>=0?a[i].id:'rating-'+Date.now(),local_pending:usingSupabase()};
-      if(i>=0)a[i]=rec;else a.unshift(rec);write(STORAGE.ratings,a);
-      state.ratings=[...a,...(state.ratings||[]).filter(x=>!a.some(y=>y.id&&x.id===y.id))];
-      console.warn('Rating shared write unavailable:',lastError?.message||lastError||'unknown error');
-      toast('Rating saved to this device, but the shared database rejected it. Check ratings INSERT/UPDATE policy and columns.','error');
+      if(existing)throw new Error('You already rated this rider. The current Supabase RLS policy does not allow commuters to update an existing rating.');
+      const payload={...vals,rider_id:rider.id,commuter_id:state.user.id,created_at:new Date().toISOString()};
+      const {data,error}=await supabaseClient.from('ratings').insert(payload).select('*').single();
+      if(error)throw error;
+      await loadData();
+      await addAudit('Rider rating submitted',data.id,{rider_id:rider.id});
     }else{
-      $('rating-form').reset();refreshRiderViews();toast(existing?'Your rating was updated.':'Rating submitted successfully.','success');
+      if(existing)throw new Error('You already rated this rider.');
+      const a=read(STORAGE.ratings,[]); a.unshift({...vals,rider_id:rider.id,commuter_id:state.user.id,created_at:new Date().toISOString(),id:globalThis.crypto?.randomUUID?.()||`rating-${Date.now()}`}); write(STORAGE.ratings,a); state.ratings=a;
     }
-    renderRatings();renderAdmin();
-  }catch(err){console.error('Rating submit:',err);toast('The rating could not be completed.','error');}
+    $('rating-form').reset(); refreshRiderViews(); renderRatings(); renderAdmin(); toast('Rating submitted successfully.','success');
+  }catch(error){console.error('Rating submission failed:',error);toast(error.message||'The rating could not be completed.','error');}
   finally{setBusy(false);}
 };
 function reportTypeLabel(v){return ({overcharging:'Fare concern / overcharging','refuse-discount':'Discount concern','rude-conduct':'Rider conduct','unsafe-driving':'Unsafe behavior','other':'Other transportation concern'})[v]||v;}
 $('refresh-reports').onclick=()=>loadData().then(renderReports);
 $('report-filter').onchange=renderReports;
+function parseReportDetails(text){
+  const raw=String(text||'');
+  const lines=raw.split(/\n/); const data={}; let body=[];
+  for(const line of lines){
+    const m=line.match(/^(Rider Public ID|Plate Number|Fare Demanded|Complainant Name):\s*(.*)$/i);
+    if(m)data[m[1].toLowerCase().replace(/\s+/g,'_')]=m[2]; else body.push(line);
+  }
+  while(body.length&&body[0].trim()==='') body.shift();
+  return {data,body:body.join('\n').trim()};
+}
 function renderReports(){
-  const own=state.role==='admin'?state.reports:state.reports.filter(r=>r.user_id===state.user.id||r.complainant_id===state.user.id);
-  const filter=$('report-filter').value; const rows=own.filter(r=>filter==='all'||r.status===filter);
-  if(!rows.length){$('reports-content').innerHTML='<div class="log-empty"><div class="log-empty-icon">⚠</div>No incidents or complaints have been submitted.</div>';return;}
-  $('reports-content').innerHTML=rows.map(r=>`<div class="data-card" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:10px"><div class="card-title">${esc(r.reference_no||r.ref||'Report')}</div><span class="status-badge ${statusClass(r.status||'New')}">${esc(r.status||'New')}</span></div><div class="muted">${esc(r.category||r.type||'Other transportation concern')} · ${esc(new Date(r.created_at||r.filed||Date.now()).toLocaleString('en-PH'))}</div><p style="margin-top:9px;font-size:13px;line-height:1.5">${esc(r.description||r.desc||'')}</p>${state.role==='admin'?`<div class="toolbar-row" style="margin-top:12px"><select class="form-select report-status" data-id="${esc(r.id)}"><option ${r.status==='New'?'selected':''}>New</option><option ${r.status==='Under Review'?'selected':''}>Under Review</option><option ${r.status==='Resolved'?'selected':''}>Resolved</option><option ${r.status==='Dismissed'?'selected':''}>Dismissed</option></select><button class="btn btn-primary btn-sm update-report" data-id="${esc(r.id)}">Update status</button></div>`:''}</div>`).join('');
+  const own=state.role==='admin'?state.reports:(state.reports||[]).filter(r=>String(r.complainant_id||r.user_id)==String(state.user?.id));
+  const filter=$('report-filter')?.value||'all';
+  const rows=own.filter(r=>filter==='all'||r.status===filter);
+  const target=$('reports-content'); if(!target)return;
+  if(!rows.length){target.innerHTML='<div class="log-empty"><div class="log-empty-icon">⚠</div>No incidents or complaints have been submitted.</div>';return;}
+  target.innerHTML=rows.map(r=>{
+    const parsed=parseReportDetails(r.description); const d=parsed.data;
+    return `<article class="data-card report-record-card"><div class="report-record-head"><div><div class="card-title">${esc(r.reference_no||'Report')}</div><div class="muted">${esc(r.category||'Other transportation concern')} · ${esc(new Date(r.created_at||Date.now()).toLocaleString('en-PH'))}</div></div><span class="status-badge ${statusClass(r.status||'New')}">${esc(r.status||'New')}</span></div>
+      <div class="report-meta-grid"><div><small>Rider reference</small><strong>${esc(r.rider_reference||d.rider_public_id||'—')}</strong></div><div><small>Plate</small><strong>${esc(d.plate_number||'—')}</strong></div><div><small>Route</small><strong>${esc(r.location_text||'—')}</strong></div><div><small>Incident time</small><strong>${r.incident_datetime?esc(new Date(r.incident_datetime).toLocaleString('en-PH')):'—'}</strong></div></div>
+      <p class="report-description">${esc(parsed.body||r.description||'No description provided.')}</p>
+      ${state.role==='admin'?`<div class="toolbar-row report-admin-actions"><select class="form-select report-status" data-id="${esc(r.id)}"><option ${r.status==='New'?'selected':''}>New</option><option ${r.status==='Under Review'?'selected':''}>Under Review</option><option ${r.status==='Resolved'?'selected':''}>Resolved</option><option ${r.status==='Dismissed'?'selected':''}>Dismissed</option></select><button class="btn btn-primary btn-sm update-report" data-id="${esc(r.id)}">Update status</button></div>`:''}</article>`;
+  }).join('');
   document.querySelectorAll('.update-report').forEach(btn=>btn.onclick=()=>updateReport(btn.dataset.id));
 }
 async function updateReport(id){
-  const status=document.querySelector(`.report-status[data-id="${CSS.escape(id)}"]`).value;
+  if(state.role!=='admin') return;
+  const select=document.querySelector(`.report-status[data-id="${CSS.escape(String(id))}"]`);
+  const status=select?.value;
+  if(!status) return;
   try{
-    if(usingSupabase()){const {error}=await supabaseClient.from('incidents').update({status}).eq('id',id);if(error)throw error;}
-    else{const a=read(STORAGE.reports,[]);const r=a.find(x=>x.id===id);if(!r)throw new Error();r.status=status;write(STORAGE.reports,a);state.reports=a;await addAudit('Admin changed report status',id,{status});}
-    await loadData();renderReports();renderAdmin();toast('Report status updated.','success');
-  }catch{toast('The report could not be updated.','error');}
+    const previous=state.reports.find(r=>String(r.id)===String(id));
+    if(usingSupabase()){
+      const patch={status,updated_at:new Date().toISOString()};
+      if(status==='Resolved') patch.resolved_at=new Date().toISOString();
+      const {error}=await supabaseClient.from('incidents').update(patch).eq('id',id);
+      if(error) throw error;
+    }else{
+      const a=read(STORAGE.reports,[]); const r=a.find(x=>String(x.id)===String(id)); if(!r)throw new Error('Report not found.');
+      r.status=status; r.updated_at=new Date().toISOString(); if(status==='Resolved')r.resolved_at=r.updated_at; write(STORAGE.reports,a);
+    }
+    await addAudit('Report status changed',id,{target_type:'incident',from:previous?.status||'New',to:status});
+    await loadData(); renderReports(); renderAdmin();
+    toast(`Report status updated to ${status}.`,'success');
+  }catch(e){console.error('Report update failed:',e);toast(`Report status could not be updated: ${e.message||'database rejected the change'}.`,'error');}
 }
-
 function bindReportForm(){
   const oldButton=document.querySelector('#panel-report .btn-primary'); if(oldButton) oldButton.onclick=generateReport;
   $('report-rider-search')?.addEventListener('input',renderReportRiderDirectory);
@@ -3167,32 +3283,50 @@ function selectReportRider(id){
 function generateReport(){
   const riderId=$('report-rider-id')?.value||'';
   const selectedRider=riderId?(state.riders||[]).find(r=>String(r.id)===String(riderId)):null;
-  const plate=$('rpt-plate').value.trim().toUpperCase(),dt=$('rpt-datetime').value,route=$('rpt-route').value.trim(),fare=$('rpt-fare').value,type=$('rpt-type').value,desc=$('rpt-desc').value.trim(),name=$('rpt-name').value.trim()||'Anonymous';
-  if(!plate||!dt||!route||!fare||!type||!desc){toast('Please fill all required report fields.','error');return;}
-  const ref='RPT-'+Date.now().toString(36).toUpperCase();
-  $('rp-ref').textContent=ref;
-  $('rp-fields').innerHTML=[['Reference No.',ref],['Date Filed',nowPH()],['Rider',selectedRider?mergedRiderName(selectedRider):'Manual plate entry'],['Rider ID',selectedRider?.public_id||selectedRider?.id||'—'],['Rider/Plate',plate],['Incident Date/Time',new Date(dt).toLocaleString('en-PH')],['Route',route],['Fare Demanded',money(fare)],['Category',reportTypeLabel(type)],['Description',desc],['Complainant',name]].map(([k,v])=>`<div class="rp-field"><div class="rp-key">${esc(k)}</div><div class="rp-val">${esc(v)}</div></div>`).join('');
-  $('report-preview').classList.add('visible');$('report-actions').style.display='flex';
-  window._currentReport={reference_no:ref,rider_id:selectedRider?.id||null,rider_public_id:selectedRider?.public_id||null,rider_name:selectedRider?mergedRiderName(selectedRider):'',plate,incident_datetime:dt,route,fare:Number(fare),category:type,description:desc,complainant:name,created_at:new Date().toISOString(),status:'New'};
-  toast('Report prepared. Review the report slip, then save it to records.','success');
+  const plate=($('rpt-plate')?.value||'').trim().toUpperCase();
+  const dt=$('rpt-datetime')?.value;
+  const route=($('rpt-route')?.value||'').trim();
+  const fare=Number($('rpt-fare')?.value);
+  const type=$('rpt-type')?.value;
+  const desc=($('rpt-desc')?.value||'').trim();
+  const name=($('rpt-name')?.value||'').trim()||'Anonymous';
+  if(!state.user) return toast('You must be signed in to submit a report.','error');
+  if(!selectedRider) return toast('Select a registered rider before submitting the report.','error');
+  if(!plate||!dt||!route||!Number.isFinite(fare)||fare<0||!type||!desc) return toast('Please complete all required report fields with valid values.','error');
+  const random=(crypto.randomUUID?crypto.randomUUID().replace(/-/g,'').slice(0,12):`${Date.now().toString(36)}${Math.random().toString(36).slice(2,10)}`).toUpperCase();
+  const r={reference_no:`RPT-${new Date().getFullYear()}-${random}`,rider_id:selectedRider.id,rider_public_id:selectedRider.public_id||'',plate,incident_datetime:new Date(dt).toISOString(),route,fare,category:type,description:desc,complainant:name,created_at:new Date().toISOString(),status:'New'};
+  window._currentReport=r;
+  $('rp-ref').textContent=r.reference_no;
+  $('rp-fields').innerHTML=[['Reference No.',r.reference_no],['Rider',mergedRiderName(selectedRider)],['Rider ID',r.rider_public_id||'—'],['Plate',plate],['Incident Date/Time',new Date(r.incident_datetime).toLocaleString('en-PH')],['Route',route],['Fare Demanded',money(fare)],['Category',reportTypeLabel(type)],['Description',desc],['Complainant',name]].map(([k,v])=>`<div class="rp-field"><div class="rp-key">${esc(k)}</div><div class="rp-val">${esc(v)}</div></div>`).join('');
+  $('report-preview').classList.add('visible'); $('report-actions').style.display='none';
+  submitReport(r);
 }
-function saveReportLog(){
-  if(!window._currentReport)return;
-  submitReport(window._currentReport);
-}
+function saveReportLog(){if(window._currentReport)submitReport(window._currentReport);}
 async function submitReport(r){
+  if(!r||r._submitting)return;
+  r._submitting=true; setBusy(true,'Submitting report…');
   try{
     if(usingSupabase()){
-      const incidentPayload={reference_no:r.reference_no,complainant_id:state.user.id,category:r.category,description:r.description,incident_datetime:r.incident_datetime,location_text:r.route,rider_reference:r.plate,status:'New'}; if(r.rider_id)incidentPayload.rider_id=r.rider_id; if(r.rider_public_id)incidentPayload.rider_public_id=r.rider_public_id; if(r.rider_name)incidentPayload.rider_name=r.rider_name; let result=await supabaseClient.from('incidents').insert(incidentPayload); if(result.error && (r.rider_id||r.rider_public_id||r.rider_name)) result=await supabaseClient.from('incidents').insert({reference_no:r.reference_no,complainant_id:state.user.id,category:r.category,description:r.description,incident_datetime:r.incident_datetime,location_text:r.route,rider_reference:r.plate,status:'New'}); const error=result.error;
+      const details=[`Rider Public ID: ${r.rider_public_id}`,`Plate Number: ${r.plate}`,`Fare Demanded: ${Number(r.fare).toFixed(2)}`,`Complainant Name: ${r.complainant}`,'',r.description].join('\n');
+      const payload={reference_no:r.reference_no,complainant_id:state.user.id,rider_reference:r.rider_public_id||r.plate,category:r.category,incident_datetime:r.incident_datetime,location_text:r.route,description:details,status:'New'};
+      const {data,error}=await supabaseClient.from('incidents').insert(payload).select('*').single();
       if(error)throw error;
-    }else{const a=read(STORAGE.reports,[]);a.push({...r,id:'report-'+Date.now(),user_id:state.user.id});write(STORAGE.reports,a);state.reports=a;}
-    toast('Report submitted for administrative review.','success');window._currentReport=null;await loadData();renderReports();
-  }catch{toast('Your report could not be submitted. Please try again.','error');}
+      await addAudit('Report created',data.id,{target_type:'incident',reference_no:data.reference_no,rider_reference:data.rider_reference,status:data.status});
+    }else{
+      const a=read(STORAGE.reports,[]); if(a.some(x=>x.reference_no===r.reference_no))throw new Error('Duplicate report reference.');
+      a.unshift({...r,id:crypto.randomUUID?crypto.randomUUID():`report-${Date.now()}`,complainant_id:state.user.id}); write(STORAGE.reports,a);
+    }
+    await loadData(); window._currentReport=null; renderReports(); renderAdmin();
+    toast(`Report ${r.reference_no} was saved successfully.`, 'success');
+  }catch(error){
+    console.error('Report submission failed:',error);
+    toast(`Report was not saved: ${error.message||'database rejected the submission'}. Your entered form data is still preserved.`, 'error');
+  }finally{r._submitting=false;setBusy(false);}
 }
 function printReport(){const p=$('report-preview'),w=window.open('','_blank','width=700,height=900');if(!w)return;w.document.write(`<html><head><title>GeoFare Incident Report</title><style>body{font-family:Arial;padding:40px;max-width:680px;margin:auto}.rp-field{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid #ddd}.rp-key{width:150px;font-weight:bold;font-size:12px}.rp-val{font-size:13px}.rp-header{text-align:center;margin-bottom:20px}.rp-footer{margin-top:20px;font-size:11px;color:#666}</style></head><body>${p.innerHTML}
 
 
-</body></html>`);w.document.close();w.print();}
+</body>`);w.document.close();w.print();}
 function clearReport(){['rpt-plate','rpt-datetime','rpt-route','rpt-fare','rpt-desc','rpt-name'].forEach(id=>{if($(id))$(id).value=''});$('rpt-type').value='';if($('report-rider-id'))$('report-rider-id').value='';if($('report-rider-search'))$('report-rider-search').value='';$('report-preview').classList.remove('visible');$('report-actions').style.display='none';window._currentReport=null;renderReportRiderDirectory();}
 $('save-report-btn')?.addEventListener('click',saveReportLog);
 
@@ -3256,123 +3390,63 @@ function renderRiderDashboard(){
   $('rider-alert-summary').innerHTML=alerts.length?alerts.slice(0,3).map(a=>`<div class="score-row"><span>${esc(a.reference_no||a.id||'Alert')}</span><strong>${esc(a.status||'New')}</strong></div>`).join(''):'<div class="empty-state">No related safety alerts.</div>';
 }
 async function sendSOS(){
-  const message=($('sos-message')?.value||'').trim();
-  if(!message)return toast('Please describe the safety concern before sending an SOS alert.','error');
-  if(!state.user)return toast('You must be signed in to send an SOS alert.','error');
-  if(!confirm('Send an SOS safety alert now? This will record a safety alert for authorized management.'))return;
-  setBusy(true,'Sending SOS alert…');
-  const now=new Date().toISOString();
-  try{
-    let coords={latitude:null,longitude:null};
-    if(navigator.geolocation){
-      try{
-        const pos=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:true,timeout:7000,maximumAge:30000}));
-        coords={latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude)};
-      }catch(_){/* SOS remains usable without GPS */}
-    }
-    const ref=`SOS-${now.replace(/\D/g,'').slice(0,14)}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;
-    const locationText=coords.latitude!=null?`Location: ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`:'Location unavailable';
-    const title=`SOS Alert ${ref}`;
-    const payload={
-      user_id:state.user.id,
-      title,
-      message:`${message}\n${locationText}`,
-      severity:'critical',
-      is_read:false,
-      created_at:now
-    };
-    let persisted=false;
-    if(usingSupabase()){
-      const result=await supabaseClient.from('safety_alerts').insert(payload);
-      if(!result.error){persisted=true;await loadData();}
-      else console.warn('SOS insert failed:',result.error.message);
-    }
-    if(!persisted){
-      const a=read(STORAGE.safety,[]);
-      a.unshift({id:'sos-'+Date.now(),...payload,local_only:true});
-      write(STORAGE.safety,a);
-      state.safetyAlerts=a;
-    }
-    $('sos-message').value='';
-    renderSafety();renderCommuterDashboard();renderRiderDashboard();
-    toast(`SOS ${ref} recorded successfully.`,'success');
-  }catch(e){
-    console.error('SOS submit:',e);
-    toast('SOS could not be completed. Please retry.','error');
-  }finally{setBusy(false);}
+  const message=($('sos-message')?.value||'').trim();if(!message)return toast('Please describe the safety concern before sending an SOS alert.','error');if(!state.user)return toast('You must be signed in to send an SOS alert.','error');if(!confirm('Send an SOS safety alert now?'))return;
+  setBusy(true,'Sending SOS alert…');const now=new Date().toISOString();
+  try{let coords={latitude:null,longitude:null};if(navigator.geolocation){try{const pos=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:true,timeout:7000,maximumAge:30000}));coords={latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude)};}catch(_){}}
+    const random=globalThis.crypto?.randomUUID?.().replace(/-/g,'').slice(0,10).toUpperCase()||Math.random().toString(36).slice(2,10).toUpperCase(),ref=`SOS-${new Date().getFullYear()}-${random}`,locationText=coords.latitude!=null?`Location: ${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`:'Location unavailable';
+    const payload={user_id:state.user.id,title:`SOS Alert ${ref}`,message:`${message}\n${locationText}`,severity:'critical',is_read:false,created_at:now};
+    if(usingSupabase()){const {error}=await supabaseClient.from('safety_alerts').insert(payload).select('*').single();if(error)throw error;await loadData();}else{const a=read(STORAGE.safety,[]);a.unshift({id:globalThis.crypto?.randomUUID?.()||`sos-${Date.now()}`,...payload,local_only:true});write(STORAGE.safety,a);state.safetyAlerts=a;}
+    $('sos-message').value='';renderSafety();renderCommuterDashboard();renderRiderDashboard();toast(`SOS ${ref} recorded successfully.`,'success');
+  }catch(error){console.error('SOS submission failed:',error);toast(`SOS was not recorded: ${error.message||'database rejected the submission'}. Your message was preserved.`,'error');}finally{setBusy(false);}
 }
-function safetyStatusClass(status){return statusClass(status||'New')}
-function safetyDisplayStatus(alert){return alert?.is_read?'Read':'New';}
-function safetyDisplayClass(alert){return statusClass(safetyDisplayStatus(alert));}
+function safetyHasWorkflow(){ return (state.safetyAlerts||[]).some(a=>Object.prototype.hasOwnProperty.call(a,'status')); }
+function safetyDisplayStatus(alert){ return alert?.status || (alert?.is_read?'Read':'New'); }
+function safetyDisplayClass(alert){ return statusClass(safetyDisplayStatus(alert)); }
 function renderSafety(){
   const isManager=state.role==='admin';
-  const own=isManager?state.safetyAlerts:state.safetyAlerts.filter(a=>String(a.user_id||'')===String(state.user?.id||''));
-  const sosForm=document.getElementById('sos-form-card');
-  if(sosForm)sosForm.style.display=['commuter','rider'].includes(state.role)?'block':'none';
-  const adminBlock=document.getElementById('admin-safety-block');
-  if(adminBlock)adminBlock.style.display=state.role==='admin'?'block':'none';
-  const title=document.getElementById('safety-list-title');
-  if(title)title.textContent=state.role==='admin'?'Alert queue':'My recent alerts';
-  const el=$('my-safety-alerts');
-  if(el){
-    el.innerHTML=own.length?own.slice(0,20).map(a=>{
-      const status=safetyDisplayStatus(a);
-      return `<div class="data-card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><strong>${esc(a.title||a.id||'Safety Alert')}</strong><span class="status-badge ${safetyDisplayClass(a)}">${esc(status)}</span></div><div class="muted" style="margin-top:4px">${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))}</div><div class="small-note" style="margin-top:5px">Severity: ${esc(a.severity||'info')}</div><p style="font-size:12.5px;line-height:1.5;margin-top:8px;white-space:pre-line">${esc(a.message||'')}</p></div>`;
-    }).join(''):'<div class="empty-state">No safety alerts recorded.</div>';
-  }
-  if(state.role==='admin')renderAdminSafety();
+  const own=isManager?(state.safetyAlerts||[]):(state.safetyAlerts||[]).filter(a=>String(a.user_id||'')===String(state.user?.id||''));
+  const sosForm=$('sos-form-card'); if(sosForm)sosForm.style.display=['commuter','rider'].includes(state.role)?'block':'none';
+  const adminBlock=$('admin-safety-block'); if(adminBlock)adminBlock.style.display=isManager?'block':'none';
+  const title=$('safety-list-title'); if(title)title.textContent=isManager?'Safety alert queue':'My recent alerts';
+  const el=$('my-safety-alerts'); if(el)el.innerHTML=own.length?own.map(a=>`<article class="data-card safety-record"><div class="report-record-head"><div><strong>${esc(a.title||'Safety Alert')}</strong><div class="muted">${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))}</div></div><span class="status-badge ${safetyDisplayClass(a)}">${esc(safetyDisplayStatus(a))}</span></div><div class="small-note">Severity: ${esc(a.severity||'info')} · ${a.is_read?'Read':'Unread'}</div><p style="white-space:pre-line">${esc(a.message||'')}</p></article>`).join(''):'<div class="empty-state">No safety alerts recorded.</div>';
+  if(isManager)renderAdminSafety();
 }
 function renderAdminSafety(){
   if(state.role!=='admin')return;
-  const target=document.getElementById('admin-safety-content');
-  if(!target)return;
-  target.innerHTML=state.safetyAlerts.length?state.safetyAlerts.map(a=>{
-    const status=safetyDisplayStatus(a);
-    return `<div class="data-card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><div><div class="card-title">${esc(a.title||a.id||'Safety Alert')}</div><div class="muted">${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))}</div></div><span class="status-badge ${safetyDisplayClass(a)}">${esc(status)}</span></div><div class="small-note" style="margin-top:6px">Severity: ${esc(a.severity||'info')}</div><p style="margin-top:9px;font-size:13px;line-height:1.5;white-space:pre-line">${esc(a.message||'')}</p><div class="table-actions" style="margin-top:10px">${a.is_read?`<button class="btn btn-secondary btn-sm safety-read-btn" data-id="${esc(a.id)}" data-read="false">Mark unread</button>`:`<button class="btn btn-secondary btn-sm safety-read-btn" data-id="${esc(a.id)}" data-read="true">Mark read</button>`}</div></div>`;
-  }).join(''):'<div class="empty-state">No safety alerts.</div>';
+  const target=$('admin-safety-content'); if(!target)return;
+  const workflow=safetyHasWorkflow();
+  const rows=state.safetyAlerts||[];
+  if(!rows.length){target.innerHTML='<div class="empty-state">No safety alerts are currently available.</div>';return;}
+  target.innerHTML=`${workflow?'':'<div class="info-banner">Workflow status columns are not available in the current database. Run the supplied safety SQL migration to enable Acknowledge, Respond, Resolve, and Dismiss.</div>'}`+rows.map(a=>`<article class="data-card safety-record"><div class="report-record-head"><div><div class="card-title">${esc(a.title||'Safety Alert')}</div><div class="muted">${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))}</div></div><span class="status-badge ${safetyDisplayClass(a)}">${esc(safetyDisplayStatus(a))}</span></div><div class="small-note">Severity: ${esc(a.severity||'info')} · ${a.is_read?'Read':'Unread'}</div><p style="white-space:pre-line">${esc(a.message||'')}</p><div class="table-actions"><button class="btn btn-secondary btn-sm safety-read-btn" data-id="${esc(a.id)}" data-read="${a.is_read?'false':'true'}">${a.is_read?'Mark unread':'Mark read'}</button>${workflow?`<select class="form-select safety-status-select" data-id="${esc(a.id)}"><option ${a.status==='New'?'selected':''}>New</option><option ${a.status==='Acknowledged'?'selected':''}>Acknowledged</option><option ${a.status==='Responded'?'selected':''}>Responded</option><option ${a.status==='Resolved'?'selected':''}>Resolved</option><option ${a.status==='Dismissed'?'selected':''}>Dismissed</option></select><button class="btn btn-primary btn-sm safety-status-btn" data-id="${esc(a.id)}">Update workflow</button>`:''}</div></article>`).join('');
   document.querySelectorAll('.safety-read-btn').forEach(b=>b.onclick=()=>updateSafetyReadState(b.dataset.id,b.dataset.read==='true'));
+  document.querySelectorAll('.safety-status-btn').forEach(b=>b.onclick=()=>{const select=document.querySelector(`.safety-status-select[data-id="${CSS.escape(String(b.dataset.id))}"]`);updateSafetyStatus(b.dataset.id,select?.value);});
 }
 async function updateSafetyReadState(id,isRead){
   try{
-    if(usingSupabase()){
-      const {error}=await supabaseClient.from('safety_alerts').update({is_read:isRead}).eq('id',id);
-      if(error)throw error;
-    }else{
-      const a=read(STORAGE.safety,[]);const r=a.find(x=>String(x.id)===String(id));if(!r)throw new Error('Alert not found');r.is_read=isRead;write(STORAGE.safety,a);
-    }
-    await loadData();renderSafety();renderAdmin();renderResponder();toast(isRead?'Alert marked as read.':'Alert marked as unread.','success');
-  }catch(e){console.error('Safety read update:',e);toast('Safety alert could not be updated.','error');}
+    if(usingSupabase()){const {error}=await supabaseClient.from('safety_alerts').update({is_read:isRead}).eq('id',id);if(error)throw error;}
+    else {const a=read(STORAGE.safety,[]);const r=a.find(x=>String(x.id)===String(id));if(!r)throw new Error('Alert not found.');r.is_read=isRead;write(STORAGE.safety,a);}
+    await loadData();renderSafety();renderAdmin();toast(isRead?'Alert marked as read.':'Alert marked as unread.','success');
+  }catch(e){console.error('Safety read update failed:',e);toast(`Safety alert could not be updated: ${e.message||'permission denied'}.`,'error');}
 }
-function updateSafetyStatus(id,status){
-  // Backward-compatible adapter for older UI callers. The current safety_alerts
-  // schema stores read state rather than a workflow status.
-  return updateSafetyReadState(id,status!=='New');
+async function updateSafetyStatus(id,status){
+  if(state.role!=='admin'||!status)return;
+  if(!safetyHasWorkflow()){toast('Run the safety-alert SQL migration first to enable workflow statuses.','error');return;}
+  try{
+    const patch={status,is_read:true};
+    const {error}=await supabaseClient.from('safety_alerts').update(patch).eq('id',id);if(error)throw error;
+    await addAudit('Safety alert status changed',id,{target_type:'safety_alert',status});
+    await loadData();renderSafety();renderAdmin();toast(`Safety alert updated to ${status}.`,'success');
+  }catch(e){console.error('Safety workflow update failed:',e);toast(`Safety workflow update failed: ${e.message||'database rejected the update'}.`,'error');}
 }
-function renderResponder(){
-  if(!['admin','responder'].includes(state.role))return;
-  const rows=state.safetyAlerts;
-  const active=rows.filter(a=>!a.is_read).length;
-  const stats=$('responder-stats');
-  if(stats)stats.innerHTML=[['🆘',rows.length,'Total alerts'],['⚠️',active,'Unread alerts'],['✓',rows.filter(a=>a.is_read).length,'Read alerts'],['●',rows.filter(a=>String(a.severity||'').toLowerCase()==='critical').length,'Critical alerts']].map(([i,v,l])=>`<div class="stat-card"><div style="font-size:20px">${i}</div><div class="stat-value">${v}</div><div class="stat-label">${l}</div></div>`).join('');
-  const el=$('responder-alerts');
-  if(!el)return;
-  el.innerHTML=rows.length?rows.map(a=>`<div class="data-card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><div class="card-title">${esc(a.title||a.id||'Safety Alert')}</div><span class="status-badge ${safetyDisplayClass(a)}">${esc(safetyDisplayStatus(a))}</span></div><div class="muted">${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))}</div><div class="small-note">Severity: ${esc(a.severity||'info')}</div><p style="margin:9px 0;font-size:13px;line-height:1.5;white-space:pre-line">${esc(a.message||'')}</p><div class="table-actions"><button class="btn btn-secondary btn-sm responder-read-btn" data-id="${esc(a.id)}" data-read="${a.is_read?'false':'true'}">${a.is_read?'Mark unread':'Mark read'}</button></div></div>`).join(''):'<div class="empty-state">No incoming safety alerts.</div>';
-  document.querySelectorAll('.responder-read-btn').forEach(b=>b.onclick=()=>updateSafetyReadState(b.dataset.id,b.dataset.read==='true'));
-}
+function renderResponder(){ if(state.role==='admin') renderAdminSafety(); }
+/* Removed duplicate renderRouteRecords definition; later canonical implementation retained. */
+
 function renderRouteRecords(){
-  if(!['admin','responder'].includes(state.role))return;
-  const rows=state.safetyAlerts;
-  const active=rows.filter(a=>!['Resolved','Dismissed'].includes(a.status)).length;
-  $('responder-stats').innerHTML=[['🆘',rows.length,'Total alerts'],['⚠️',active,'Active alerts'],['✓',rows.filter(a=>a.status==='Responded').length,'Responded'],['●',rows.filter(a=>a.status==='Resolved').length,'Resolved']].map(([i,v,l])=>`<div class="stat-card"><div style="font-size:20px">${i}</div><div class="stat-value">${v}</div><div class="stat-label">${l}</div></div>`).join('');
-  const el=$('responder-alerts');el.innerHTML=rows.length?rows.map(a=>`<div class="data-card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><div class="card-title">${esc(a.reference_no||a.id||'SOS Alert')}</div><span class="status-badge ${safetyStatusClass(a.status)}">${esc(a.status||'New')}</span></div><div class="muted">${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))} · ${esc(a.location_text||'Location unavailable')}</div><p style="margin:9px 0;font-size:13px;line-height:1.5">${esc(a.message||'')}</p><div class="table-actions">${['Acknowledged','Responded','Resolved'].map(s=>`<button class="btn btn-secondary btn-sm responder-status-btn" data-id="${esc(a.id)}" data-status="${s}">${s}</button>`).join('')}</div></div>`).join(''):'<div class="empty-state">No incoming SOS alerts.</div>';
-  document.querySelectorAll('.responder-status-btn').forEach(b=>b.onclick=()=>updateSafetyStatus(b.dataset.id,b.dataset.status));
-}
-function renderRouteRecords(){
-  if(!['admin','responder'].includes(state.role))return;
-  const rows=state.role==='admin'?state.calculations:state.calculations;
-  const target=$('route-records-content');
-  if(!rows.length){target.innerHTML='<div class="empty-state">No route calculation records are available for this account.</div>';return;}
-  target.innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Route</th><th>Distance</th><th>Regular</th><th>Discount</th><th>Recorded</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.pickup||'Pickup')} → ${esc(r.dropoff||'Drop-off')}</td><td>${Number(r.distance_km||0).toFixed(2)} km</td><td>${money(r.regular_fare||0)}</td><td>${money(r.discounted_fare||0)}</td><td>${esc(new Date(r.created_at||r.timestamp||Date.now()).toLocaleString('en-PH'))}</td></tr>`).join('')}</tbody></table></div>`;
+  if(state.role!=='admin')return;
+  const rows=[...(state.calculations||[])].sort((a,b)=>new Date(b.calculated_at||b.created_at||b.timestamp||0)-new Date(a.calculated_at||a.created_at||a.timestamp||0));
+  const target=$('route-records-content'); if(!target)return;
+  if(!rows.length){target.innerHTML='<div class="empty-state">No route calculation records are available yet. Saved fare calculations will appear here automatically.</div>';return;}
+  target.innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Pickup</th><th>Drop-off</th><th>Distance</th><th>Regular</th><th>Discounted</th><th>Matrix ID</th><th>Provider</th><th>Recorded</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.pickup||'—')}</td><td>${esc(r.dropoff||'—')}</td><td>${Number(r.distance_km||0).toFixed(2)} km</td><td>${money(r.regular_fare||0)}</td><td>${money(r.discounted_fare||0)}</td><td>${esc(r.fare_matrix_version||'—')}</td><td>${esc(r.routing_provider||r.route_method||'—')}</td><td>${esc(new Date(r.calculated_at||r.created_at||r.timestamp||Date.now()).toLocaleString('en-PH'))}</td></tr>`).join('')}</tbody></table></div>`;
 }
 document.getElementById('sos-map-btn')?.addEventListener('click',()=>{showPanel('safety');setTimeout(()=>document.getElementById('sos-submit')?.focus(),50);});
 document.getElementById('sos-submit')?.addEventListener('click',sendSOS);
@@ -3381,49 +3455,6 @@ document.getElementById('rider-check-btn')?.addEventListener('click',checkRiderF
 document.querySelectorAll('[data-panel]').forEach(b=>b.addEventListener('click',()=>showPanel(b.dataset.panel)));
 
 
-function renderBarangays(){
-  if(state.role!=='admin')return;
-  const rows=state.barangays||[];
-  $('barangays-content').innerHTML=rows.length
-    ? `<div class="table-wrap"><table class="data-table"><thead><tr><th>Barangay</th><th>Code</th><th>Status</th><th>Description</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows.map(b=>`<tr><td>${esc(b.name||b.barangay_name||'—')}</td><td>${esc(b.code||b.identifier||'—')}</td><td><span class="status-badge ${String(b.status||'Active').toLowerCase()==='active'?'status-verified':'status-rejected'}">${esc(b.status||'Active')}</span></td><td>${esc(b.description||b.notes||'—')}</td><td>${esc(new Date(b.updated_at||b.created_at||Date.now()).toLocaleString('en-PH'))}</td><td class="table-actions"><button class="btn btn-secondary btn-sm edit-barangay" data-id="${esc(b.id)}">Edit</button><button class="btn btn-danger btn-sm delete-barangay" data-id="${esc(b.id)}">Delete</button></td></tr>`).join('')}</tbody></table></div>`
-    : '<div class="empty-state">No barangay reference records are configured.</div>';
-  document.querySelectorAll('.edit-barangay').forEach(btn=>btn.onclick=()=>{
-    const b=rows.find(x=>String(x.id)===String(btn.dataset.id)); if(!b)return;
-    $('barangay-id').value=b.id||'';$('barangay-name').value=b.name||b.barangay_name||'';$('barangay-code').value=b.code||b.identifier||'';$('barangay-status').value=b.status||'Active';$('barangay-description').value=b.description||b.notes||'';
-    $('barangay-name').scrollIntoView({behavior:'smooth',block:'center'});
-  });
-  document.querySelectorAll('.delete-barangay').forEach(btn=>btn.onclick=()=>deleteBarangay(btn.dataset.id));
-}
-async function deleteBarangay(id){
-  if(!confirm('Delete this barangay reference record? This cannot be undone.'))return;
-  try{
-    if(usingSupabase()){const {error}=await supabaseClient.from('barangays').delete().eq('id',id);if(error)throw error;}
-    else{const a=read(STORAGE.barangays,[]).filter(x=>String(x.id)!==String(id));write(STORAGE.barangays,a);}
-    await addAudit('Admin deleted barangay',id,{});
-    await loadData();renderBarangays();toast('Barangay record deleted.','success');
-  }catch(e){toast('The barangay record could not be deleted.','error');}
-}
-$('barangay-form').onsubmit=async e=>{
-  e.preventDefault(); if(state.role!=='admin')return;
-  const id=$('barangay-id').value.trim(), payload={name:$('barangay-name').value.trim(),code:$('barangay-code').value.trim(),status:$('barangay-status').value,description:$('barangay-description').value.trim(),updated_at:new Date().toISOString()};
-  if(!payload.name){toast('Barangay name is required.','error');return;}
-  try{
-    if(usingSupabase()){
-      const result=id
-        ? await supabaseClient.from('barangays').update({...payload,updated_by:state.user.id}).eq('id',id)
-        : await supabaseClient.from('barangays').insert({...payload,created_by:state.user.id});
-      if(result.error)throw result.error;
-      await addAudit(id?'Admin updated barangay':'Admin added barangay',id||payload.name,{status:payload.status});
-    }else{
-      const a=read(STORAGE.barangays,[]);
-      if(id){const r=a.find(x=>String(x.id)===id);if(r)Object.assign(r,payload);}
-      else a.push({id:'brgy-'+Date.now(),...payload,created_at:new Date().toISOString(),created_by:state.user.id});
-      write(STORAGE.barangays,a);await addAudit(id?'Admin updated barangay':'Admin added barangay',id||payload.name,{status:payload.status});
-    }
-    await loadData();renderBarangays();e.target.reset();$('barangay-id').value='';toast('Barangay data saved.','success');
-  }catch(e){toast('Barangay data could not be saved. Confirm the barangays table and RLS policy.','error');}
-};
-$('barangay-reset').onclick=()=>{$('barangay-form').reset();$('barangay-id').value='';};
 function accountEvents(){const audit=(state.audit||[]).filter(a=>/account|registration|rider|profile|user/i.test(String(a.action||'')));const derived=(state.users||[]).map(u=>({action:u.role==='rider'?'Rider account registered':'User account registered',target:u.full_name||u.email,created_at:u.created_at,metadata:{role:u.role,status:u.status||'active'}}));return [...audit,...derived].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));}
 function renderAdminLiveMonitoring(){if(state.role!=='admin')return;const users=[...(state.users||[])].sort((a,b)=>new Date(b.updated_at||b.created_at||0)-new Date(a.updated_at||a.created_at||0));const target=$('admin-live-users');if(target)target.innerHTML=users.length?users.slice(0,20).map(u=>{const rider=state.riders.find(r=>r.profile_id===u.id);return `<div class="monitor-row"><div class="monitor-avatar">${u.role==='rider'?'🛵':u.role==='admin'?'M':'👤'}</div><div class="monitor-main"><strong>${esc(u.full_name||u.email||'Unnamed User')}</strong><span>${esc(roleLabel(u.role))}${rider?` · ${esc(rider.plate_number||rider.public_id||'Rider')}`:''} · <span class="status-badge ${statusClass(u.status||'active')}">${esc(u.status||'active')}</span></span></div><div class="monitor-time">${esc(new Date(u.updated_at||u.created_at||Date.now()).toLocaleString('en-PH'))}</div></div>`}).join(''):'<div class="empty-state">No user accounts have been registered yet.</div>';const events=accountEvents(),eventTarget=$('admin-account-events');if(eventTarget)eventTarget.innerHTML=events.length?events.slice(0,12).map(e=>`<div class="account-event"><strong>${esc(e.action||'Account activity')}</strong><small>${esc(e.target||'—')} · ${esc(new Date(e.created_at||Date.now()).toLocaleString('en-PH'))}</small></div>`).join(''):'<div class="empty-state">No account activity recorded yet.</div>';}
 
@@ -3470,31 +3501,64 @@ async function setRiderVerification(id,status){
   }catch(e){console.error('Rider verification:',e);toast(`Rider verification could not be updated: ${e.message||'unknown error'}.`,'error');}
   finally{setBusy(false);}
 }
+function resetFareEditor(){
+  $('fare-admin-form')?.reset();$('fare-edit-id').value='';
+  const btn=$('fare-save-btn');if(btn)btn.textContent='Save Fare Rule';
+}
+function fareRowById(id){return (state.fareMatrix||[]).find(f=>String(f.id)===String(id));}
 function renderFareAdmin(){
-  const rows=activeFareRows();
-  $('fare-admin-table').innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Distance</th><th>Regular</th><th>Discounted</th><th>Version</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(f=>`<tr><td>${esc(f.km||f.minimum_distance)} km</td><td>${money(f.regular||f.regular_fare)}</td><td>${money(f.discount||f.discounted_fare)}</td><td>${esc(f.version||f.id||'ACTIVE')}</td><td>${esc(f.status||'active')}</td><td class="table-actions"><button class="btn btn-secondary btn-sm edit-fare" data-km="${esc(f.km||f.minimum_distance)}">Edit</button><button class="btn btn-danger btn-sm delete-fare" data-km="${esc(f.km||f.minimum_distance)}">Delete</button></td></tr>`).join('')}</tbody></table></div>`;
-  document.querySelectorAll('.edit-fare').forEach(b=>b.onclick=()=>{const f=rows.find(x=>Number(x.km||x.minimum_distance)===Number(b.dataset.km));if(f){$('fare-km').value=f.km;$('fare-regular').value=f.regular;$('fare-discount').value=f.discount;$('fare-km').scrollIntoView({behavior:'smooth',block:'center'});}});
-  document.querySelectorAll('.delete-fare').forEach(b=>b.onclick=()=>deleteFareRow(b.dataset.km));
+  const rows=[...(state.fareMatrix||[])].sort((a,b)=>Number(a.minimum_distance||0)-Number(b.minimum_distance||0));
+  const target=$('fare-admin-table');if(!target)return;
+  if(!rows.length){target.innerHTML='<div class="empty-state">No fare matrix records are available.</div>';return;}
+  target.innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Distance range</th><th>Regular</th><th>Discounted</th><th>Version</th><th>Effective from</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(f=>{const archived=fareRuleArchived(f);const displayStatus=archived?'Archived':(f.status||'active');return `<tr><td>${Number(f.minimum_distance)} – ${Number(f.maximum_distance)} km</td><td>${money(f.regular_fare)}</td><td>${money(f.discounted_fare)}</td><td>${esc(f.version_code||f.id||'—')}</td><td>${f.effective_from?esc(new Date(f.effective_from).toLocaleString('en-PH')):'—'}</td><td><span class="status-badge ${archived?'status-pending':(String(f.status).toLowerCase()==='active'?'status-verified':'status-pending')}">${esc(displayStatus)}</span></td><td class="table-actions"><button class="btn btn-secondary btn-sm edit-fare" data-id="${esc(f.id)}">Edit</button>${archived?`<button class="btn btn-primary btn-sm restore-fare" data-id="${esc(f.id)}">Restore</button>`:`<button class="btn btn-danger btn-sm archive-fare" data-id="${esc(f.id)}">Archive</button>`}</td></tr>`;}).join('')}</tbody></table></div>`;
+  document.querySelectorAll('.edit-fare').forEach(b=>b.onclick=()=>{const f=fareRowById(b.dataset.id);if(!f)return;$('fare-edit-id').value=f.id;$('fare-min').value=f.minimum_distance;$('fare-max').value=f.maximum_distance;$('fare-version').value=f.version_code||'';$('fare-regular').value=f.regular_fare;$('fare-discount').value=f.discounted_fare;$('fare-status').value='active';$('fare-effective-from').value=f.effective_from?new Date(f.effective_from).toISOString().slice(0,16):'';$('fare-save-btn').textContent='Update Fare Rule';$('fare-min').scrollIntoView({behavior:'smooth',block:'center'});});
+  document.querySelectorAll('.archive-fare').forEach(b=>b.onclick=()=>archiveFareRow(b.dataset.id));
+  document.querySelectorAll('.restore-fare').forEach(b=>b.onclick=()=>restoreFareRow(b.dataset.id));
 }
-async function deleteFareRow(km){
-  if(!confirm(`Remove the fare rule for ${km} km? Commuters will fall back to the next available bracket.`))return;
+async function archiveFareRow(id){
+  const f=fareRowById(id);if(!f)return;if(!confirm(`Archive fare rule ${f.version_code||f.id}? It will be removed from fare calculation but preserved in the database.`))return;
+  setBusy(true,'Archiving fare rule…');
   try{
-    if(usingSupabase()){const {error}=await supabaseClient.from('fare_matrix_versions').delete().eq('minimum_distance',Number(km));if(error)throw error;}
-    else{const a=read(STORAGE.fares,[]).filter(x=>Number(x.km)!==Number(km));write(STORAGE.fares,a);state.fareMatrix=a;}
-    await addAudit('Admin deleted fare matrix row',String(km),{});
-    await loadData();renderFareAdmin();renderMatrix();renderAdmin();
-    toast('Fare row removed.','success');
-  }catch(e){toast('The fare row could not be removed.','error');}
+    /* The live database rejects the invented status value "inactive". Use the
+       existing effective_until column instead, preserving the row and avoiding
+       a destructive delete. The calculator treats an expired row as inactive. */
+    const patch={effective_until:new Date().toISOString(),updated_at:new Date().toISOString()};
+    if(usingSupabase()){const {error}=await supabaseClient.from('fare_matrix_versions').update(patch).eq('id',id);if(error)throw error;}
+    else{Object.assign(f,patch);write(STORAGE.fares,state.fareMatrix);}
+    await addAudit('Fare matrix archived',id,{target_type:'fare_matrix',version_code:f.version_code,archive_method:'effective_until'});
+    await loadData();renderFareAdmin();renderMatrix();renderAdmin();toast('Fare rule archived. You can restore it anytime.','success');
+  }catch(e){console.error('Fare archive failed:',e);toast(`Fare rule could not be archived: ${e.message||'database rejected the update'}.`,'error');}
+  finally{setBusy(false);}
 }
+async function restoreFareRow(id){
+  const f=fareRowById(id);if(!f)return;
+  setBusy(true,'Restoring fare rule…');
+  try{
+    const patch={effective_until:null,updated_at:new Date().toISOString()};
+    if(usingSupabase()){const {error}=await supabaseClient.from('fare_matrix_versions').update(patch).eq('id',id);if(error)throw error;}
+    else{Object.assign(f,patch);write(STORAGE.fares,state.fareMatrix);}
+    await addAudit('Fare matrix restored',id,{target_type:'fare_matrix',version_code:f.version_code});
+    await loadData();renderFareAdmin();renderMatrix();renderAdmin();toast('Fare rule restored and available for calculation.','success');
+  }catch(e){console.error('Fare restore failed:',e);toast(`Fare rule could not be restored: ${e.message||'database rejected the update'}.`,'error');}
+  finally{setBusy(false);}
+}
+$('fare-cancel-edit')?.addEventListener('click',resetFareEditor);
 $('fare-admin-form').onsubmit=async e=>{
-  e.preventDefault(); if(state.role!=='admin')return;
-  const km=Number($('fare-km').value),regular=Number($('fare-regular').value),discount=Number($('fare-discount').value);
-  if(!Number.isInteger(km)||km<1||regular<0||discount<0){toast('Fare matrix values are invalid.','error');return;}
+  e.preventDefault();if(state.role!=='admin')return;
+  const id=$('fare-edit-id').value.trim(),min=Number($('fare-min').value),max=Number($('fare-max').value),regular=Number($('fare-regular').value),discount=Number($('fare-discount').value),version=($('fare-version').value||'').trim(),existing=fareRowById(id),status=(id&&existing?.status)||'active',effective=$('fare-effective-from').value;
+  if(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<min||!Number.isFinite(regular)||regular<0||!Number.isFinite(discount)||discount<0){toast('Enter a valid distance range and fare values.','error');return;}
+  const overlap=(state.fareMatrix||[]).some(f=>String(f.id)!==String(id)&&String(f.status).toLowerCase()==='active'&&status==='active'&&min<=Number(f.maximum_distance)&&max>=Number(f.minimum_distance));
+  if(overlap)return toast('This active distance range overlaps an existing active fare rule.','error');
+  setBusy(true,id?'Updating fare rule…':'Creating fare rule…');
   try{
-    if(usingSupabase()){const {error}=await supabaseClient.from('fare_matrix_versions').insert({minimum_distance:km,maximum_distance:km,regular_fare:regular,discounted_fare:discount,status:'active',effective_from:new Date().toISOString(),created_by:state.user.id});if(error)throw error;}
-    else{const a=read(STORAGE.fares,[]).map(x=>Number(x.km)===km?{...x,regular,discount,version:'DEV-ADMIN-'+Date.now(),updated_at:new Date().toISOString(),status:'development'}:x);if(!a.some(x=>Number(x.km)===km))a.push({km,regular,discount,version:'DEV-ADMIN-'+Date.now(),status:'development'});write(STORAGE.fares,a);state.fareMatrix=a;addAudit('Admin updated fare matrix',String(km),{regular,discount});}
-    await loadData();renderMatrix();renderFareAdmin();renderAdmin();e.target.reset();toast('Fare matrix record saved.','success');
-  }catch{toast('Fare matrix update failed. No data was changed.','error');}
+    const payload={minimum_distance:min,maximum_distance:max,regular_fare:regular,discounted_fare:discount,status,effective_from:effective?new Date(effective).toISOString():new Date().toISOString(),updated_at:new Date().toISOString()};
+    if(usingSupabase()){
+      if(id){const {error}=await supabaseClient.from('fare_matrix_versions').update(payload).eq('id',id);if(error)throw error;await addAudit('Fare matrix updated',id,{target_type:'fare_matrix',...payload});}
+      else{payload.version_code=version||`MFRTA-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;payload.created_by=state.user.id;delete payload.updated_at;const {data,error}=await supabaseClient.from('fare_matrix_versions').insert(payload).select('*').single();if(error)throw error;await addAudit('Fare matrix created',data.id,{target_type:'fare_matrix',...payload});}
+    }else{if(id){Object.assign(fareRowById(id),payload,{version_code:version||fareRowById(id).version_code});}else state.fareMatrix.push({id:crypto.randomUUID(),version_code:version||`DEV-${Date.now()}`,...payload,created_at:new Date().toISOString()});write(STORAGE.fares,state.fareMatrix);}
+    await loadData();resetFareEditor();renderFareAdmin();renderMatrix();renderAdmin();toast('Fare matrix record saved.','success');
+  }catch(e){console.error('Fare save failed:',e);toast(`Fare matrix update failed: ${e.message||'database rejected the change'}.`,'error');}
+  finally{setBusy(false);}
 };
 
 function renderUsers(){
@@ -3533,26 +3597,25 @@ async function updateUserStatus(id,status){
   }catch(e){toast('User status could not be updated.','error');}
 }
 async function addAudit(action,target,meta={}){
-  const record={user_id:state.user?.id,action,target,metadata:meta,created_at:new Date().toISOString()};
-  let persisted=false;
+  const record={user_id:state.user?.id,actor_id:state.user?.id||null,action:String(action||'Activity'),target_type:meta.target_type||'system',target_id:target==null?null:String(target),new_value:meta,created_at:new Date().toISOString()};
   if(usingSupabase()){
     try{
-      const result=await supabaseClient.from('audit_logs').insert(record).select('*').maybeSingle();
-      if(!result.error){
-        persisted=true;
-        const dbRecord=result.data||record;
-        state.audit=[dbRecord,...(state.audit||[]).filter(x=>!(x.action===action&&String(x.target)===String(target)&&Math.abs(new Date(x.created_at||0)-new Date(record.created_at))<2000))];
-      } else console.warn('Audit log not written:',result.error.message);
-    }catch(e){console.warn('Audit log not written:',e.message||e);}
+      const {data,error}=await supabaseClient.from('audit_logs').insert(record).select('*').single();
+      if(error) throw error;
+      state.audit=[data,...(state.audit||[]).filter(x=>String(x.id)!==String(data.id))];
+      return true;
+    }catch(e){console.error('Audit log write failed:',e);return false;}
   }
-  if(!persisted){
-    const local={...record,id:'audit-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),timestamp:record.created_at,local_only:usingSupabase()};
-    const a=read(STORAGE.audit,[]);a.unshift(local);write(STORAGE.audit,a);state.audit=[local,...(state.audit||[])];
-  }
-  return persisted;
+  const local={...record,id:'audit-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),local_only:true};
+  state.audit=[local,...(state.audit||[])];write(STORAGE.audit,state.audit);return true;
 }
-function renderAudit(){const rows=[...(state.audit||[])],account=accountEvents().filter(e=>!e.id),all=[...rows,...account].sort((a,b)=>new Date(b.created_at||b.timestamp||0)-new Date(a.created_at||a.timestamp||0));if(!all.length){$('audit-content').innerHTML='<div class="log-empty"><div class="log-empty-icon">⌁</div>No activity has been recorded.</div>';return;}$('audit-content').innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Action</th><th>Target</th><th>Timestamp</th><th>Details</th></tr></thead><tbody>${all.map(a=>`<tr><td>${esc(a.action||'Account activity')}</td><td>${esc(a.target||'—')}</td><td>${esc(new Date(a.created_at||a.timestamp||Date.now()).toLocaleString('en-PH'))}</td><td>${esc(JSON.stringify(a.metadata||{}))}</td></tr>`).join('')}</tbody></table></div>`;}
-
+function renderAudit(){
+  const target=$('audit-content'); if(!target)return;
+  const profiles=new Map((state.users||[]).map(u=>[String(u.id),u]));
+  const rows=[...(state.audit||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+  if(!rows.length){target.innerHTML='<div class="log-empty"><div class="log-empty-icon">⌁</div>No activity has been recorded.</div>';return;}
+  target.innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Actor</th><th>Action</th><th>Target</th><th>Timestamp</th><th>Details</th></tr></thead><tbody>${rows.map(a=>{const actor=profiles.get(String(a.actor_id||a.user_id));const details=a.new_value&&Object.keys(a.new_value).length?Object.entries(a.new_value).filter(([k])=>k!=='target_type').map(([k,v])=>`${k.replace(/_/g,' ')}: ${typeof v==='object'?JSON.stringify(v):v}`).join(' · '):'—';return `<tr><td>${esc(actor?.full_name||actor?.email||a.user_id||'System')}</td><td>${esc(a.action||'Activity')}</td><td>${esc(a.target_type||'system')} · ${esc(a.target_id||'—')}</td><td>${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))}</td><td>${esc(details)}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
 function renderProfile(){
   const p=state.profile||state.user||{};
   $('profile-content').innerHTML=`<div class="data-card" style="max-width:650px"><div class="card-title">${esc(p.full_name||p.name||'')}</div><div class="muted">${esc(p.email||'')}</div><div class="score-row"><span>Role</span><strong>${esc(roleLabel(state.role))}</strong></div><div class="score-row"><span>Contact</span><strong>${esc(p.contact_number||'—')}</strong></div><div class="score-row"><span>Address</span><strong>${esc(p.address||'—')}</strong></div><div class="score-row"><span>Account status</span><strong>${esc(p.status||'active')}</strong></div>${state.role==='rider'?`<div class="score-row"><span>Verification</span><strong>${esc(state.riders.find(r=>r.profile_id===state.user.id)?.verification_status||'Pending')}</strong></div>`:''}</div>`;
@@ -4029,7 +4092,7 @@ button:disabled,.btn:disabled { cursor:not-allowed; opacity:.55; transform:none!
   .panel:not(#panel-map).active > .report-content,
   .panel:not(#panel-map).active > .about-content{overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto;}
 }
-</style></head><body><h1>GeoFare — Registered Rider QR Directory</h1><p>Registered rider QR directory · Generated ${esc(nowPH())}</p><div class="grid">${cards.map(({r,src})=>`<article class="card"><div class="id">${esc(r.public_id)}</div><div class="name">${esc(mergedRiderName(r))}</div><div class="meta">Plate: ${esc(r.plate_number||'Not provided')}<br>${esc(r.ally_group||'')}</div>${src?`<img src="${src}" alt="QR for ${esc(r.public_id)}">`:'<div style="padding:65px 0;color:#999;font-size:11px">QR unavailable</div>'}</article>`).join('')}</div></body></html>`;
+</style></head><body><h1>GeoFare — Registered Rider QR Directory</h1><p>Registered rider QR directory · Generated ${esc(nowPH())}</p><div class="grid">${cards.map(({r,src})=>`<article class="card"><div class="id">${esc(r.public_id)}</div><div class="name">${esc(mergedRiderName(r))}</div><div class="meta">Plate: ${esc(r.plate_number||'Not provided')}<br>${esc(r.ally_group||'')}</div>${src?`<img src="${src}" alt="QR for ${esc(r.public_id)}">`:'<div style="padding:65px 0;color:#999;font-size:11px">QR unavailable</div>'}</article>`).join('')}</div></body>`;
   w.document.open();w.document.write(html);w.document.close();
   setTimeout(()=>{try{w.focus();w.print();}catch(_){}},500);
 }
@@ -4037,7 +4100,7 @@ button:disabled,.btn:disabled { cursor:not-allowed; opacity:.55; transform:none!
 async function importMFRTARecords(){ toast('Manual import is disabled. MFRTA records are loaded automatically.','info'); }
 async function generateRiderQR(rider){const host=$('rider-qr-content');if(!host)return;if(!rider||riderRecordStatus(rider)==='Archived'){host.innerHTML='<div class="muted">QR unavailable for archived rider records.</div>';return;}ensureRiderPublicIdentity(rider);const url=riderQrUrl(rider);host.innerHTML=`<div class="qr-card"><div class="qr-box" id="rider-qr-box"></div><div><div class="card-title">${esc(mergedRiderName(rider))}</div><div class="muted">${esc(rider.public_id)} · Unique rider QR</div><button class="btn btn-secondary btn-sm" id="download-rider-qr" type="button" style="margin-top:12px">Save QR Image</button></div></div>`;if(window.QRCode)new QRCode($('rider-qr-box'),{text:url,width:170,height:170,correctLevel:QRCode.CorrectLevel.H});$('download-rider-qr')?.addEventListener('click',()=>{const c=$('rider-qr-box')?.querySelector('canvas'),i=$('rider-qr-box')?.querySelector('img');const href=c?.toDataURL('image/png')||i?.src;if(href){const a=document.createElement('a');a.href=href;a.download=`${rider.public_id}-QR.png`;a.click();}});}
 function publicRiderData(r){const rating=riderAverageRating(r.id)||'—';return [['Rider Name',mergedRiderName(r)],['Public Rider ID',r.public_id||''],['Association / Group',r.ally_group||''],['Plate Number',r.plate_number||''],['Make',r.make||''],['Business Permit No.',r.business_permit_reference||''],['Verification Status','Verified'],['Average Rating',rating]];}
-function openPublicRiderProfile(idOrToken){const r=(state.riders||[]).find(x=>String(x.id)===String(idOrToken)||String(x.qr_token)===String(idOrToken));if(!r||(r.verification_status||r.status)!=='Verified'){toast('Verified rider profile not found.','error');return;}state.publicRider=r;$('public-rider-title').textContent=mergedRiderName(r);$('public-rider-subtitle').textContent=`${r.ally_group||'MFRTA registered rider'} · ${r.plate_number||'No plate recorded'}`;$('public-rider-details').innerHTML=`<div class="public-rider-grid">${publicRiderData(r).map(([k,v])=>`<div class="public-rider-field"><small>${esc(k)}</small><strong>${esc(v||'Not provided')}</strong></div>`).join('')}</div><div class="qr-status">This is the rider profile linked to this unique GeoFare QR code. Public profile does not expose the rider's password or account email.</div>`;$('rider-profile-modal').classList.add('active');$('public-rate-btn').onclick=()=>{$('rider-profile-modal').classList.remove('active');if(state.role!=='commuter'){toast('Sign in with a commuter account to rate this rider.','info');return;}showPanel('ratings');const sel=$('rating-rider');if(sel)sel.value=r.id;};$('public-report-btn').onclick=()=>{$('rider-profile-modal').classList.remove('active');if(state.role!=='commuter'){toast('Sign in with a commuter account to report this rider.','info');return;}showPanel('report');const plate=$('rpt-plate');if(plate)plate.value=r.plate_number||'';};}
+function openPublicRiderProfile(idOrToken){const r=(state.riders||[]).find(x=>String(x.id)===String(idOrToken)||String(x.qr_token)===String(idOrToken));if(!r||(r.verification_status||r.status)!=='Verified'){toast('Verified rider profile not found.','error');return;}state.publicRider=r;$('public-rider-title').textContent=mergedRiderName(r);$('public-rider-subtitle').textContent=`${r.ally_group||'MFRTA registered rider'} · ${r.plate_number||'No plate recorded'}`;$('public-rider-details').innerHTML=`<div class="public-rider-grid">${publicRiderData(r).map(([k,v])=>`<div class="public-rider-field"><small>${esc(k)}</small><strong>${esc(v||'Not provided')}</strong></div>`).join('')}</div><div class="qr-status">This is the rider profile linked to this unique GeoFare QR code. Public profile does not expose the rider's password or account email.</div>`;$('rider-profile-modal').classList.add('active');$('public-rate-btn').onclick=()=>{$('rider-profile-modal').classList.remove('active');if(state.role!=='commuter'){toast('Sign in with a commuter account to rate this rider.','info');return;}showPanel('ratings');const sel=$('rating-rider');if(sel)sel.value=r.id;};$('public-report-btn').onclick=()=>{$('rider-profile-modal').classList.remove('active');if(state.role!=='commuter'){toast('Sign in with a commuter account to report this rider.','info');return;}showPanel('report');setTimeout(()=>{selectReportRider(r.id);const plate=$('rpt-plate');if(plate)plate.value=r.plate_number||'';},0);};}
 
 async function loadQRFromURL(){const token=new URLSearchParams(window.location.search).get('rider');if(!token)return;const local=(state.riders||[]).find(r=>String(r.qr_token)===String(token));if(local&&isRiderVisible(local)&&(local.verification_status||'')==='Verified'){openPublicRiderProfile(local.id);return;}try{if(!usingSupabase())return;const {data,error}=await supabaseClient.from('rider_profiles').select('*').eq('qr_token',token).eq('verification_status','Verified').maybeSingle();if(error)throw error;if(data){state.riders=[...(state.riders||[]).filter(x=>String(x.id)!==String(data.id)),data];openPublicRiderProfile(data.id);}else toast('This QR code does not point to a verified GeoFare rider.','error');}catch(e){console.error(e);toast('The rider profile could not be loaded.','error');}}
 function extractRiderToken(value){const raw=String(value||'').trim();if(!raw)return '';try{const u=new URL(raw,window.location.href);return u.searchParams.get('rider')||raw;}catch{return raw;}}
@@ -4080,7 +4143,6 @@ function refreshVisiblePanel(){
     else if(p==='route-records')renderRouteRecords();
     else if(p==='users')renderUsers();
     else if(p==='audit')renderAudit();
-    else if(p==='barangays')renderBarangays();
     else if(p==='logs')renderLogs();
     else if(p==='matrix')renderMatrix();
     else if(p==='profile')renderProfile();
@@ -4291,166 +4353,30 @@ body{ background:
 }
 </style>
 
-<style id="geofare-final-contrast-and-report-directory">
-/* FINAL GeoFare correction */
-.auth-screen{background:radial-gradient(900px 520px at 10% 0%,rgba(47,120,214,.16),transparent 60%),radial-gradient(800px 500px at 100% 100%,rgba(224,99,31,.12),transparent 60%),var(--bg)!important;color:var(--text)!important}
-.auth-card{background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)!important}.auth-brand{color:var(--accent)!important}.auth-brand span,.auth-card h1{color:var(--text)!important}.auth-kicker,.auth-sub,.auth-switch,.auth-credit{color:var(--text2)!important}.auth-card .form-label{color:var(--text2)!important}.auth-card .form-input,.auth-card .form-select{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}.auth-card .form-input::placeholder{color:var(--text3)!important;opacity:1}.demo-note{background:var(--warm-dim)!important;color:var(--text)!important;border-color:color-mix(in srgb,var(--warm) 34%,var(--border))!important}
-:root:not([data-theme="dark"]){--bg:#edf3f9;--surface:#fff;--surface2:#e3ebf4;--border:#b9ccdf;--text:#091b2d;--text2:#314a64;--text3:#536f89;--accent:#0d4f86;--accent2:#247bc2;--warm:#d95716;--green:#08783d;--gold:#955e00;--red:#b52a18}
-:root:not([data-theme="dark"]) .panel-sub,:root:not([data-theme="dark"]) .muted,:root:not([data-theme="dark"]) .form-hint,:root:not([data-theme="dark"]) .small-note{color:var(--text2)}
-:root:not([data-theme="dark"]) .nav-link{color:var(--text2)}:root:not([data-theme="dark"]) .nav-link:hover{color:var(--text)}:root:not([data-theme="dark"]) .nav-link.active{color:var(--accent);background:rgba(13,79,134,.12)}:root:not([data-theme="dark"]) select.form-select option{background:#fff;color:#091b2d}
-html,body{height:100%;min-height:100%;overflow:hidden}.app,.main{min-height:0}.panel{min-height:0;min-width:0;box-sizing:border-box}.panel.active{min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}.panel.active>.dashboard-wrap,.panel.active>.management-content,.panel.active>.matrix-content,.panel.active>.logs-content,.panel.active>.report-content,.panel.active>.about-content{min-height:0;width:100%;max-width:100%;box-sizing:border-box}.table-wrap,.table-scroll,.monitor-list,#admin-qr-directory{overflow:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-.report-rider-directory{margin:0 0 22px;padding:16px;background:linear-gradient(145deg,var(--surface2),var(--surface));border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}.report-directory-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}.report-directory-kicker{font-size:9px;font-weight:900;letter-spacing:1.5px;color:var(--warm);margin-bottom:4px}.report-directory-head h3{margin:0 0 4px;font:800 16px 'Syne',sans-serif;color:var(--text)}.report-directory-head p{margin:0;color:var(--text2);font-size:11.5px;line-height:1.5;max-width:540px}.directory-count{padding:6px 10px;border-radius:99px;background:var(--accent-dim);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 25%,var(--border));font-size:10px;font-weight:900;white-space:nowrap}.report-directory-search{position:relative;margin-bottom:10px}.report-directory-search>span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);z-index:2;font-size:20px}.report-directory-search .form-input{padding-left:38px}.report-rider-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:390px;overflow-y:auto;padding:2px 3px 3px 2px;-webkit-overflow-scrolling:touch}.report-rider-card{display:flex;flex-direction:column;gap:10px;padding:13px;border:1px solid var(--border);border-radius:13px;background:var(--surface);min-width:0;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease}.report-rider-card:hover{transform:translateY(-2px);border-color:var(--accent2);box-shadow:var(--shadow-lg)}.report-rider-card.selected{border-color:var(--warm);background:linear-gradient(145deg,var(--surface),var(--warm-dim));box-shadow:0 0 0 2px var(--warm-dim)}.report-rider-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.report-rider-name{font-weight:800;font-size:13px;color:var(--text);overflow-wrap:anywhere}.report-rider-meta{margin-top:3px;color:var(--text3);font-size:10.5px;font-family:monospace}.report-rider-info{display:grid;grid-template-columns:1fr 1fr;gap:7px}.report-rider-info>div{min-width:0;padding:7px 8px;background:var(--surface2);border-radius:8px}.report-rider-info small{display:block;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.5px}.report-rider-info strong{display:block;color:var(--text);font-size:10.5px;margin-top:2px;overflow-wrap:anywhere}.report-rider-card .btn{width:100%}.report-rider-empty{grid-column:1/-1;padding:22px 12px;border:1px dashed var(--border);border-radius:11px;text-align:center;color:var(--text2);background:var(--surface);font-size:12px}.report-directory-foot{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;color:var(--text3);font-size:10.5px}.report-directory-foot strong{color:var(--text2)}
-@media(max-width:700px){.report-rider-directory{padding:13px}.report-directory-head{flex-direction:column}.report-rider-list{grid-template-columns:1fr;max-height:340px}}@media(max-width:480px){.auth-screen{padding:12px}.auth-card{padding:20px 16px!important;border-radius:18px}.auth-card h1{font-size:22px}.report-content{padding-left:12px!important;padding-right:12px!important}.report-rider-info{grid-template-columns:1fr}}
+
+<style id="geofare-consolidated-final-ui">
+:root:not([data-theme="dark"]){--bg:#edf3f9;--surface:#ffffff;--surface2:#e8eff6;--border:#9fb4c8;--text:#0b1f33;--text2:#36516c;--text3:#5c7188;--accent:#0b4f82;--accent2:#176fae;--warm:#c94d12;--green:#087443;--gold:#805000;--red:#ad281c}
+:root[data-theme="dark"]{--border:#36506b;--text:#f1f6fb;--text2:#c4d2df;--text3:#94a9bd}
+html,body{height:100%;overflow:hidden}.app,.main,.panel{min-height:0}.panel.active{overflow:auto!important;overscroll-behavior:contain}.management-content,.dashboard-wrap,.matrix-content,.logs-content,.report-content,.about-content{min-height:0;overflow:auto!important;overscroll-behavior:contain}.table-wrap{overflow:auto!important;border:1px solid var(--border);border-radius:12px}.data-table{min-width:900px}.data-table th{position:sticky;top:0;z-index:2;background:var(--surface2);color:var(--text)}
+.report-record-card,.safety-record{border-color:var(--border);background:var(--surface);box-shadow:0 8px 22px rgba(10,30,50,.06)}.report-record-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.report-meta-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}.report-meta-grid>div{padding:9px;background:var(--surface2);border-radius:9px;border:1px solid var(--border)}.report-meta-grid small{display:block;color:var(--text3);font-size:10px;text-transform:uppercase}.report-meta-grid strong{display:block;color:var(--text);font-size:12px;margin-top:3px;overflow-wrap:anywhere}.report-description{white-space:pre-line;line-height:1.55;color:var(--text)}.report-admin-actions{margin-top:12px}
+.status-badge{font-weight:800;border:1px solid currentColor}.btn:focus-visible,.form-input:focus-visible,.form-select:focus-visible,.form-textarea:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:2px}.btn{transition:transform .16s ease,box-shadow .16s ease,background .16s ease}.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 18px rgba(10,30,50,.14)}.btn:disabled{opacity:.58;cursor:not-allowed;transform:none}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:var(--surface2)}::-webkit-scrollbar-thumb{background:var(--text3);border-radius:999px;border:2px solid var(--surface2)}::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+#gf-desktop-gate{display:none;position:fixed;inset:0;z-index:30000;background:#081a2b;color:#fff;align-items:center;justify-content:center;text-align:center;padding:32px;flex-direction:column;gap:14px}#gf-desktop-gate p{max-width:430px;line-height:1.6;color:#d9e5ef}@media(max-width:1024px){html[data-role="admin"] #gf-desktop-gate{display:flex}html[data-role="admin"] .app{display:none!important}}
+@media(max-width:760px){.report-meta-grid{grid-template-columns:1fr 1fr}.data-table{min-width:760px}.panel-header{position:sticky;top:0;z-index:5;background:var(--bg)}}
+@media(max-width:480px){.report-meta-grid{grid-template-columns:1fr}.table-actions{flex-wrap:wrap}}
 </style>
-<script id="geofare-ux-patch-script">
+<div id="gf-desktop-gate"><div style="font-size:46px">🖥️</div><h2>Administrator desktop view</h2><p>The MFRTA dashboard is intentionally limited to larger screens so rider records, management tables, and administrative controls remain safe and readable.</p><button class="btn btn-secondary" id="gf-desktop-gate-logout" type="button">Log out</button></div>
+<script id="geofare-consolidated-final-runtime">
 (function(){
   'use strict';
-
-  /* Inject the desktop-only gate markup for admins on small screens. */
-  if(!document.getElementById('gf-desktop-gate')){
-    const gate=document.createElement('div');
-    gate.id='gf-desktop-gate';
-    gate.innerHTML=`
-      <div class="gf-gate-icon">🖥️</div>
-      <h2>Switch to a desktop screen</h2>
-      <p>The MFRTA / Administrator dashboard is built for larger screens so tables, rider records, and QR tools stay usable. Please continue on a laptop or desktop computer.</p>
-      <button class="btn btn-secondary btn-sm" id="gf-gate-logout" type="button">Log out</button>`;
-    document.body.appendChild(gate);
-    document.getElementById('gf-gate-logout').addEventListener('click',function(){
-      if(typeof logout==='function') logout();
-    });
-  }
-
-  /* Keep <html data-role="..."> in sync so CSS above can gate admin on mobile. */
-  function gfSyncRole(){
-    try{ document.documentElement.setAttribute('data-role', (window.state && state.role) || ''); }catch(_){}
-  }
-  window.addEventListener('resize', gfSyncRole);
-  const gfRoleWatcher=setInterval(gfSyncRole, 800);
-  window.addEventListener('beforeunload', ()=>clearInterval(gfRoleWatcher));
-
-  /* Toast: stack cleanly, cap the queue, and keep the new top position tidy. */
-  if(typeof toast==='function'){
-    const _toastOriginal=toast;
-    window.toast=function(msg,type){
-      _toastOriginal(msg,type);
-      const wrap=document.getElementById('toast-wrap');
-      if(wrap){
-        while(wrap.children.length>3){ wrap.removeChild(wrap.firstChild); }
-      }
-    };
-  }
+  const syncRole=()=>{try{document.documentElement.dataset.role=window.state?.role||'';}catch(_){}};
+  syncRole();setInterval(syncRole,1000);
+  document.getElementById('gf-desktop-gate-logout')?.addEventListener('click',()=>window.logout?.());
+  const panels=['commuter-dashboard','rider-dashboard','map','matrix','riders','ratings','safety','report','reports','logs','profile','about','responder','route-records','admin','registered-riders','fare-admin','users','audit'];
+  window.GeoFarePanelRegistry=new Set(panels);
+  const oldShow=window.showPanel;
+  if(typeof oldShow==='function')window.showPanel=function(panel){if(!window.GeoFarePanelRegistry.has(panel)){console.warn('Invalid panel:',panel);return;}return oldShow(panel);};
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-panel]');if(!b)return;const p=b.dataset.panel;if(p&&!window.GeoFarePanelRegistry.has(p)){e.preventDefault();e.stopPropagation();}},true);
 })();
 </script>
-<script id="geofare-reliability-overhaul">
-(function(){
-  'use strict';
-  const $=id=>document.getElementById(id);
-  const safe=fn=>{try{return fn()}catch(e){console.warn('GeoFare UX patch:',e);}};
-
-  function fareStatus(text,tone){
-    const el=$('gf-fare-status'); if(!el)return;
-    el.textContent=text; el.className='gf-fare-status'+(tone?' '+tone:'');
-  }
-
-  /* Prevent calculated-fare notifications from covering the actual result. */
-  if(typeof window.toast==='function'){
-    const originalToast=window.toast;
-    window.toast=function(msg,type='info'){
-      const text=String(msg||'');
-      if(/fare calculated from actual road-network distance/i.test(text)){
-        fareStatus('✓ Fare calculated using actual road-network distance.', 'success');
-        return;
-      }
-      if(/fare calculated/i.test(text) && !/could|unable|rejected/i.test(text)){
-        fareStatus('✓ Fare calculation completed. Review the result below.', 'success');
-        return;
-      }
-      return originalToast(msg,type);
-    };
-  }
-
-  /* Clear the inline result consistently when a route is reset. */
-  const originalClearAll=window.clearAll;
-  if(typeof originalClearAll==='function'){
-    window.clearAll=function(){
-      originalClearAll();
-      safe(()=>{ $('fare-result').style.display='none'; $('fare-actions').style.display='none'; $('mobile-fare-float')?.classList.remove('visible'); fareStatus('Ready to calculate.',''); });
-    };
-  }
-
-  /* Patch the calculation function only by wrapping its completion state. */
-  const originalCalculate=window.calculateFare;
-  if(typeof originalCalculate==='function'){
-    window.calculateFare=async function(){
-      fareStatus('Calculating road-network distance…','warn');
-      try{
-        const result=await originalCalculate.apply(this,arguments);
-        if($('fare-result')?.style.display!=='none') fareStatus('✓ Calculation complete. Verify pickup, drop-off, distance, and fare before saving.','success');
-        return result;
-      }catch(e){ fareStatus('Unable to calculate this route. Please retry.','warn'); throw e; }
-    };
-  }
-
-  /* Add an explicit disabled/loading state without replacing existing controls. */
-  document.addEventListener('click',function(e){
-    const b=e.target.closest('#calculate-btn,#save-btn,#sos-submit,.admin-verify-rider,.admin-reject-rider,.admin-archive-rider');
-    if(!b)return;
-    if(b.dataset.gfBusy==='1') { e.preventDefault(); e.stopPropagation(); return; }
-    if(b.id==='calculate-btn' || b.id==='save-btn' || b.id==='sos-submit'){
-      b.dataset.gfBusy='1';
-      const old=b.innerHTML; b.dataset.gfOld=old;
-      setTimeout(()=>{ if(document.body.contains(b)){b.dataset.gfBusy='0';b.innerHTML=b.dataset.gfOld||old;} }, 15000);
-    }
-  },true);
-
-  /* Make every scroll surface keyboard/touch friendly. */
-  function hardenScroll(){
-    document.querySelectorAll('.panel').forEach(p=>{
-      if(p.id!=='panel-map'){
-        p.style.overflowY='auto'; p.style.overflowX='hidden'; p.style.minHeight='0';
-      }
-    });
-    document.querySelectorAll('.table-wrap,.table-scroll,.monitor-list,.map-ctrl-body').forEach(el=>{
-      el.style.webkitOverflowScrolling='touch'; el.style.overscrollBehavior='contain';
-    });
-  }
-  window.addEventListener('load',hardenScroll);
-  window.addEventListener('resize',hardenScroll);
-
-  /* Rating input validation + friendly keyboard behavior. */
-  ['rate-prof','rate-safe','rate-punct','rate-service'].forEach(id=>{
-    const el=$(id); if(!el)return;
-    el.addEventListener('input',()=>{
-      const n=Math.max(1,Math.min(5,Number(el.value||1))); if(Number.isFinite(n))el.value=n;
-    });
-  });
-
-  /* Close overlays with Escape; does not alter existing module behavior. */
-  document.addEventListener('keydown',e=>{
-    if(e.key!=='Escape')return;
-    ['rider-profile-modal','rider-edit-modal','admin-qr-modal','qr-scan-modal'].forEach(id=>$(id)?.classList.remove('active'));
-    safe(()=>typeof closeSidebar==='function'&&closeSidebar());
-  });
-
-  /* Prevent accidental duplicate submits for all forms while they are processing. */
-  document.addEventListener('submit',function(e){
-    const form=e.target; if(!(form instanceof HTMLFormElement))return;
-    if(form.dataset.gfSubmitting==='1'){e.preventDefault();return;}
-    form.dataset.gfSubmitting='1';
-    setTimeout(()=>form.dataset.gfSubmitting='0',12000);
-  },true);
-
-  /* Keep role-specific mobile/desktop gate synchronized immediately. */
-  function syncRole(){
-    try{
-      const role=window.state?.role||'';
-      document.documentElement.dataset.role=role;
-      document.documentElement.dataset.gfReady='1';
-    }catch(_){ }
-  }
-  syncRole(); setInterval(syncRole,500);
-})();
-</script>
-</body>
-</html>
+</body></html>

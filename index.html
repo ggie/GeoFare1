@@ -250,7 +250,7 @@
     border: 1.5px solid transparent;
     transition: border-color 0.2s;
     cursor:pointer;
-    padding: 16px 16px; /* bigger touch area */
+    padding: 16px 16px; 
   }
   .pin-row:hover { border-color: var(--border); }
   .pin-row.active-pin { border-color: var(--accent); background: var(--accent-dim); }
@@ -333,7 +333,7 @@
   .btn-danger:hover { background:var(--red); color:#fff; }
   .btn-sm { padding:8px 14px; font-size:12.5px; }
 
-  /* ── FARE MATRIX PANEL ── */
+  
   #panel-matrix { overflow-y:auto; }
   .matrix-content { padding:24px; max-width:700px; margin:0 auto; }
   .matrix-table {
@@ -484,7 +484,7 @@
   .rp-footer { text-align:center; margin-top:16px; font-size:11px; color:var(--text3); border-top:1px solid var(--border); padding-top:12px; }
   .rp-ref { font-family:'Syne', sans-serif; font-size:14px; font-weight:700; color:var(--accent); }
 
-  /* ── ABOUT PANEL ── */
+  
   #panel-about { overflow-y:auto; }
   .about-content { padding:32px; max-width:640px; }
   .about-hero {
@@ -564,12 +564,12 @@
   @keyframes toastOut { to { opacity:0; transform:translateX(20px); } }
 
   #mobile-fare-float {
-    display: none; /* hidden on desktop, shown via JS on mobile */
+    display: none; 
   }
 
   @media(max-width:768px) {
     #mobile-fare-float {
-      display: none; /* JS controls visibility */
+      display: none; 
       position: absolute;
       bottom: 268px;
       left: 12px; right: 12px;
@@ -635,7 +635,7 @@
 
 @media(max-width:768px) {
 
-  /* Show hamburger */
+  
   .menu-toggle {
     display: flex;
     align-items: center;
@@ -751,23 +751,23 @@
   }
   .matrix-note { font-size: 12.5px; }
 
-  /* ── LOGS ── */
+  
   .logs-toolbar { padding: 12px 16px 0; }
   .logs-content { padding: 12px 16px 16px; }
   .log-card { padding: 12px 13px; gap: 10px; }
 
-  /* ── REPORT ── */
+  
   .report-content { padding: 16px; max-width: 100%; }
   .report-preview { padding: 18px; }
   .rp-key { width: 110px; font-size: 11.5px; }
   .rp-val { font-size: 12.5px; }
   .rp-field { gap: 8px; }
 
-  /* Report action buttons: full-width stack */
+  
   #report-actions { flex-direction: column; }
   #report-actions .btn { width: 100%; justify-content: center; }
 
-  /* ── ABOUT ── */
+  
   .about-content { padding: 16px; max-width: 100%; }
   .about-hero { padding: 22px 20px; }
   .about-hero-title { font-size: 22px; }
@@ -970,7 +970,7 @@
 
 .status-active{background:var(--green-dim);color:var(--green)}
 
-/* ── Micro-interactions & motion polish ── */
+
 body,.sidebar,.topbar,.surface,.auth-card,.data-card,.form-card,.stat-card,.kpi,.hero-stat{transition:background-color .25s ease,border-color .25s ease,color .25s ease}
 .kpi,.stat-card,.data-card{transition:background-color .25s ease,border-color .25s ease,transform .18s ease,box-shadow .18s ease}
 .kpi:hover,.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
@@ -983,7 +983,7 @@ body,.sidebar,.topbar,.surface,.auth-card,.data-card,.form-card,.stat-card,.kpi,
 .table-actions .btn{transition:background-color .18s ease,transform .15s ease}
 .table-actions .btn:hover{transform:translateY(-1px)}
 
-/* ── Sidebar collapse toggle (desktop) ── */
+
 .sidebar-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .collapse-toggle{flex-shrink:0;width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s ease}
 .collapse-toggle:hover{background:var(--border);color:var(--text)}
@@ -995,7 +995,7 @@ body,.sidebar,.topbar,.surface,.auth-card,.data-card,.form-card,.stat-card,.kpi,
 .sidebar.collapsed .collapse-toggle{margin:0 auto}
 @media(max-width:768px){.collapse-toggle{display:none}}
 
-/* ── Theme toggle / dark mode ── */
+
 .icon-btn{transition:background-color .18s ease,color .18s ease,transform .15s ease;font-size:15px;display:flex;align-items:center;justify-content:center}
 .icon-btn:hover{background:var(--surface2);transform:translateY(-1px)}
 :root[data-theme="dark"]{
@@ -1015,7 +1015,7 @@ body,.sidebar,.topbar,.surface,.auth-card,.data-card,.form-card,.stat-card,.kpi,
 @media(prefers-reduced-motion:reduce){.sos-btn{animation:none}.kpi:hover,.stat-card:hover{transform:none}}
 
 
-/* ── GeoFare rider/QR/data-management enhancements ── */
+
 .rider-search-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
 .rider-source-table{width:100%;border-collapse:collapse;background:var(--surface);font-size:12px}
 .rider-source-table th{position:sticky;top:0;background:var(--accent);color:#fff;padding:10px;text-align:left;white-space:nowrap}
@@ -1037,7 +1037,7 @@ body,.sidebar,.topbar,.surface,.auth-card,.data-card,.form-card,.stat-card,.kpi,
 @media(max-width:600px){.rider-search-grid{grid-template-columns:1fr}.public-rider-grid{grid-template-columns:1fr}.qr-card{justify-content:center}.qr-box{margin:auto}}
 
 
-/* ── Requested account / QR / live-monitoring enhancements ── */
+
 .account-monitor-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:16px}
 .monitor-list{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto}
 .monitor-row{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--border);background:var(--surface2);border-radius:10px}
@@ -1065,7 +1065,7 @@ body,.sidebar,.topbar,.surface,.auth-card,.data-card,.form-card,.stat-card,.kpi,
 :root[data-theme="dark"] select.form-select option{background:#101c2c;color:#eaf2fb}
 .admin-only-scroll{overflow:auto;max-height:calc(100dvh - 120px);-webkit-overflow-scrolling:touch}.management-content{min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}.panel-header{position:relative;z-index:2}.table-scroll{overflow:auto;max-height:65vh;-webkit-overflow-scrolling:touch}.table-scroll table{min-width:1550px}.qr-directory-card{break-inside:avoid}@media(min-width:769px){#panel-admin,#panel-registered-riders,#panel-fare-admin,#panel-users,#panel-audit,#panel-route-records{overflow:hidden}}@media(max-width:768px){.qr-directory{grid-template-columns:1fr}.profile-modal-card{max-height:92vh}.table-scroll{max-height:58vh}}
 
-/* Final UX polish: management surfaces remain independently scrollable and QR directory is organized. */
+
 .management-content{overflow:auto;min-height:0;-webkit-overflow-scrolling:touch}
 .table-scroll{overflow:auto;max-height:calc(100dvh - 250px);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .table-scroll table{min-width:1650px}
@@ -1081,9 +1081,7 @@ body,.sidebar,.topbar,.surface,.auth-card,.data-card,.form-card,.stat-card,.kpi,
 @media(max-width:1050px){.qr-directory{grid-template-columns:repeat(2,minmax(240px,1fr))}}
 @media(max-width:700px){.qr-directory{grid-template-columns:1fr}#admin-qr-directory{max-height:calc(92vh - 180px)}}
 
-/* ===== GeoFare UX stabilization patch =====
-   Keeps all existing data/modules and only improves layout, scrolling,
-   touch targets, dashboard organization, and mobile accessibility. */
+
 html, body { min-height:100%; }
 body { overflow:hidden; }
 
@@ -1225,7 +1223,7 @@ body { overflow:hidden; }
     gap:4px;
   }
 
-  /* Mobile rider records use readable cards instead of a 1650px-wide table. */
+  
   #registered-riders-content .table-scroll { display:none; }
   .rider-mobile-list {
     display:flex;
@@ -1296,14 +1294,13 @@ body { overflow:hidden; }
     padding:9px 8px;
   }
 
-  /* Keep admin action controls reachable without horizontal scrolling. */
+  
   #panel-admin .stats-grid { grid-template-columns:1fr 1fr; }
   #panel-admin .data-card .toolbar-row {
     flex-wrap:wrap;
   }
 
-  /* The fare result stays in normal document flow; the toast is moved above
-     the bottom sheet so it cannot cover the calculated amount. */
+  
   #panel-map .map-sidebar {
     overflow:hidden;
   }
@@ -1340,7 +1337,7 @@ body { overflow:hidden; }
 }
 
 
-/* ===== MODULE OVERHAUL: ADMIN DESKTOP, SCROLLING, NOTIFICATIONS ===== */
+
 .toast-wrap{position:fixed!important;top:22px!important;left:50%!important;right:auto!important;bottom:auto!important;transform:translateX(-50%)!important;z-index:99999!important;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;max-width:min(560px,calc(100vw - 32px));}
 .toast{pointer-events:auto;animation:gfToastIn .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 18px 45px rgba(15,23,42,.18);border-radius:14px;backdrop-filter:blur(12px)}
 .toast.fare-success{min-width:min(420px,calc(100vw - 32px));font-weight:800;text-align:center;border:1px solid rgba(22,163,74,.28);background:rgba(240,253,244,.98)}
@@ -1355,7 +1352,7 @@ body { overflow:hidden; }
 
 
 <style id="geofare-final-layout-fix">
-/* GeoFare final viewport + panel scrolling fix. */
+
 html,body{width:100%;height:100%;min-height:100%;margin:0;overflow:hidden}
 body{-webkit-text-size-adjust:100%;}
 #app,.app{height:100dvh;min-height:0;display:flex;overflow:hidden}
@@ -1396,9 +1393,7 @@ body{-webkit-text-size-adjust:100%;}
 
 
 <style id="geofare-ux-overhaul">
-/* ================================================================
-   GeoFare UX Overhaul — preserves existing modules/data
-   ================================================================ */
+
 :root{
   --bg:#eef3f8;
   --surface:#ffffff;
@@ -1432,7 +1427,7 @@ html,body{background:var(--bg);color:var(--text)}
 body{font-size:14px}
 button,input,select,textarea{font:inherit}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 28%,transparent);outline-offset:2px}
-/* Stronger light-mode hierarchy */
+
 .topbar,.sidebar,.panel-header,.data-card,.form-card,.stat-card,.kpi,.hero-stat,.log-card,.report-card,.about-card,.matrix-table,.table-wrap,.table-scroll{box-shadow:var(--shadow)}
 .topbar{background:color-mix(in srgb,var(--surface) 96%,var(--accent-dim));backdrop-filter:blur(12px)}
 .sidebar{background:var(--surface)}
@@ -1463,7 +1458,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .kpi .kpi-value{position:relative;z-index:1;color:var(--text)}
 .hero-card{background:linear-gradient(135deg,#124b79,#2476aa 58%,#e26d18)!important;box-shadow:0 14px 36px rgba(18,75,121,.22)}
 .hero-card .role-chip{box-shadow:0 4px 12px rgba(0,0,0,.10)}
-/* Fare result: one authoritative inline result, no floating duplicate on phones */
+
 #panel-map #fare-result{position:relative!important;z-index:5!important;isolation:isolate;overflow:visible!important;margin-top:4px}
 #panel-map #fare-result .fare-result-head{position:relative;z-index:2;min-height:44px;line-height:1.2}
 #panel-map #fare-result .fare-result-body{position:relative;z-index:1;background:var(--surface);border-radius:0 0 var(--radius-sm) var(--radius-sm)}
@@ -1471,33 +1466,33 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .gf-fare-status.success{background:var(--green-dim);border-color:color-mix(in srgb,var(--green) 35%,var(--border));color:var(--green)}
 .gf-fare-status.warn{background:var(--warm-dim);border-color:color-mix(in srgb,var(--warm) 35%,var(--border));color:var(--warm)}
 #mobile-fare-float{display:none!important}
-/* Scroll independently in every non-map module */
+
 .panel.active{overflow-y:auto!important;overflow-x:hidden!important;scrollbar-gutter:stable;overscroll-behavior:contain}
 .panel.active>.dashboard-wrap,.panel.active>.management-content,.panel.active>.matrix-content,.panel.active>.logs-content,.panel.active>.report-content,.panel.active>.about-content{overflow:visible!important;min-width:0}
 .table-wrap,.table-scroll{overflow:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .table-wrap{max-height:calc(100dvh - 210px)}
 .table-scroll{max-height:calc(100dvh - 240px)}
 .monitor-list{max-height:440px;overflow:auto;-webkit-overflow-scrolling:touch}
-/* Organized QR directory */
+
 .qr-card,.qr-box{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
 .qr-box{box-shadow:inset 0 0 0 1px rgba(0,0,0,.03),0 8px 24px rgba(20,58,92,.08)}
 .qr-card:hover .qr-box{transform:scale(1.015);border-color:var(--accent2)}
-/* Ratings */
+
 .rating-grid label{display:flex;flex-direction:column;gap:4px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);transition:.18s ease}
 .rating-grid label:hover{border-color:var(--accent2);transform:translateY(-1px)}
 .rating-grid input{text-align:center;font-weight:800;background:var(--surface);color:var(--text);border-color:var(--border);min-height:44px}
-/* Safety */
+
 .sos-card{box-shadow:0 10px 28px rgba(226,109,24,.12)}
 .sos-btn{box-shadow:0 8px 22px rgba(180,35,24,.22)}
 @keyframes gfSos{0%,100%{box-shadow:0 8px 22px rgba(180,35,24,.20)}50%{box-shadow:0 8px 22px rgba(180,35,24,.20),0 0 0 8px rgba(180,35,24,0)}}
 .sos-btn{animation:gfSos 2.5s ease-in-out infinite}
-/* Modal polish */
+
 .profile-modal,.user-edit-modal,.scan-modal,.auth-screen{backdrop-filter:blur(7px)}
 .profile-modal-card,.user-edit-card,.scan-card,.auth-card{border:1px solid var(--border);box-shadow:0 24px 80px rgba(10,30,50,.25)}
-/* Status contrast */
+
 .status-verified,.status-resolved{font-weight:800}
 .status-pending,.status-under-review,.status-new,.status-acknowledged{font-weight:800}
-/* Mobile: commuter/rider are app-like, admin remains desktop-only via existing gate */
+
 @media(max-width:768px){
   .panel-header{padding-top:16px;padding-bottom:15px}
   .panel-header:after{left:16px;right:16px}
@@ -1528,19 +1523,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 
 <style id="geofare-actual-ui-redesign">
-/* ================================================================
-   GeoFare ACTUAL UI Redesign
-   Visual system + reliable viewport scrolling. No JS/database logic.
-   ================================================================ */
 
-/* --- 1. Stable GeoFare brand contrast --- */
+
+
 :root{--gf-blue:#4d9ee8;--gf-blue-strong:#2f7fc7;--gf-navy:#0c1a2a;--gf-navy-2:#122438;--gf-panel:#162a3f;--gf-panel-2:#1a3149;--gf-line:#2a4763;--gf-white:#f7fbff;--gf-muted:#b7c7d7;}
 :root[data-theme="dark"] .logo{color:var(--gf-blue)!important;text-shadow:0 0 18px rgba(77,158,232,.12)}
 :root[data-theme="dark"] .logo span{color:#fff!important}
 :root[data-theme="dark"] #auth-view .logo{color:var(--gf-blue)!important}
 :root[data-theme="dark"] #auth-view .logo span{color:#fff!important}
 
-/* --- 2. Clean viewport hierarchy: ONE vertical scroller per active panel --- */
+
 html,body{width:100%;height:100%;overflow:hidden!important}
 #app,.app{height:100dvh!important;min-height:0!important;overflow:hidden!important}
 .sidebar{min-height:0!important;overflow:hidden!important}
@@ -1548,7 +1540,7 @@ html,body{width:100%;height:100%;overflow:hidden!important}
 .main{min-width:0!important;min-height:0!important;height:100%!important;overflow:hidden!important}
 .panel{min-width:0!important;min-height:0!important;height:100%!important}
 .panel.active{min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;scroll-behavior:smooth;overscroll-behavior:contain}
-/* Content follows the panel scroll instead of competing with it. */
+
 .panel.active>.dashboard-wrap,
 .panel.active>.management-content,
 .panel.active>.matrix-content,
@@ -1558,7 +1550,7 @@ html,body{width:100%;height:100%;overflow:hidden!important}
 #panel-map{overflow:hidden!important}
 #panel-map .map-sidebar,#panel-map .map-wrapper{min-height:0!important}
 
-/* --- 3. Admin workspace: full-height, desktop-first, scrollable --- */
+
 #panel-admin,#panel-registered-riders,#panel-fare-admin,#panel-users,#panel-audit,#panel-route-records{background:var(--bg);}
 #panel-admin .management-content,#panel-registered-riders .management-content,#panel-fare-admin .management-content,#panel-users .management-content,#panel-audit .management-content,#panel-route-records .management-content{padding-bottom:56px!important}
 #panel-admin .panel-header,#panel-registered-riders .panel-header,#panel-fare-admin .panel-header,#panel-users .panel-header,#panel-audit .panel-header,#panel-route-records .panel-header{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);}
@@ -1567,7 +1559,7 @@ html,body{width:100%;height:100%;overflow:hidden!important}
   #panel-admin .management-content,#panel-registered-riders .management-content,#panel-fare-admin .management-content,#panel-users .management-content,#panel-audit .management-content,#panel-route-records .management-content{padding-left:28px!important;padding-right:28px!important;}
 }
 
-/* Desktop-only admin gate. It keys off the authenticated role already synced by the page. */
+
 #gf-desktop-gate,.admin-desktop-gate{display:none!important}
 @media(max-width:1024px){
   html[data-role="admin"] #gf-desktop-gate{display:flex!important}
@@ -1575,7 +1567,7 @@ html,body{width:100%;height:100%;overflow:hidden!important}
   html[data-role="admin"] .admin-desktop-gate{display:none!important}
 }
 
-/* --- 4. More visible, organized desktop surfaces --- */
+
 .panel-header{border-bottom:1px solid var(--border)!important}
 .dashboard-wrap,.management-content,.matrix-content,.logs-content,.report-content,.about-content{padding-bottom:42px!important}
 .form-card,.data-card,.stat-card,.hero-stat,.kpi,.qr-directory-card,.report-record-card,.safety-record{border-radius:16px!important;border:1px solid var(--border)!important;box-shadow:0 8px 24px rgba(8,28,48,.06)!important}
@@ -1586,12 +1578,12 @@ html,body{width:100%;height:100%;overflow:hidden!important}
 .stat-card,.kpi{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
 .stat-card:hover,.kpi:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(8,28,48,.10)!important}
 
-/* --- 5. Navigation clarity --- */
+
 .nav-link{min-height:46px!important;border:1px solid transparent!important;border-radius:12px!important}
 .nav-link:hover{transform:translateX(2px)}
 .nav-link.active{border-color:color-mix(in srgb,var(--accent) 30%,transparent)!important;box-shadow:inset 3px 0 0 var(--accent),0 8px 18px rgba(20,80,130,.08)!important}
 
-/* --- 6. Modern controls and toggles without changing behavior --- */
+
 .btn{min-height:40px!important;border-radius:11px!important;transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important}
 .btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.03)}
 .btn:active:not(:disabled){transform:translateY(0) scale(.985)}
@@ -1600,20 +1592,20 @@ input,select,textarea,.form-input,.form-select,.form-textarea{border-radius:10px
 input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.form-textarea:focus{box-shadow:0 0 0 4px rgba(77,158,232,.12)!important}
 .toggle,.switch,input[type="checkbox"]{accent-color:var(--accent)}
 
-/* --- 7. Tables stay usable and do not break panel scrolling --- */
+
 .table-wrap,.table-scroll{max-width:100%!important;overflow-x:auto!important;overflow-y:visible!important;border-radius:14px!important;scrollbar-width:thin}
 .table-wrap table,.table-scroll table{min-width:max-content}
 .data-table th{position:sticky!important;top:0!important;z-index:5!important}
 .data-table td,.data-table th{vertical-align:middle!important}
 
-/* --- 8. Modern scrollbar, visible enough for admin work --- */
+
 .panel.active,.nav-links,.table-wrap,.table-scroll{scrollbar-color:var(--text3) transparent;scrollbar-width:thin}
 .panel.active::-webkit-scrollbar,.nav-links::-webkit-scrollbar,.table-wrap::-webkit-scrollbar,.table-scroll::-webkit-scrollbar{width:12px;height:12px}
 .panel.active::-webkit-scrollbar-track,.nav-links::-webkit-scrollbar-track,.table-wrap::-webkit-scrollbar-track,.table-scroll::-webkit-scrollbar-track{background:transparent}
 .panel.active::-webkit-scrollbar-thumb,.nav-links::-webkit-scrollbar-thumb,.table-wrap::-webkit-scrollbar-thumb,.table-scroll::-webkit-scrollbar-thumb{background:rgba(100,126,151,.55);border:3px solid transparent;background-clip:padding-box;border-radius:999px}
 .panel.active::-webkit-scrollbar-thumb:hover,.nav-links::-webkit-scrollbar-thumb:hover,.table-wrap::-webkit-scrollbar-thumb:hover,.table-scroll::-webkit-scrollbar-thumb:hover{background:var(--accent);border:3px solid transparent;background-clip:padding-box}
 
-/* --- 9. Dark mode contrast: readable surfaces, no washed-out text --- */
+
 :root[data-theme="dark"]{--bg:var(--gf-navy)!important;--surface:var(--gf-navy-2)!important;--surface2:var(--gf-panel)!important;--border:var(--gf-line)!important;--text:var(--gf-white)!important;--text2:#d1deea!important;--text3:#9db2c6!important;--accent:var(--gf-blue)!important;--accent2:var(--gf-blue-strong)!important;}
 :root[data-theme="dark"] .sidebar,:root[data-theme="dark"] .topbar,:root[data-theme="dark"] .panel-header{background:rgba(18,36,56,.96)!important}
 :root[data-theme="dark"] .form-card,:root[data-theme="dark"] .data-card,:root[data-theme="dark"] .stat-card,:root[data-theme="dark"] .kpi,:root[data-theme="dark"] .hero-stat,:root[data-theme="dark"] .auth-card{background:var(--gf-panel-2)!important;color:var(--gf-white)!important}
@@ -1623,12 +1615,12 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 :root[data-theme="dark"] .data-table td{border-color:#294862!important}
 :root[data-theme="dark"] .data-table tr:hover td{background:rgba(77,158,232,.06)!important}
 
-/* --- 10. Login screen polish --- */
+
 #auth-view{background:radial-gradient(circle at 50% 20%,rgba(77,158,232,.10),transparent 34%),var(--bg)!important}
 .auth-card{border-radius:22px!important;box-shadow:0 24px 70px rgba(5,18,32,.16)!important}
 :root[data-theme="dark"] .auth-card{border-color:#31516d!important}
 
-/* --- 11. Motion is subtle and accessible --- */
+
 .panel.active{animation:gfPanelEnter .22s ease both!important}
 @keyframes gfPanelEnter{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
@@ -1674,7 +1666,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 </div>
 
 <div class="app" id="app" style="display:none">
-  <!-- SIDEBAR -->
+  
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div>
@@ -1693,7 +1685,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     </div>
   </aside>
 
-  <!-- MAIN -->
+  
   <main class="main">
 <div class="topbar" id="topbar">
   <div class="topbar-title">
@@ -1742,14 +1734,14 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
           <div class="loading-line" id="loading-line"></div>
         </div>
         <div class="map-ctrl-body">
-          <!-- Mode -->
+          
           <div class="map-mode-btns">
             <button class="map-mode-btn active-mode" id="mode-pickup" onclick="setMode('pickup')">🟢 Pickup</button>
             <button class="map-mode-btn" id="mode-dropoff" onclick="setMode('dropoff')">🔴 Drop-off</button>
           </div>
           <button class="btn btn-secondary btn-sm" type="button" id="locate-btn">◎ Use my current location</button>
 
-          <!-- Pickup -->
+          
           <div class="pin-row" id="pickup-row" onclick="setMode('pickup')">
             <div class="pin-dot pickup">🟢</div>
             <div class="pin-info">
@@ -1759,7 +1751,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
             <button class="pin-clear" onclick="clearPin('pickup');event.stopPropagation()" title="Clear">✕</button>
           </div>
 
-          <!-- Dropoff -->
+          
           <div class="pin-row" id="dropoff-row" onclick="setMode('dropoff')">
             <div class="pin-dot dropoff">🔴</div>
             <div class="pin-info">
@@ -1769,12 +1761,12 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
             <button class="pin-clear" onclick="clearPin('dropoff');event.stopPropagation()" title="Clear">✕</button>
           </div>
 
-          <!-- Instructions -->
+          
           <div class="map-instruction" id="map-instruction">
             Tap anywhere on the map to set your <strong>pickup</strong> point
           </div>
 
-          <!-- Fare Result -->
+          
           <div class="fare-result" id="fare-result" style="display:none">
             <div class="fare-result-head">🧾 Estimated Fare</div>
             <div class="fare-result-body">
@@ -1795,11 +1787,18 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
             </div>
           </div>
 
-          <!-- Buttons -->
+          
           <div id="fare-actions" style="display:none; flex-direction:column; gap:8px;">
             <button class="btn btn-primary btn-sm" onclick="calculateFare(true)" id="calculate-btn">
               🧮 Calculate Fare
             </button>
+            <button class="btn btn-secondary btn-sm" onclick="startLiveTrip()" id="live-trip-btn">
+              📍 Start Live Trip Tracking
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="stopLiveTrip()" id="stop-live-trip-btn" style="display:none">
+              ⏹ End Live Trip
+            </button>
+            <div class="gf-fare-status" id="live-trip-status" style="display:none">Waiting for live location…</div>
             <button class="btn btn-primary btn-sm" onclick="saveLog()" id="save-btn" style="display:none">
               💾 Save to History
             </button>
@@ -1816,7 +1815,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     </div>
 
 
-    <!-- ── ROLE DASHBOARDS ── -->
+    
     <div class="panel" id="panel-commuter-dashboard">
       <div class="panel-header">
         <div class="panel-title">Commuter Dashboard</div>
@@ -1927,7 +1926,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
       <div class="management-content"><div id="route-records-content"></div></div>
     </div>
 
-    <!-- ── FARE MATRIX ── -->
+    
     <div class="panel" id="panel-matrix">
       <div class="panel-header">
         <div class="panel-title">📋 Habal-Habal Fare Matrix</div>
@@ -1954,7 +1953,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
         </div>
       </div>
     </div>
-    <!-- ── LOGS ── -->
+    
     <div class="panel" id="panel-logs">
       <div class="panel-header">
         <div class="panel-title">🕐 Calculation History</div>
@@ -1972,7 +1971,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
       </div>
     </div>
 
-    <!-- ── REPORT ── -->
+    
     <div class="panel" id="panel-report">
       <div class="panel-header">
         <div class="panel-title">⚠️ Incident / Complaint Report</div>
@@ -1987,8 +1986,8 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
           <div class="report-directory-head">
             <div>
               <div class="report-directory-kicker">RIDER DIRECTORY</div>
-              <h3 id="report-rider-directory-title">Select a Registered Rider</h3>
-              <p>Choose a rider from the GeoFare registry. Selecting a rider automatically fills the plate number and attaches the rider identity to the report.</p>
+              <h3 id="report-rider-directory-title">Identify the Rider</h3>
+              <p>Select a registered rider when available, or report any motorcycle directly by plate number. A registered rider is linked when found; otherwise, the plate number is retained as the report identifier.</p>
             </div>
             <span class="directory-count" id="report-rider-count">0 riders</span>
           </div>
@@ -1998,13 +1997,13 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
             <input class="form-input" id="report-rider-search" type="search" autocomplete="off" placeholder="Search rider name, Rider ID, plate, association, make, or permit">
           </div>
           <div class="report-rider-list" id="report-rider-list"><div class="report-rider-empty">Loading registered riders…</div></div>
-          <div class="report-directory-foot"><span>Can't find the rider?</span><strong>You can still enter a plate number manually below.</strong></div>
+          <div class="report-directory-foot"><span>Can't find the rider?</span><strong>Enter the motorcycle plate number below to report an unregistered rider.</strong></div>
         </section>
 
         <div class="form-group">
           <label class="form-label">Driver's Plate Number *</label>
           <input class="form-input" id="rpt-plate" placeholder="e.g. MF-1234" style="text-transform:uppercase;letter-spacing:2px;font-weight:700;font-size:15px">
-          <div class="form-hint">Enter the motorcycle plate number as displayed on the vehicle, or select a rider above.</div>
+          <div class="form-hint">The plate number is the report identifier. Registered riders are linked automatically when available; unregistered riders can still be reported by plate number.</div>
         </div>
 
         <div class="form-group">
@@ -2050,7 +2049,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
           <button class="btn btn-secondary" onclick="clearReport()">Reset</button>
         </div>
 
-        <!-- Preview -->
+        
         <div class="report-preview" id="report-preview">
           <div class="rp-header">
             <div class="rp-badge">Citizen Complaint Report</div>
@@ -2071,7 +2070,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
           <button class="btn btn-secondary btn-sm" onclick="clearReport()">✕ Start New Report</button>
         </div>
 
-        <!-- Saved Reports -->
+        
         <div id="saved-reports-section" style="margin-top:28px; display:none;">
           <div class="about-section-title">📁 Saved Reports</div>
           <div class="report-list" id="saved-reports-list"></div>
@@ -2079,7 +2078,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
       </div>
     </div>
 
-    <!-- ── ABOUT ── -->
+    
     <div class="panel" id="panel-about">
       <div class="panel-header">
         <div class="panel-title">ℹ️ About GeoFare</div>
@@ -2156,7 +2155,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     </div>
  
   
-<!-- RIDER VERIFICATION -->
+
 <div class="panel" id="panel-riders">
   <div class="panel-header">
     <div class="panel-title">Verified Habal-Habal Riders</div>
@@ -2179,7 +2178,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- RATINGS -->
+
 <div class="panel" id="panel-ratings">
   <div class="panel-header">
     <div class="panel-title">Rider Ratings</div>
@@ -2203,7 +2202,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- MY REPORTS / ADMIN REPORTS -->
+
 <div class="panel" id="panel-reports">
   <div class="panel-header">
     <div class="panel-title" id="reports-title">Incident & Complaint Reports</div>
@@ -2218,7 +2217,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- ADMIN DASHBOARD -->
+
 <div class="panel" id="panel-admin">
   <div class="panel-header">
     <div class="panel-title">Administrator / MFRTA Dashboard</div>
@@ -2242,7 +2241,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 </div>
 
 
-<!-- ADMIN REGISTERED RIDER DATABASE -->
+
 <div class="panel" id="panel-registered-riders">
   <div class="panel-header">
     <div class="panel-title">Registered Habal-Habal Riders</div>
@@ -2263,7 +2262,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- ADMIN FARE MANAGEMENT -->
+
 <div class="panel" id="panel-fare-admin">
   <div class="panel-header">
     <div class="panel-title">Fare Matrix Management</div>
@@ -2282,7 +2281,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- ADMIN USERS -->
+
 <div class="panel" id="panel-users">
   <div class="panel-header">
     <div class="panel-title">User Management</div>
@@ -2294,7 +2293,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- ADMIN AUDIT -->
+
 <div class="panel" id="panel-audit">
   <div class="panel-header">
     <div class="panel-title">Activity / Audit Logs</div>
@@ -2303,14 +2302,14 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   <div class="management-content"><div id="audit-content"></div></div>
 </div>
 
-<!-- PROFILE -->
+
 <div class="panel" id="panel-profile">
   <div class="panel-header"><div class="panel-title">My Profile</div><div class="panel-sub">Role-aware account information.</div></div>
   <div class="management-content"><div id="profile-content"></div></div>
 </div>
 
 
-<!-- PUBLIC RIDER PROFILE MODAL -->
+
 <div class="profile-modal" id="rider-profile-modal" role="dialog" aria-modal="true" aria-labelledby="public-rider-title">
   <div class="profile-modal-card">
     <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
@@ -2329,7 +2328,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- ADMIN RIDER EDIT MODAL -->
+
 <div class="user-edit-modal" id="rider-edit-modal" role="dialog" aria-modal="true">
   <div class="user-edit-card">
     <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px"><div><div class="role-chip">REGISTERED RIDER</div><h2 style="font-family:'Syne',sans-serif;margin-top:8px" id="rider-edit-title">Edit Registered Rider</h2><div class="muted">Changes apply to the registered rider record and connected public profile.</div></div><button class="btn btn-secondary btn-sm" id="close-rider-edit" type="button">Close</button></div>
@@ -2352,7 +2351,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- ADMIN RIDER QR DIRECTORY MODAL -->
+
 <div class="profile-modal" id="admin-qr-modal" role="dialog" aria-modal="true">
   <div class="profile-modal-card" style="width:min(1100px,100%);max-height:94vh">
     <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div><div class="role-chip">MFRTA QR DIRECTORY</div><h2 style="font-family:'Syne',sans-serif;margin-top:8px">Registered Rider QR Codes</h2><div class="muted">One permanent QR code per registered rider. Organized by Rider ID and rider name.</div></div><button class="btn btn-secondary btn-sm" id="close-admin-qr" type="button">Close</button></div>
@@ -2361,7 +2360,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
 </div>
 
-<!-- ADMIN USER EDIT MODAL -->
+
 <div class="user-edit-modal" id="user-edit-modal" role="dialog" aria-modal="true">
   <div class="user-edit-card">
     <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px"><div><div class="role-chip">ADMINISTRATOR EDIT</div><h2 style="font-family:'Syne',sans-serif;margin-top:8px">Edit User Account</h2><div class="muted" id="user-edit-subtitle"></div></div><button class="btn btn-secondary btn-sm" id="close-user-edit" type="button">Close</button></div>
@@ -2382,7 +2381,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     <div class="table-actions"><button class="btn btn-primary" type="submit">Save Changes</button><button class="btn btn-secondary" id="cancel-user-edit" type="button">Cancel</button></div></form>
   </div>
 </div>
-<!-- QR CAMERA SCANNER -->
+
 <div class="scan-modal" id="qr-scan-modal" role="dialog" aria-modal="true"><div class="scan-card">
   <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px"><div><div class="role-chip">RIDER QR SCANNER</div><h2 style="font-family:'Syne',sans-serif;margin-top:7px">Scan Rider QR</h2></div><button class="btn btn-secondary btn-sm" id="close-qr-scanner" type="button">Close</button></div>
   <div id="qr-reader"></div><div class="scan-help">Point your camera at the rider's GeoFare QR code. Camera scanning requires browser permission and HTTPS (or localhost). If camera scanning is unavailable, paste the QR URL/token below.</div>
@@ -2402,12 +2401,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 <script>
 'use strict';
 
-/* GeoFare configuration.
- * This single-file build uses the Supabase project credentials already present
- * in the supplied sign-in/sign-up implementation. The publishable/anon key is
- * intended for browser use; never place a Supabase service-role key here.
- * For a different deployment, replace only SUPABASE_URL and SUPABASE_ANON_KEY.
- */
+
 const GEOFARE_CONFIG = {
   SUPABASE_URL: window.GEOFARE_SUPABASE_URL || 'https://ydizkrfjxkzxfxtelncb.supabase.co',
   SUPABASE_ANON_KEY: window.GEOFARE_SUPABASE_ANON_KEY || 'sb_publishable_PHZeB_415FLZn3pIj0sv_A_c40Zeb07',
@@ -2472,7 +2466,13 @@ const state = {
   audit: [],
   safetyAlerts: [],
   calculations: [],
-  barangays: []
+  barangays: [],
+  liveWatchId: null,
+  liveMarker: null,
+  liveLine: null,
+  livePoints: [],
+  liveDistanceKm: 0,
+  liveStartedAt: null
 };
 
 const $ = id => document.getElementById(id);
@@ -2794,7 +2794,6 @@ async function establishSupabaseSession(session){
   const lookup=await supabaseClient.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
   if(lookup.error) console.warn('Profile lookup:',lookup.error.message);
   profile=lookup.data||null;
-  // Always repair missing/stale profile data on a valid authenticated session.
   profile=await ensureSupabaseProfile(session.user,profile||{
     email:session.user.email,
     full_name:meta.full_name,
@@ -2804,8 +2803,6 @@ async function establishSupabaseSession(session){
     status:'active'
   });
   if(!profile) throw new Error('Your account is authenticated, but its GeoFare profile could not be synchronized. Please contact the administrator.');
-  // Designated MFRTA administrator account. The role is persisted in Supabase,
-  // so this does not create a client-only admin session.
   if(String(session.user.email||'').toLowerCase()===MFRTA_ADMIN_EMAIL.toLowerCase() && profile.role!=='admin'){
     const roleUpdate=await supabaseClient.from('profiles').update({role:'admin',updated_at:new Date().toISOString()}).eq('id',session.user.id);
     if(roleUpdate.error) throw new Error('MFRTA administrator account is authenticated, but its profile could not be assigned the admin role. Check Supabase RLS for profiles.');
@@ -2874,14 +2871,11 @@ async function loadData(){
       keys.forEach(k=>{if(!byKey.has(k))byKey.set(k,r);});
     });
     const merged=[]; const used=new Set();
-    // 1) Preserve every rider_profile from the database.
     dbRiders.forEach(r=>{
       const profile=profileMap.get(String(r.profile_id))||r.profile||{};
       merged.push({...r,profile});
       used.add(String(r.id));
     });
-    // 2) IMPORTANT: preserve rider accounts even when they have no rider_profiles row yet.
-    // A login account with role=rider is still a rider account and must remain visible to Admin.
     (profiles.data||[]).filter(p=>String(p.role||'').toLowerCase()==='rider').forEach(p=>{
       const already=merged.some(r=>String(r.profile_id)===String(p.id));
       if(already)return;
@@ -2889,7 +2883,6 @@ async function loadData(){
       merged.push({id:rid,profile_id:p.id,profile:p,full_name:p.full_name,public_name:p.full_name,ally_group:'',address:p.address||'',contact_no:p.contact_number||'',verification_status:String(p.status||'active').toLowerCase()==='suspended'?'Suspended':'Verified',record_status:'Active',source_record:false,account_only:true});
       used.add(rid);
     });
-    // 3) Add the complete supplied MFRTA registry without replacing any database account.
     const source=(window.MFRTA_SOURCE_RECORDS||MFRTA_SOURCE_RECORDS||[]);
     source.forEach((src,idx)=>{
       const keys=[src.plate_number,src.business_permit_no,src.name].map(v=>String(v||'').trim().toLowerCase()).filter(Boolean);
@@ -2911,7 +2904,6 @@ async function loadData(){
           business_permit_reference:src.business_permit_no,ally_group:src.association,verification_status:'Verified',record_status:'Active',public_id:`GF-MFRTA-${String(idx+1).padStart(4,'0')}`,qr_token:token,profile:null});
       }
     });
-    // 4) Apply only local UI overrides; never delete or replace source/database data.
     const overrides=read('geofare.rider.overrides',{});
     state.riders=merged.map(r=>({...r,...(overrides[String(r.id)]||{})}));
     state.ratings=(ratings.data||[]).sort((a,b)=>new Date(b.created_at||b.updated_at||b.timestamp||0)-new Date(a.created_at||a.updated_at||a.timestamp||0));
@@ -2943,9 +2935,6 @@ function activeFareRows(){
     return true;
   });
   rows.sort((a,b)=>Number(a.minimum_distance??a.km??1)-Number(b.minimum_distance??b.km??1));
-  // If Supabase has no active rows yet, keep the calculator usable with the
-  // development matrix already supplied with the prototype. This never
-  // overwrites the database and is clearly marked as development data.
   if(!rows.length){
     rows=SUPPLIED_DEVELOPMENT_FARES.map(x=>({...x,status:'development',version:'DEV-SUPPLIED-2026'}));
   }
@@ -3017,7 +3006,7 @@ function clearPin(type){
   if(state.routeLine){map.removeLayer(state.routeLine);state.routeLine=null;}
   $('fare-result').style.display='none';$('fare-actions').style.display='none';$('calculate-btn')?.style.setProperty('display','block');$('save-btn')?.style.setProperty('display','none');$('mobile-fare-float').classList.remove('visible');state.lastCalculation=null;updateInstruction();
 }
-function clearAll(){clearPin('pickup');clearPin('dropoff');setMode('pickup');}
+function clearAll(){if(state.liveWatchId!==null)stopLiveTrip();if(state.liveMarker){map.removeLayer(state.liveMarker);state.liveMarker=null;}if(state.liveLine){map.removeLayer(state.liveLine);state.liveLine=null;}state.livePoints=[];state.liveDistanceKm=0;clearPin('pickup');clearPin('dropoff');setMode('pickup');}
 async function calculateFare(manual=false){
   if(!state.pickupMarker||!state.dropoffMarker){
     toast('Set both pickup and drop-off points first.','error');
@@ -3259,6 +3248,15 @@ async function updateReport(id){
 function bindReportForm(){
   const oldButton=document.querySelector('#panel-report .btn-primary'); if(oldButton) oldButton.onclick=generateReport;
   $('report-rider-search')?.addEventListener('input',renderReportRiderDirectory);
+  $('rpt-plate')?.addEventListener('input',()=>{
+    const entered=($('rpt-plate').value||'').trim().replace(/\s+/g,'').toUpperCase();
+    const selected=$('report-rider-id')?.value||'';
+    const rider=(state.riders||[]).find(r=>String(r.id)===String(selected));
+    if(rider&&String(rider.plate_number||'').replace(/\s+/g,'').toUpperCase()!==entered){
+      $('report-rider-id').value='';
+      renderReportRiderDirectory();
+    }
+  });
   renderReportRiderDirectory();
 }
 function renderReportRiderDirectory(){
@@ -3291,13 +3289,14 @@ function generateReport(){
   const desc=($('rpt-desc')?.value||'').trim();
   const name=($('rpt-name')?.value||'').trim()||'Anonymous';
   if(!state.user) return toast('You must be signed in to submit a report.','error');
-  if(!selectedRider) return toast('Select a registered rider before submitting the report.','error');
   if(!plate||!dt||!route||!Number.isFinite(fare)||fare<0||!type||!desc) return toast('Please complete all required report fields with valid values.','error');
+  const plateKey=plate.replace(/\s+/g,'').toUpperCase();
+  const plateMatchedRider=selectedRider||(state.riders||[]).find(r=>String(r.plate_number||'').replace(/\s+/g,'').toUpperCase()===plateKey)||null;
   const random=(crypto.randomUUID?crypto.randomUUID().replace(/-/g,'').slice(0,12):`${Date.now().toString(36)}${Math.random().toString(36).slice(2,10)}`).toUpperCase();
-  const r={reference_no:`RPT-${new Date().getFullYear()}-${random}`,rider_id:selectedRider.id,rider_public_id:selectedRider.public_id||'',plate,incident_datetime:new Date(dt).toISOString(),route,fare,category:type,description:desc,complainant:name,created_at:new Date().toISOString(),status:'New'};
+  const r={reference_no:`RPT-${new Date().getFullYear()}-${random}`,rider_id:plateMatchedRider?.id||null,rider_public_id:plateMatchedRider?.public_id||'',rider_name:plateMatchedRider?mergedRiderName(plateMatchedRider):'Unregistered / unidentified rider',rider_registered:!!plateMatchedRider,plate,incident_datetime:new Date(dt).toISOString(),route,fare,category:type,description:desc,complainant:name,created_at:new Date().toISOString(),status:'New'};
   window._currentReport=r;
   $('rp-ref').textContent=r.reference_no;
-  $('rp-fields').innerHTML=[['Reference No.',r.reference_no],['Rider',mergedRiderName(selectedRider)],['Rider ID',r.rider_public_id||'—'],['Plate',plate],['Incident Date/Time',new Date(r.incident_datetime).toLocaleString('en-PH')],['Route',route],['Fare Demanded',money(fare)],['Category',reportTypeLabel(type)],['Description',desc],['Complainant',name]].map(([k,v])=>`<div class="rp-field"><div class="rp-key">${esc(k)}</div><div class="rp-val">${esc(v)}</div></div>`).join('');
+  $('rp-fields').innerHTML=[['Reference No.',r.reference_no],['Rider',r.rider_name],['Rider Status',r.rider_registered?'Registered rider matched':'Unregistered rider reported by plate'],['Rider ID',r.rider_public_id||'Plate-based report'],['Plate',plate],['Incident Date/Time',new Date(r.incident_datetime).toLocaleString('en-PH')],['Route',route],['Fare Demanded',money(fare)],['Category',reportTypeLabel(type)],['Description',desc],['Complainant',name]].map(([k,v])=>`<div class="rp-field"><div class="rp-key">${esc(k)}</div><div class="rp-val">${esc(v)}</div></div>`).join('');
   $('report-preview').classList.add('visible'); $('report-actions').style.display='none';
   submitReport(r);
 }
@@ -3307,7 +3306,7 @@ async function submitReport(r){
   r._submitting=true; setBusy(true,'Submitting report…');
   try{
     if(usingSupabase()){
-      const details=[`Rider Public ID: ${r.rider_public_id}`,`Plate Number: ${r.plate}`,`Fare Demanded: ${Number(r.fare).toFixed(2)}`,`Complainant Name: ${r.complainant}`,'',r.description].join('\n');
+      const details=[`Rider Public ID: ${r.rider_public_id||'Not matched'}`,`Rider Status: ${r.rider_registered?'Registered':'Unregistered / plate-based'}`,`Plate Number: ${r.plate}`,`Fare Demanded: ${Number(r.fare).toFixed(2)}`,`Complainant Name: ${r.complainant}`,'',r.description].join('\n');
       const payload={reference_no:r.reference_no,complainant_id:state.user.id,rider_reference:r.rider_public_id||r.plate,category:r.category,incident_datetime:r.incident_datetime,location_text:r.route,description:details,status:'New'};
       const {data,error}=await supabaseClient.from('incidents').insert(payload).select('*').single();
       if(error)throw error;
@@ -3439,7 +3438,7 @@ async function updateSafetyStatus(id,status){
   }catch(e){console.error('Safety workflow update failed:',e);toast(`Safety workflow update failed: ${e.message||'database rejected the update'}.`,'error');}
 }
 function renderResponder(){ if(state.role==='admin') renderAdminSafety(); }
-/* Removed duplicate renderRouteRecords definition; later canonical implementation retained. */
+
 
 function renderRouteRecords(){
   if(state.role!=='admin')return;
@@ -3482,8 +3481,7 @@ async function setRiderVerification(id,status){
       const result=await supabaseClient.from('rider_profiles').update(update).eq('id',id);
       if(result.error)throw result.error;
       Object.assign(rider,update);
-      /* Verification history is supplemental. A missing table/column/RLS rule
-         must never roll back the actual rider verification update. */
+      
       try{
         const trail=await supabaseClient.from('rider_verifications').insert({rider_id:id,reviewed_by:state.user.id,status,review_note:`Status set to ${status}`});
         if(trail.error)console.warn('Verification trail not written:',trail.error.message);
@@ -3519,9 +3517,7 @@ async function archiveFareRow(id){
   const f=fareRowById(id);if(!f)return;if(!confirm(`Archive fare rule ${f.version_code||f.id}? It will be removed from fare calculation but preserved in the database.`))return;
   setBusy(true,'Archiving fare rule…');
   try{
-    /* The live database rejects the invented status value "inactive". Use the
-       existing effective_until column instead, preserving the row and avoiding
-       a destructive delete. The calculator treats an expired row as inactive. */
+    
     const patch={effective_until:new Date().toISOString(),updated_at:new Date().toISOString()};
     if(usingSupabase()){const {error}=await supabaseClient.from('fare_matrix_versions').update(patch).eq('id',id);if(error)throw error;}
     else{Object.assign(f,patch);write(STORAGE.fares,state.fareMatrix);}
@@ -3630,7 +3626,7 @@ function bindMisc(){
   initSidebarCollapse();
 }
 
-/* ── Theme toggle (light / dark) ── */
+
 function applyTheme(theme){
   document.documentElement.setAttribute('data-theme',theme);
   localStorage.setItem('geofare.theme',theme);
@@ -3644,7 +3640,7 @@ function initTheme(){
   });
 }
 
-/* ── Sidebar collapse toggle (desktop only) ── */
+
 function initSidebarCollapse(){
   const btn=$('sidebar-collapse-btn'); if(!btn)return;
   const collapsed=localStorage.getItem('geofare.sidebarCollapsed')==='1';
@@ -3658,7 +3654,71 @@ function initSidebarCollapse(){
 }
 function showLoading(b){$('loading-line')?.classList.toggle('active',b);}
 
-/* Existing mobile drawer behavior retained. */
+
+
+function liveDistanceKm(a,b){
+  const R=6371,rad=x=>x*Math.PI/180;
+  const dLat=rad(b.lat-a.lat),dLng=rad(b.lng-a.lng);
+  const h=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+}
+function updateLiveFare(){
+  const km=state.liveDistanceKm;
+  const fare=getFare(km);
+  $('res-distance').textContent=`${km.toFixed(2)} km`;
+  $('res-regular').textContent=money(fare.regular);
+  $('res-discount').textContent=money(fare.discount);
+  $('fare-result').style.display='block';
+  $('fare-actions').style.display='flex';
+  $('live-trip-status').style.display='block';
+  $('live-trip-status').textContent=`Live tracking active · ${state.livePoints.length} location updates · ${km.toFixed(2)} km traveled`;
+  state.lastCalculation={
+    pickup:state.livePoints[0]||null,
+    dropoff:state.livePoints[state.livePoints.length-1]||null,
+    distance:km,
+    regular:fare.regular,
+    discount:fare.discount,
+    method:'Live GPS distance',
+    timestamp:new Date().toISOString(),
+    live:true
+  };
+}
+function startLiveTrip(){
+  if(!navigator.geolocation){toast('Live tracking requires browser geolocation support.','error');return;}
+  if(state.liveWatchId!==null){toast('Live trip tracking is already active.','info');return;}
+  state.livePoints=[];state.liveDistanceKm=0;state.liveStartedAt=new Date().toISOString();
+  if(state.liveLine){map.removeLayer(state.liveLine);state.liveLine=null;}
+  $('live-trip-btn').style.display='none';$('stop-live-trip-btn').style.display='flex';
+  $('live-trip-status').style.display='block';$('live-trip-status').textContent='Waiting for live GPS location…';
+  state.liveWatchId=navigator.geolocation.watchPosition(pos=>{
+    const point={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:Number(pos.coords.accuracy||0),timestamp:new Date(pos.timestamp).toISOString()};
+    const prev=state.livePoints[state.livePoints.length-1];
+    if(prev){
+      const segment=liveDistanceKm(prev,point);
+      if(segment<0.25) state.liveDistanceKm+=segment;
+    }
+    state.livePoints.push(point);
+    if(!state.liveMarker)state.liveMarker=L.marker([point.lat,point.lng]).addTo(map).bindPopup('<b>Live tracked location</b>');
+    else state.liveMarker.setLatLng([point.lat,point.lng]);
+    if(state.livePoints.length===1)map.setView([point.lat,point.lng],16);
+    const latlngs=state.livePoints.map(p=>[p.lat,p.lng]);
+    if(state.liveLine)state.liveLine.setLatLngs(latlngs);
+    else state.liveLine=L.polyline(latlngs,{color:'#2563eb',weight:5,opacity:.9}).addTo(map);
+    updateLiveFare();
+  },err=>{
+    $('live-trip-status').textContent='Live tracking error: '+(err.message||'Unable to obtain location.');
+    toast('Live tracking could not access your location. Check browser location permission.','error');
+  },{enableHighAccuracy:true,maximumAge:3000,timeout:15000});
+}
+function stopLiveTrip(){
+  if(state.liveWatchId!==null){navigator.geolocation.clearWatch(state.liveWatchId);state.liveWatchId=null;}
+  $('live-trip-btn').style.display='flex';$('stop-live-trip-btn').style.display='none';
+  $('live-trip-status').style.display='block';
+  $('live-trip-status').textContent=`Live trip ended · ${state.liveDistanceKm.toFixed(2)} km recorded`;
+  updateLiveFare();
+  toast(`Live trip ended. Distance recorded: ${state.liveDistanceKm.toFixed(2)} km.`,'success');
+}
+
 function useMyLocation(){
   if(!navigator.geolocation){toast('Geolocation is not supported on this device.','error');return;}
   setBusy(true,'Getting your location…');
@@ -3672,11 +3732,7 @@ function useMyLocation(){
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════════
-   MFRTA SOURCE DATA + RIDER SEARCH / QR / PUBLIC PROFILE ENHANCEMENTS
-   The embedded source is only an import/seed source. Supabase remains
-   the authoritative persistent database.
-   ═══════════════════════════════════════════════════════════════════════ */
+
 const MFRTA_SOURCE_RECORDS = [{"no":"1","name":"BAYLOSIS, NOEL O.","address":"P-3, LIBONA, BUKIDNON","license_no":"K18-22-302160","license_expiry":"27/05/26","or_cr_name":"BAYLOSIS, NOEL O.","plate_number":"080KXX","make":"HONDA","contact_no":"9535093940","remarks":"RENEWED","business_permit_no":"4708","association":"APHMODA- Agusan Packing House Motorist Drivers Assoc."},{"no":"2","name":"CAAYUPAN, REXELLE M.","address":"MANOLO FORTICH","license_no":"K02-20-004515","license_expiry":"34/08/14","or_cr_name":"CAAYUPAN, REXELLE M.","plate_number":"100103","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"5479","association":"APHMODA- Agusan Packing House Motorist Drivers Assoc."},{"no":"3","name":"FUERTES, ALVIN J.","address":"MANOLO FORTICH","license_no":"K02-05-112874","license_expiry":"33/10/02","or_cr_name":"FUERTES, ALVIN J.","plate_number":"K324GX","make":"KAWASAKI","contact_no":"9756250447","remarks":"RENEWED","business_permit_no":"4795","association":"APHMODA- Agusan Packing House Motorist Drivers Assoc."},{"no":"4","name":"JUMAWAN, SAMSON M.","address":"MANOLO FORTICH","license_no":"K03-90-013486","license_expiry":"29/09/11","or_cr_name":"LUCENARA, JEMUEL B.","plate_number":"631KYL","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"4873","association":"APHMODA- Agusan Packing House Motorist Drivers Assoc."},{"no":"5","name":"MANAGA, NEOMIE M.","address":"LIBONA, BUKIDNON","license_no":"K14-19-007840","license_expiry":"29/07/13","or_cr_name":"MANAGA, NEOMIE M.","plate_number":"722ZLO","make":"YAMAHA","contact_no":"9405081028","remarks":"RENEWED","business_permit_no":"5034","association":"APHMODA- Agusan Packing House Motorist Drivers Assoc."},{"no":"6","name":"OBIAS, RUBEN D.","address":"DAMILAG, MANOLO FORTICH, BUK","license_no":"K02-91-047098","license_expiry":"32/04/24","or_cr_name":"NAQUILA, ANDRES JR. L.","plate_number":"623KFY","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"4770","association":"APHMODA- Agusan Packing House Motorist Drivers Assoc."},{"no":"7","name":"GALLETO, PRECIOSO","address":"AGUSAN CANYON MANOLOF/BUK","license_no":"","license_expiry":"","or_cr_name":"GALLETO, PRECIOSO","plate_number":"K261EF","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"5121","association":"APHMODA- Agusan Packing House Motorist Drivers Assoc."},{"no":"1","name":"BACULO, ARDIANO JR. E.","address":"P-6 ALAE, MANOLO FORTICH, BUK","license_no":"D08-18-003482","license_expiry":"25/05/2032","or_cr_name":"SAME","plate_number":"914KDY","make":"HONDA-BLACK","contact_no":"","remarks":"RENEWED","business_permit_no":"5153","association":"ARA- Alae Riders Association"},{"no":"2","name":"DANUCO, ARIEL","address":"ALAE MANOLO FORTICH BUKIDNON","license_no":"","license_expiry":"","or_cr_name":"","plate_number":"654KOB","make":"","contact_no":"","remarks":"RENEWED","business_permit_no":"4908","association":"ARA- Alae Riders Association"},{"no":"3","name":"NOBLE, EFREN","address":"Z-5 ALAE MANOLO FORTICH BUK","license_no":"","license_expiry":"","or_cr_name":"","plate_number":"","make":"","contact_no":"","remarks":"RENEWED","business_permit_no":"5208","association":"ARA- Alae Riders Association"},{"no":"1","name":"ROSALES, RENEL L.","address":"ALAE, MANOLO FORTICH, BUK","license_no":"K02-10-007470","license_expiry":"32/07/08","or_cr_name":"OCTOBRE, RAMIL L.","plate_number":"KA63725","make":"HONDA","contact_no":"9658313835","remarks":"RENEWED","business_permit_no":"5571","association":"AVMMC- Alae Village Motorist Multi-Purpose Cooperative"},{"no":"2","name":"YAMOAY, JOEL C.","address":"ALAE, MANOLO FORTICH, BUK","license_no":"K02-15-008845","license_expiry":"34/04/10","or_cr_name":"YAMOAY, JOEL C.","plate_number":"K5999D","make":"HONDA","contact_no":"9653160073","remarks":"RENEWED","business_permit_no":"5837","association":"AVMMC- Alae Village Motorist Multi-Purpose Cooperative"},{"no":"3","name":"MULATO, TEOFILO JR B.","address":"ALAE, MANOLO FORTICH, BUK","license_no":"M02-19-002541","license_expiry":"33/15/11","or_cr_name":"MULATO, TEOFILO JR B.","plate_number":"420KDG","make":"KAWASAKI","contact_no":"9818504911","remarks":"RENEWED","business_permit_no":"5484","association":"AVMMC- Alae Village Motorist Multi-Purpose Cooperative"},{"no":"4","name":"MULATO, TEOFILO JR B.","address":"ALAE, MANOLO FORTICH, BUK","license_no":"M02-19-002541","license_expiry":"33/15/11","or_cr_name":"MULATO, TEOFILO JR B.","plate_number":"129","make":"BAJAJ","contact_no":"","remarks":"RENEWED","business_permit_no":"5485","association":"AVMMC- Alae Village Motorist Multi-Purpose Cooperative"},{"no":"5","name":"MANTE, JOSE JR O.","address":"ALAE, MANOLO FORTICH, BUK","license_no":"K02-02-092185","license_expiry":"34/11/18","or_cr_name":"MANTE, JOSE JR O.","plate_number":"M1021A","make":"HONDA","contact_no":"9878172398","remarks":"RENEWED","business_permit_no":"5482","association":"AVMMC- Alae Village Motorist Multi-Purpose Cooperative"},{"no":"6","name":"ELLEVERA, BOIT T.","address":"ALAE, MANOLO FORTICH, BUK","license_no":"K11-07-000184","license_expiry":"32/10/03","or_cr_name":"ELLEVERA, BOIT T.","plate_number":"579KMI","make":"KAWASAKI","contact_no":"9927003630","remarks":"RENEWED","business_permit_no":"5572","association":"AVMMC- Alae Village Motorist Multi-Purpose Cooperative"},{"no":"7","name":"ALCANTARA, PEDRO JR. J.","address":"ALAE, MANOLO FORTICH, BUK","license_no":"K02-15-024589","license_expiry":"34/03/12","or_cr_name":"ALCANTARA, PEDRO JR. J.","plate_number":"130KFT","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"5838","association":"AVMMC- Alae Village Motorist Multi-Purpose Cooperative"},{"no":"1","name":"ALFANTA, ARIEL E.","address":"TANKULAN, MANOLO FORTICH, BUK","license_no":"K02-13-008204","license_expiry":"33/10/12","or_cr_name":"DUCOS, ROSANNA B.","plate_number":"312KQR","make":"HONDA","contact_no":"0905-790-9318","remarks":"RENEWED","business_permit_no":"4843","association":"CMA- Central Motorist Association"},{"no":"2","name":"BALINDEZ, RICARDO E.","address":"STO.NINO, MANOLO FORTICH, BUK","license_no":"K03-21-203738","license_expiry":"26/04/29","or_cr_name":"BALINDEZ, RICARDO E.","plate_number":"770KQR","make":"JIANGMEN HAOJUE","contact_no":"0928-942-4907","remarks":"RENEWED","business_permit_no":"4838","association":"CMA- Central Motorist Association"},{"no":"3","name":"CAGAS, JEROME M.","address":"CAMAMANAN CDO","license_no":"K02-19-003935","license_expiry":"33/05/04","or_cr_name":"CAGAS, JEROME M.","plate_number":"541KQR","make":"SUZUKI","contact_no":"0926-750-9359","remarks":"RENEWED","business_permit_no":"4847","association":"CMA- Central Motorist Association"},{"no":"4","name":"CAGAS, RICHARD M.","address":"POL-OTON, MANOLO FORTICH, BUK","license_no":"K02-19-001025","license_expiry":"33/02/25","or_cr_name":"CAGAS, RICHARD M.","plate_number":"284KFJ","make":"SUZUKI","contact_no":"0935-699-1054","remarks":"RENEWED","business_permit_no":"4853","association":"CMA- Central Motorist Association"},{"no":"5","name":"CANGKE, MILONE M.","address":"POL-OTON, MANOLO FORTICH, BUK","license_no":"M02-19-009158","license_expiry":"34/07/30","or_cr_name":"CANGKE, MILONE M.","plate_number":"270KJA","make":"HONDA","contact_no":"0935-099-1056","remarks":"RENEWED","business_permit_no":"4852","association":"CMA- Central Motorist Association"},{"no":"6","name":"DAYONDON, RONELO C.","address":"CANUN ZAMBOANGA DEL SUR","license_no":"J03-03-032928","license_expiry":"32/03/19","or_cr_name":"DAYONDON, RONELO C.","plate_number":"181KUZ","make":"KAWASAKI","contact_no":"0926-214-6375","remarks":"RENEWED","business_permit_no":"4850","association":"CMA- Central Motorist Association"},{"no":"7","name":"EGA, ARMANDO L.","address":"TANKULAN, MANOLO FORTICH, BUK","license_no":"K03-22-307760","license_expiry":"27/10/25","or_cr_name":"CAIBEN, WELMA C.","plate_number":"284KFI","make":"HONDA","contact_no":"0965-314-9342","remarks":"RENEWED","business_permit_no":"4840","association":"CMA- Central Motorist Association"},{"no":"8","name":"FERRER, REYNANTE E.","address":"POL-OTON, MANOLO FORTICH, BUK","license_no":"K04-07-002947","license_expiry":"34/01/04","or_cr_name":"FERRER, REYNANTE E.","plate_number":"390KJL","make":"YAMAHA","contact_no":"0906-043-3375","remarks":"RENEWED","business_permit_no":"4859","association":"CMA- Central Motorist Association"},{"no":"9","name":"GANINAY, DANSON D.","address":"MANOL FORTICH, BUK","license_no":"K03-21-000081","license_expiry":"35/08/24","or_cr_name":"BOYLES, MINDA B.","plate_number":"KA49275","make":"YAMAHA","contact_no":"0997-809-1141","remarks":"RENEWED","business_permit_no":"4813","association":"CMA- Central Motorist Association"},{"no":"10","name":"TINAHAN, EUGENE B.","address":"TANKULAN, MANOLO FORTICH, BUK","license_no":"K03-21-205846","license_expiry":"35/11/26","or_cr_name":"TINAHAN, EUGENE B.","plate_number":"K378BC","make":"KAWASAKI","contact_no":"0975-828-0708","remarks":"RENEWED","business_permit_no":"4810","association":"CMA- Central Motorist Association"},{"no":"11","name":"VELEZ, SHERWIN A.","address":"LINGION, MANOLO FORTICH, BUK","license_no":"K02-00-084580","license_expiry":"33/04/30","or_cr_name":"VELEZ, SHERWIN A.","plate_number":"81BKFY","make":"KAWASAKI","contact_no":"0926-949-1815","remarks":"RENEWED","business_permit_no":"4844","association":"CMA- Central Motorist Association"},{"no":"12","name":"PEPITO, RHOEL DAHUNAN","address":"LINGION, MANOLO FORTICH, BUK","license_no":"K02-15-009806","license_expiry":"2023/11/29","or_cr_name":"PEPITO, DONNA ROSE G.","plate_number":"485KDY","make":"YAMAHA","contact_no":"","remarks":"RENEWED","business_permit_no":"4881","association":"CMA- Central Motorist Association"},{"no":"13","name":"DOFREDO, ELJHAN","address":"TANKULAN, MANOLO FORTICH, BUK","license_no":"K02-20-007894","license_expiry":"2034/11/24","or_cr_name":"DOFREDO, ELJHAN","plate_number":"172KER","make":"KAWASAKI","contact_no":"0866579187","remarks":"RENEWED","business_permit_no":"4659","association":"CMA- Central Motorist Association"},{"no":"14","name":"BALENDEZ, ANTONIO","address":"STO.NINO, MANOLO FORTICH, BUK","license_no":"K03-19-000777","license_expiry":"2033/08/02","or_cr_name":"BALENDEZ, ANTONIO","plate_number":"171KDV","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"4611","association":"CMA- Central Motorist Association"},{"no":"1","name":"OLAMIT, LEO B.","address":"Z-2 DALIRIG MANOLO FORTICH BUK","license_no":"K02-14-000411","license_expiry":"2029/01/28","or_cr_name":"LAYAOAN, JARIEL S.","plate_number":"K392BY","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"4911","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"2","name":"LIRA, JERRY JOU T.","address":"DALIRIG, MANOLO FORTICH, BUK","license_no":"K03-24-002957","license_expiry":"2029/02/22","or_cr_name":"GANOL, RUDY H.","plate_number":"779GKX","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"4904","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"3","name":"CAGADAS, JUNIE D.","address":"DALIRIG, MANOLO FORTICH, BUK","license_no":"K19-24-001329","license_expiry":"2028/07/16","or_cr_name":"YAMAG, REZON","plate_number":"483KDS","make":"","contact_no":"","remarks":"RENEWED","business_permit_no":"4927","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"4","name":"GONZAGA, RENAN","address":"Z-5 DALIRIG MANOLO FORTICH BUK","license_no":"K02-15-008451","license_expiry":"2032/07/23","or_cr_name":"GONZAGA, RENAN","plate_number":"535ICO","make":"","contact_no":"","remarks":"RENEWED","business_permit_no":"4918","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"5","name":"CORNELIO, NARDING D.","address":"DALIRIG MANOLO FORTICH BUK","license_no":"K02-14-010415","license_expiry":"2032/08/14","or_cr_name":"SALAMANCA, RUSSEL STYNX","plate_number":"642KQR","make":"HAOJIE","contact_no":"","remarks":"RENEWED","business_permit_no":"4919","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"6","name":"MAGLASANG, RICO","address":"DALIRIG MANOLO FORTICH BUK","license_no":"M02-20-019179","license_expiry":"2034/11/19","or_cr_name":"MAGLASANG, RICO P.","plate_number":"K319BL","make":"YAMAHA","contact_no":"","remarks":"RENEWED","business_permit_no":"4925","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"7","name":"GUMAY, PAUL JOHN A.","address":"Z-2 DALIRIG MANOLO FORTICH BUK","license_no":"K03-24-001531","license_expiry":"2028/12/09","or_cr_name":"GUMINLAY, GEMMA","plate_number":"K806CT","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"5045","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"8","name":"BALAOD, ALEX D.","address":"DALIRIG MANOLO FORTICH BUK","license_no":"K03-97-038020","license_expiry":"2034/01/10","or_cr_name":"LUMINTAD, JONATHAN","plate_number":"748KDI","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"5047","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"9","name":"PESIAO, RITCHIE","address":"DALIRIG MANOLO FORTICH BUK","license_no":"K03-19-002348","license_expiry":"2034/01/08","or_cr_name":"PESIAO, RITCHIE","plate_number":"L1348A","make":"YAMAHA","contact_no":"","remarks":"RENEWED","business_permit_no":"5077","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"10","name":"BUYOC, ROMEO JR.","address":"DALIRIG MANOLO FORTICH BUK","license_no":"K14-20-010012","license_expiry":"2035/08/03","or_cr_name":"BUYOC, ROMEO JR.","plate_number":"703KUG","make":"YAMAHA","contact_no":"9756663197","remarks":"RENEWED","business_permit_no":"5265","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"11","name":"ESTEMADO, RICHARD C.","address":"DALIRIG MANOLO FORTICH BUK","license_no":"F01-08-000602","license_expiry":"2033/04/12","or_cr_name":"ESTEMADO, RICHARD C.","plate_number":"K545FJ","make":"KAWASAKI","contact_no":"9971154292","remarks":"RENEWED","business_permit_no":"5481","association":"DALIRIG RIDERS ASSOCIATION"},{"no":"1","name":"EPANTO, EDELINO S.","address":"DAMILAG, MANOLO FORTICH, BUK","license_no":"K02-02-094186","license_expiry":"32/01/25","or_cr_name":"EPANTO, EDELINO S.","plate_number":"782KCQ","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"5033","association":"DAMMODA-(Damilag Motorist Drivers Association)"},{"no":"2","name":"JACUTIN, GUILLERMO E.","address":"DAMILAG, MANOLO FORTICH, BUK","license_no":"K02-14-009213","license_expiry":"32/02/03","or_cr_name":"JACUTIN, GUILLERMO E.","plate_number":"377KCQ","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"4954","association":"DAMMODA-(Damilag Motorist Drivers Association)"},{"no":"3","name":"LABIS, ALEX D.","address":"DAMILAG, MANOLO FORTICH, BUK","license_no":"M02-20-003804","license_expiry":"34/08/05","or_cr_name":"DEARBC","plate_number":"4168KR","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"4851","association":"DAMMODA-(Damilag Motorist Drivers Association)"},{"no":"4","name":"LAURITO, RAVIL B.","address":"DAMILAG, MANOLO FORTICH, BUK","license_no":"K18-23-005255","license_expiry":"28/02/20","or_cr_name":"LAURITO, MARY JANE C.","plate_number":"K597CO","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"4877","association":"DAMMODA-(Damilag Motorist Drivers Association)"},{"no":"5","name":"LUDIANA, EFREN B.","address":"DAMILAG, MANOLO FORTICH, BUK","license_no":"K02-18-014697","license_expiry":"33/02/02","or_cr_name":"LUDIANA, EFREN B.","plate_number":"100105","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"5704","association":"DAMMODA-(Damilag Motorist Drivers Association)"},{"no":"6","name":"OBALANG, HENRY M.","address":"DAMILAG, MANOLO FORTICH, BUK","license_no":"K02-11-001609","license_expiry":"32/01/16","or_cr_name":"SANORIA, AURORA B.","plate_number":"370KW","make":"YAMAHA","contact_no":"","remarks":"RENEWED","business_permit_no":"4878","association":"DAMMODA-(Damilag Motorist Drivers Association)"},{"no":"7","name":"PACHECO, JERVEN D.","address":"DAMILAG, MANOLO FORTICH, BUK","license_no":"K03-21-203083","license_expiry":"35/07/07","or_cr_name":"","plate_number":"K1711T","make":"","contact_no":"","remarks":"RENEWED","business_permit_no":"4879","association":"DAMMODA-(Damilag Motorist Drivers Association)"},{"no":"1","name":"BACALA, DARWIN B.","address":"ALAE, MANOLO FORTICH","license_no":"M02-20-000670","license_expiry":"34/06/28","or_cr_name":"DUNGO, PANTALEON JR. M.","plate_number":"KA89449","make":"HONDA","contact_no":"9353350082","remarks":"RENEWED","business_permit_no":"4864","association":"GSMA-Global Single Motorist Association"},{"no":"2","name":"BACULIO, GIOVANNE A.","address":"MANTIBUGAO, MANOLO FORTICH","license_no":"K02-15-005983","license_expiry":"33/05/05","or_cr_name":"SAME","plate_number":"253KXE","make":"HONDA","contact_no":"9559028196","remarks":"RENEWED","business_permit_no":"4497","association":"GSMA-Global Single Motorist Association"},{"no":"3","name":"BALINGCOS, JOSE L.","address":"ALAE, MANOLO FORTICH","license_no":"K02-19-018900","license_expiry":"34/03/09","or_cr_name":"SAME","plate_number":"","make":"HONDA","contact_no":"9631279077","remarks":"RENEWED","business_permit_no":"4496","association":"GSMA-Global Single Motorist Association"},{"no":"4","name":"BINGCOLADO, HENRY S. JR.","address":"BANTILES BUGO, CAGAYAN DE ORO","license_no":"K02-11-005799","license_expiry":"32/04/25","or_cr_name":"ESTANO, LEMA C.","plate_number":"KB257G","make":"HONDA","contact_no":"9920833007","remarks":"RENEWED","business_permit_no":"4493","association":"GSMA-Global Single Motorist Association"},{"no":"5","name":"BOLOCOON, JHONNEL G.","address":"LUNOCAN, MANOLO FORTICH","license_no":"K02-09-005203","license_expiry":"33/09/05","or_cr_name":"JOSE, ISAGANI A.","plate_number":"2528KL","make":"HONDA","contact_no":"9929540855","remarks":"RENEWED","business_permit_no":"4486","association":"GSMA-Global Single Motorist Association"},{"no":"6","name":"CABILOGAN, LIANEL C.","address":"MAMBATANGAN, MANOLO FORTICH","license_no":"K02-19-003558","license_expiry":"33/03/29","or_cr_name":"SAME","plate_number":"K7127D","make":"HONDA","contact_no":"9428870402","remarks":"RENEWED","business_permit_no":"4528","association":"GSMA-Global Single Motorist Association"},{"no":"7","name":"CONAHAN, JEFFREY A.","address":"MAMBATANGAN, MANOLO FORTICH","license_no":"K02-11-006271","license_expiry":"32/04/21","or_cr_name":"SAME","plate_number":"K10800","make":"HONDA","contact_no":"9056103249","remarks":"RENEWED","business_permit_no":"4521","association":"GSMA-Global Single Motorist Association"},{"no":"8","name":"JALINGON, ROQUE L.","address":"ALAE, MANOLO FORTICH","license_no":"K02-08-005317","license_expiry":"33/08/18","or_cr_name":"SAME","plate_number":"K104CC","make":"HONDA","contact_no":"9101833342","remarks":"RENEWED","business_permit_no":"4445","association":"GSMA-Global Single Motorist Association"},{"no":"9","name":"PADIGOS, RAY ANTHONY B.","address":"ALAE, MANOLO FORTICH","license_no":"M02-20-000423","license_expiry":"34/11/19","or_cr_name":"SAME","plate_number":"K8897D","make":"SKYGO","contact_no":"","remarks":"RENEWED","business_permit_no":"5095","association":"GSMA-Global Single Motorist Association"},{"no":"10","name":"PARAGUYA, ROLANDO C.","address":"DAMILAG, MANOLO FORTICH","license_no":"K02-15-011939","license_expiry":"33/08/08","or_cr_name":"SAME","plate_number":"184KJX","make":"KAWASAKI","contact_no":"9303954802","remarks":"RENEWED","business_permit_no":"5159","association":"GSMA-Global Single Motorist Association"},{"no":"1","name":"BAYANTONG, JEROME H.","address":"MANOLO FORTICH, BUK.","license_no":"K02-15-002310","license_expiry":"33/02/17","or_cr_name":"BAYANTONG, EMELYN H.","plate_number":"122KR1","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"4545","association":"KIHARE Motorist"},{"no":"2","name":"COLINARES, JUBILEE BERT O.","address":"MANOLO FORTICH, BUK.","license_no":"M02-21-004712","license_expiry":"35/08/12","or_cr_name":"SAMBALON, BENJAMINE E.","plate_number":"128KCQ","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"5405","association":"KIHARE Motorist"},{"no":"3","name":"LORETIRO, MARVIN P.","address":"TAGOLOAN, MISAMIS ORIENTAL","license_no":"K02-19-002738","license_expiry":"33/05/19","or_cr_name":"LORETIRO, MARIA SOL MAE","plate_number":"K558CZ","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"5402","association":"KIHARE Motorist"},{"no":"4","name":"LUGMAY, RAMCES S.","address":"LINDABAN, MANOLO FORTICH, BUK","license_no":"M17-24-000341","license_expiry":"29/01/28","or_cr_name":"LUGMAY, RAMCES S.","plate_number":"K627FN","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"4673","association":"KIHARE Motorist"},{"no":"5","name":"PARIAN, JOSEPH C.","address":"LINGION, MANOLO FORTICH, BUK","license_no":"K03-22-305070","license_expiry":"27/03/05","or_cr_name":"PARIAN, JOSEPH C.","plate_number":"K2830P","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"4666","association":"KIHARE Motorist"},{"no":"6","name":"SUIZO, ALFREDO JR. J.","address":"LINDABAN, MANOLO FORTICH, BUK","license_no":"K03-20-003235","license_expiry":"34/09/15","or_cr_name":"LIGUTOM, CARLO P.","plate_number":"K781CT","make":"KAWASAKI","contact_no":"","remarks":"RENEWED","business_permit_no":"4671","association":"KIHARE Motorist"},{"no":"7","name":"USAGAN, ROMEL T.","address":"TANKULAN, MANOLO FORTICH, BUK","license_no":"K02-20-004550","license_expiry":"34/05/26","or_cr_name":"MADULA, EMILY S.","plate_number":"K18260","make":"KAWASAKI","contact_no":"","remarks":"","business_permit_no":"","association":"KIHARE Motorist"},{"no":"8","name":"","address":"","license_no":"","license_expiry":"","or_cr_name":"","plate_number":"","make":"","contact_no":"","remarks":"","business_permit_no":"","association":"KIHARE Motorist"},{"no":"9","name":"","address":"","license_no":"","license_expiry":"","or_cr_name":"","plate_number":"","make":"","contact_no":"","remarks":"","business_permit_no":"","association":"KIHARE Motorist"},{"no":"10","name":"","address":"","license_no":"","license_expiry":"","or_cr_name":"","plate_number":"","make":"","contact_no":"","remarks":"","business_permit_no":"","association":"KIHARE Motorist"},{"no":"1","name":"BAGARES, EDDIE C.","address":"LUNOCAN, MANOLO FORTICH","license_no":"K02-05-060202","license_expiry":"33/05/27","or_cr_name":"SAME","plate_number":"M1085A","make":"HONDA","contact_no":"9972834917","remarks":"RENEWED","business_permit_no":"4581","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"},{"no":"2","name":"BENARO, RENATO T.","address":"LUNOCAN, MANOLO FORTICH","license_no":"K03-21-000237","license_expiry":"35/03/10","or_cr_name":"BENARO, JOEMAR T.","plate_number":"611KQQ","make":"RUSI","contact_no":"9750478926","remarks":"RENEWED","business_permit_no":"4575","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"},{"no":"3","name":"BITOY, BRIAN M.","address":"LUNOCAN, MANOLO FORTICH","license_no":"M02-19-013678","license_expiry":"34/12/10","or_cr_name":"SAME","plate_number":"K9304G","make":"","contact_no":"","remarks":"RENEWED","business_permit_no":"4578","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"},{"no":"4","name":"CABATING, JOEL P.","address":"ALAE, MANOLO FORTICH","license_no":"K02-14-008202","license_expiry":"32/08/13","or_cr_name":"CABATING, JULIET L.","plate_number":"271KTA","make":"KAWASAKI","contact_no":"9973416824","remarks":"RENEWED","business_permit_no":"4582","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"},{"no":"5","name":"CABATIGAN, JOHN-MARVEN S.","address":"LUNOCAN, MANOLO FORTICH","license_no":"K03-17-300143","license_expiry":"38/03/27","or_cr_name":"SAME","plate_number":"K207FS","make":"SKYGO","contact_no":"9022927249","remarks":"RENEWED","business_permit_no":"4579","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"},{"no":"6","name":"SADURA, TRECITO M.","address":"LUNOCAN, MANOLO FORTICH","license_no":"M02-20-021818","license_expiry":"35/09/20","or_cr_name":"SAME","plate_number":"845KGR","make":"SKYGO","contact_no":"","remarks":"RENEWED","business_permit_no":"4577","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"},{"no":"7","name":"LADION, ROY R.","address":"ALAE, MANOLO FORTICH","license_no":"K03-11-001150","license_expiry":"29/05/03","or_cr_name":"SAME","plate_number":"","make":"","contact_no":"9756274391","remarks":"RENEWED","business_permit_no":"5974","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"},{"no":"8","name":"MEGAROS, DIOSDADO JR. L.","address":"LUNOCAN, MANOLO FORTICH","license_no":"K18-24-007469","license_expiry":"28/08/10","or_cr_name":"SAME","plate_number":"583KXE","make":"HONDA","contact_no":"","remarks":"RENEWED","business_permit_no":"4580","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"},{"no":"9","name":"PATINDOL, ERICSON O.","address":"LUNOCAN, MANOLO FORTICH","license_no":"M02-20-016431","license_expiry":"34/10/17","or_cr_name":"SAME","plate_number":"J7844S","make":"RUSI","contact_no":"","remarks":"RENEWED","business_permit_no":"457?","association":"LHODA- (Lunocan Habal-Habal Operators Drivers Association)"}];
 
 function normalizeRole(role) {
@@ -3888,11 +3944,7 @@ function printQRDirectory(){
     *{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:24px;color:#172033}h1{margin:0 0 4px;font-size:22px}p{margin:0 0 18px;color:#667085;font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{border:1px solid #d9e1ea;border-radius:12px;padding:14px;text-align:center;break-inside:avoid;min-height:255px}.card img{width:150px;height:150px;display:block;margin:8px auto}.id{font-weight:800;font-size:13px}.name{font-weight:700;font-size:12px;margin-top:5px}.meta{font-size:10px;color:#667085;margin-top:4px;line-height:1.4}@media print{body{margin:12mm}.grid{grid-template-columns:repeat(3,1fr)}.card{break-inside:avoid}}
   
 
-/* ================================================================
-   GeoFare reliability + responsive layout hardening
-   Keeps existing data/modules intact; fixes overflow, action access,
-   modal scrolling, mobile layouts, and notification collisions.
-   ================================================================ */
+
 html { min-height:100%; }
 body { min-height:100%; }
 .app { min-width:0; min-height:100dvh; }
@@ -3919,7 +3971,7 @@ body { min-height:100%; }
 .logs-content { flex:1; }
 .report-content,.about-content { flex:1; }
 
-/* Tables: horizontal scroll belongs to the table container, not the page. */
+
 .table-wrap,.table-scroll {
   width:100%;
   max-width:100%;
@@ -3934,7 +3986,7 @@ body { min-height:100%; }
 .table-actions { min-width:max-content; }
 .table-actions .btn { white-space:nowrap; }
 
-/* Admin rider list: keep all actions reachable on desktop and mobile. */
+
 #registered-riders-content { min-width:0; }
 .rider-mobile-list { display:none; }
 .qr-admin-bar {
@@ -3961,7 +4013,7 @@ body { min-height:100%; }
 .qr-directory-meta { min-width:0; overflow-wrap:anywhere; line-height:1.5; }
 .qr-directory-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 
-/* Modals must scroll internally instead of clipping their lower controls. */
+
 .profile-modal,.user-edit-modal,.scan-modal {
   overflow:auto;
   -webkit-overflow-scrolling:touch;
@@ -3976,14 +4028,14 @@ body { min-height:100%; }
   margin:auto;
 }
 
-/* Toasts never cover the fare result or mobile bottom sheet. */
+
 .toast-wrap {
   max-width:min(420px,calc(100vw - 28px));
   pointer-events:none;
 }
 .toast { max-width:100%; overflow-wrap:anywhere; }
 
-/* Prevent long names/IDs/metadata from widening cards. */
+
 .data-card,.form-card,.stat-card,.kpi,.hero-card,.hero-stat,
 .monitor-row,.account-event,.log-card,.report-card { min-width:0; }
 .card-title,.muted,.small-note,.monitor-main,.log-body,.rp-val { overflow-wrap:anywhere; }
@@ -4003,7 +4055,7 @@ body { min-height:100%; }
   .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .admin-grid { grid-template-columns:1fr; }
 
-  /* Mobile rider records are cards: no inaccessible horizontal action strip. */
+  
   #registered-riders-content > .table-scroll { display:none; }
   .rider-mobile-list { display:grid; gap:12px; }
   .rider-mobile-card {
@@ -4027,7 +4079,7 @@ body { min-height:100%; }
 
   .profile-modal-card,.user-edit-card,.scan-card { max-height:calc(100dvh - 24px); }
 
-  /* Toast sits above the map sheet and below the fixed header/hamburger. */
+  
   .toast-wrap {
     left:14px; right:14px; bottom:auto;
     top:74px; max-width:none; align-items:stretch;
@@ -4035,7 +4087,7 @@ body { min-height:100%; }
   }
   .toast { width:100%; text-align:center; }
 
-  /* Fare result is part of the scrollable sheet; notification no longer overlays it. */
+  
   .map-sidebar { overflow:hidden; }
   .map-ctrl-body {
     min-height:0;
@@ -4062,12 +4114,11 @@ body { min-height:100%; }
   .toast-wrap { top:70px; left:10px; right:10px; }
 }
 
-/* Accessibility / interaction hardening. */
+
 button,.btn,input,select,textarea { touch-action:manipulation; }
 button:disabled,.btn:disabled { cursor:not-allowed; opacity:.55; transform:none!important; }
 
-/* FINAL SCROLL SAFETY: desktop panels themselves can scroll if an inner flex
-   child is constrained by browser viewport/flex sizing. Map keeps its own layout. */
+
 @media (min-width:769px){
   .main{min-height:0;overflow:hidden;}
   .panel:not(#panel-map){overflow:auto!important;display:none;}
@@ -4110,9 +4161,7 @@ async function startQRScanner(){if(state.role!=='commuter'){toast('Only commuter
 function bindRiderEnhancements(){['rider-search','rider-search-plate','rider-search-permit','rider-search-group','rider-search-make','rider-search-qr'].forEach(id=>$(id)?.addEventListener('input',renderRiders));$('rider-search-btn')?.addEventListener('click',()=>{const q=$('rider-search-qr')?.value.trim();q?resolvePublicRider(q):renderRiders();});$('scan-rider-qr-btn')?.addEventListener('click',startQRScanner);$('close-qr-scanner')?.addEventListener('click',stopQRScanner);$('qr-manual-open')?.addEventListener('click',async()=>{const value=$('qr-manual-input')?.value.trim();if(value){await stopQRScanner();await resolvePublicRider(value);}});$('qr-scan-modal')?.addEventListener('click',e=>{if(e.target.id==='qr-scan-modal')stopQRScanner();});['admin-rider-search','admin-rider-group','admin-rider-status','admin-rider-make'].forEach(id=>$(id)?.addEventListener('input',renderRegisteredRiders));$('admin-rider-refresh')?.addEventListener('click',async()=>{await loadData();renderRegisteredRiders();});$('open-qr-directory')?.addEventListener('click',()=>{if(state.role==='admin'){$('admin-qr-modal').classList.add('active');$('admin-qr-search').value='';renderAdminQRDirectory();}});$('close-admin-qr')?.addEventListener('click',()=>$('admin-qr-modal').classList.remove('active'));$('admin-qr-modal')?.addEventListener('click',e=>{if(e.target.id==='admin-qr-modal')e.currentTarget.classList.remove('active')});$('admin-qr-search')?.addEventListener('input',()=>renderAdminQRDirectory());$('generate-all-qr')?.addEventListener('click',async()=>{const rows=(state.riders||[]).filter(isRiderVisible);setBusy(true,'Generating rider QR identities…');let saved=0;try{for(const r of rows){ensureRiderPublicIdentity(r);if(usingSupabase()&&!r.source_record&&!r.account_only){const result=await supabaseClient.from('rider_profiles').update({public_id:r.public_id,qr_token:r.qr_token,updated_at:new Date().toISOString()}).eq('id',r.id);if(!result.error)saved++;}}renderAdminQRDirectory();toast(`QR directory prepared for ${rows.length} active riders${usingSupabase()?` (${saved} saved to database)`:''}.`,'success');}finally{setBusy(false);}});
 $('admin-add-rider')?.addEventListener('click',()=>{if(state.role!=='admin')return;$('rider-edit-form')?.reset();$('edit-rider-id').value='';$('edit-rider-status').value='Pending';$('edit-rider-record-status').value='Active';$('rider-edit-title').textContent='Add Registered Rider';$('rider-edit-modal').classList.add('active');});$('print-qr-directory')?.addEventListener('click',printQRDirectory);$('close-rider-profile')?.addEventListener('click',()=>$('rider-profile-modal').classList.remove('active'));$('rider-profile-modal')?.addEventListener('click',e=>{if(e.target.id==='rider-profile-modal')e.currentTarget.classList.remove('active')});$('close-rider-edit')?.addEventListener('click',closeRiderEdit);$('cancel-rider-edit')?.addEventListener('click',closeRiderEdit);$('rider-edit-modal')?.addEventListener('click',e=>{if(e.target.id==='rider-edit-modal')closeRiderEdit();});$('rider-edit-form')?.addEventListener('submit',saveRiderRecord);}
 
-/* One-time Supabase Auth setup helper for the designated MFRTA account.
-   Run from the browser console only if the account has not yet been created.
-   Supabase email confirmation settings may require confirming the email first. */
+
 async function createMFRTAAdminAccount(){
   if(!usingSupabase()) throw new Error('Supabase is not configured.');
   const {data,error}=await supabaseClient.auth.signUp({
@@ -4127,9 +4176,7 @@ function startAdminRefresh(){clearInterval(adminRefreshTimer);if(state.role!=='a
 
 
 
-/* ================================================================
-   Final reliability + scrolling hardening
-   ================================================================ */
+
 function refreshVisiblePanel(){
   const p=state.currentPanel;
   try{
@@ -4174,7 +4221,7 @@ document.addEventListener('keydown',e=>{
   if(typeof stopQRScanner==='function' && qrScanner)stopQRScanner();
 });
 
-/* Boot */
+
 setupAuthUI();bindMisc();bindRiderEnhancements();bindReportForm();setMode('pickup');renderMatrix();
 restoreSession().then(()=>loadQRFromURL()).catch(err=>{
   console.error(err);
@@ -4230,9 +4277,7 @@ body{ background:
   var(--bg);
 }
 
-/* =========================================================
-   2) BUTTONS / CARDS / INPUTS — richer interaction states
-   ========================================================= */
+
 .btn{ position:relative; overflow:hidden; font-weight:700; letter-spacing:.1px; }
 .btn-primary{
   background:linear-gradient(135deg,var(--accent),var(--accent2));
@@ -4270,22 +4315,22 @@ body{ background:
   border-color:var(--accent2); box-shadow:0 0 0 4px var(--accent-dim);
 }
 
-/* Nav */
+
 .nav-link.active{ background:linear-gradient(90deg,var(--accent-dim),transparent); box-shadow:inset 3px 0 0 var(--warm); color:var(--accent); }
 .nav-link:hover .nav-icon{ transform:scale(1.15) rotate(-4deg); }
 .nav-icon{ transition:transform .18s ease; display:inline-block; }
 
-/* Status badges — clearer dot + pill */
+
 .status-badge{ position:relative; padding-left:18px; font-weight:800; letter-spacing:.3px; }
 .status-badge::before{ content:''; position:absolute; left:7px; top:50%; transform:translateY(-50%); width:6px; height:6px; border-radius:50%; background:currentColor; opacity:.85; }
 
-/* Fare pills / matrix */
+
 .fare-pill{ box-shadow:0 1px 3px rgba(0,0,0,.06) inset; }
 .matrix-table th{ background:linear-gradient(135deg,var(--accent),var(--accent2)); }
 .matrix-table tr:nth-child(even) td{ background:rgba(0,0,0,0.015); }
 :root[data-theme="dark"] .matrix-table tr:nth-child(even) td{ background:rgba(255,255,255,0.025); }
 
-/* Scrollbars */
+
 ::-webkit-scrollbar{ width:8px; height:8px; }
 ::-webkit-scrollbar-thumb{ background:linear-gradient(var(--border),var(--text3)); border-radius:99px; }
 ::-webkit-scrollbar-thumb:hover{ background:var(--accent2); }

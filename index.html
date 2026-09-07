@@ -1348,6 +1348,21 @@ body { overflow:hidden; }
 @media(min-width:1024px){#panel-admin .management-content,#panel-registered-riders .management-content,#panel-fare-admin .management-content,#panel-users .management-content,#panel-audit .management-content,#panel-route-records .management-content{padding-bottom:42px}.panel-header{position:sticky;top:0;background:var(--bg);z-index:20;padding-top:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}}
 .fare-admin-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.fare-admin-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.fare-admin-actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-top:12px}.fare-admin-actions .btn{min-height:42px}@media(max-width:760px){.fare-admin-form-grid,.fare-admin-meta{grid-template-columns:1fr}}
 
+
+
+.live-monitor-card{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--border);background:linear-gradient(135deg,var(--surface2),var(--surface));border-radius:14px;box-shadow:var(--shadow);transition:.2s}
+.live-monitor-card.tracking{border-color:var(--green);box-shadow:0 0 0 3px var(--green-dim)}
+.live-monitor-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--accent-dim);font-size:18px;flex:none}
+.live-monitor-copy{display:flex;flex-direction:column;min-width:0;gap:2px;flex:1}.live-monitor-copy strong{font-size:12px}.live-monitor-copy span{font-size:10.5px;color:var(--text3);line-height:1.4}
+.live-monitor-pill{font-size:10px;font-weight:800;padding:5px 8px;border-radius:999px;background:var(--accent-dim);color:var(--accent);white-space:nowrap}
+.map-mode-btns{flex-wrap:wrap}.map-mode-btn{min-width:0}.live-mode-btn{flex:1.2}
+.panel.active{min-height:0}
+.dashboard-wrap,.management-content,.matrix-content,.logs-content,.report-content,.about-content{min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable}
+#panel-admin-dashboard,#panel-admin-riders,#panel-admin-reports,#panel-admin-fares,#panel-admin-logs,#panel-admin-users,#panel-admin-safety,#panel-admin-live,#panel-commuter-dashboard,#panel-rider-dashboard{overflow:auto;min-height:0}
+.sidebar,.nav-links{min-height:0}.nav-links{overflow-y:auto}
+@media(min-width:769px){.dashboard-wrap,.management-content{max-height:calc(100dvh - 64px);padding-bottom:36px}}
+@media(max-width:768px){.map-mode-btn{flex:1 1 30%}.live-monitor-card{align-items:flex-start}.live-monitor-pill{align-self:center}}
+
 </style>
 
 
@@ -1625,6 +1640,10 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 @keyframes gfPanelEnter{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style>
+
+<style>
+.report-redesign{max-width:1180px!important;margin:0 auto;width:100%;padding:28px!important}.report-hero{display:flex;gap:16px;align-items:flex-start;padding:24px;border-radius:20px;background:linear-gradient(135deg,var(--accent),#2f6696);color:#fff;margin-bottom:14px;box-shadow:var(--shadow-lg)}.report-hero-icon{width:52px;height:52px;border-radius:15px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:24px;flex:none}.report-eyebrow,.report-section-kicker{display:block;font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase}.report-eyebrow{opacity:.75;margin-bottom:5px}.report-hero h2{font:800 25px 'Syne',sans-serif;margin:0}.report-hero p{margin:7px 0 0;font-size:12.5px;line-height:1.6;opacity:.9;max-width:720px}.report-notice{padding:13px 16px;border:1px solid #fdba74;background:#fff7ed;color:#7c2d12;border-radius:12px;font-size:12px;line-height:1.55;margin-bottom:16px}.report-stepper{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.report-step{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid var(--border);background:var(--surface);border-radius:13px}.report-step span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);color:var(--text3);font-weight:800;flex:none}.report-step.active{border-color:var(--accent);background:var(--accent-dim)}.report-step.active span{background:var(--accent);color:#fff}.report-step strong{display:block;font-size:11.5px}.report-step small{display:block;font-size:10px;color:var(--text3);margin-top:2px}.report-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;align-items:start}.report-main-column{display:flex;flex-direction:column;gap:16px}.report-section,.report-summary-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)}.report-section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}.report-section-head h3,.report-summary-card h3{font:800 17px 'Syne',sans-serif;margin:4px 0}.report-section-head p{font-size:11.5px;color:var(--text2);line-height:1.55;margin:0;max-width:620px}.report-section-kicker{color:var(--accent)}.report-directory-search{position:relative;margin-bottom:10px}.report-directory-search>span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:18px}.report-directory-search .form-input{padding-left:40px}.report-rider-list{max-height:290px;overflow:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface2)}.report-directory-foot{margin-top:10px;padding:11px 12px;border-radius:10px;background:var(--accent-dim);font-size:11px;color:var(--text2);display:flex;gap:5px;flex-wrap:wrap}.report-directory-foot strong{color:var(--accent)}.report-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.report-form-grid .full{grid-column:1/-1}.report-form-grid .form-group{margin:0}.form-label b{color:var(--red)}.plate-input{text-transform:uppercase;letter-spacing:1.5px;font-weight:800}.form-input,.form-select,.form-textarea{background:var(--surface)!important}.report-side-column{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px}.reporter-card .form-group{margin-bottom:0}.report-privacy{margin-top:12px;padding:10px 11px;border-radius:10px;background:var(--green-dim);color:var(--green);font-size:11px;line-height:1.5}.report-summary-card{background:linear-gradient(180deg,var(--surface),var(--surface2))}.report-summary-card ul{list-style:none;padding:0;margin:14px 0}.report-summary-card li{padding:9px 0;border-bottom:1px solid var(--border);font-size:11.5px;color:var(--text2)}.report-summary-card li:before{content:'✓';color:var(--green);font-weight:800;margin-right:8px}.report-generate,.report-reset{width:100%;margin-top:8px}.report-preview{max-width:760px;margin:20px auto 0}.report-actions{display:none;margin-top:12px;flex-wrap:wrap;gap:8px;justify-content:center}.saved-reports-section{margin-top:28px;display:none}.directory-count{white-space:nowrap;background:var(--accent-dim);color:var(--accent);border:1px solid var(--border);padding:6px 9px;border-radius:99px;font-size:10px;font-weight:800}@media(max-width:950px){.report-layout{grid-template-columns:1fr}.report-side-column{position:static;display:grid;grid-template-columns:1fr 1fr}.report-summary-card{height:100%}}@media(max-width:700px){.report-redesign{padding:16px!important}.report-hero{padding:18px}.report-stepper{grid-template-columns:1fr}.report-form-grid,.report-side-column{grid-template-columns:1fr}.report-section{padding:16px}.report-section-head{flex-direction:column}.report-hero h2{font-size:21px}.report-rider-list{max-height:250px}}
+</style>
 </head>
 <body>
 <div class="admin-desktop-gate" id="admin-desktop-gate"><div class="admin-desktop-gate-card"><div class="admin-desktop-icon">🖥️</div><h2>Administrator Desktop Workspace</h2><p>The GeoFare Administrator and MFRTA management dashboard is optimized for desktop screens to safely manage riders, reports, fares, route records, and activity logs.</p><p style="margin-top:12px;font-size:12px">Please open GeoFare on a screen at least 1024px wide.</p></div></div>
@@ -1738,6 +1757,12 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
           <div class="map-mode-btns">
             <button class="map-mode-btn active-mode" id="mode-pickup" onclick="setMode('pickup')">🟢 Pickup</button>
             <button class="map-mode-btn" id="mode-dropoff" onclick="setMode('dropoff')">🔴 Drop-off</button>
+            <button class="map-mode-btn live-mode-btn" id="mode-live" onclick="setMode('live')">📡 Live Monitor</button>
+          </div>
+          <div class="live-monitor-card" id="live-monitor-card">
+            <div class="live-monitor-icon">📡</div>
+            <div class="live-monitor-copy"><strong>Live GPS Fare Tracking</strong><span>Track your movement and calculate the running fare without selecting pickup or drop-off points.</span></div>
+            <span class="live-monitor-pill" id="live-monitor-pill">Ready</span>
           </div>
           <button class="btn btn-secondary btn-sm" type="button" id="locate-btn">◎ Use my current location</button>
 
@@ -1788,7 +1813,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
           </div>
 
           
-          <div id="fare-actions" style="display:none; flex-direction:column; gap:8px;">
+          <div id="fare-actions" style="display:flex; flex-direction:column; gap:8px;">
             <button class="btn btn-primary btn-sm" onclick="calculateFare(true)" id="calculate-btn">
               🧮 Calculate Fare
             </button>
@@ -1977,104 +2002,44 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
         <div class="panel-title">⚠️ Incident / Complaint Report</div>
         <div class="panel-sub">Document a transportation incident or complaint for administrative review</div>
       </div>
-      <div class="report-content">
-        <div style="background:var(--red-dim);border:1px solid rgba(192,57,43,0.25);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:20px;font-size:13.5px;color:var(--red);line-height:1.6;">
-          🛑 <strong>Use this form for transportation or safety-related concerns. GeoFare records and manages reports; it does not provide emergency response.
+      <div class="report-content report-redesign">
+        <div class="report-hero">
+          <div class="report-hero-icon">⚠️</div>
+          <div><span class="report-eyebrow">GEOFare Safety & Accountability</span><h2>Report a Rider</h2><p>Submit a clear transportation-related complaint for administrative review. You may select a registered rider or report any motorcycle using its plate number.</p></div>
         </div>
-
-        <section class="report-rider-directory" aria-labelledby="report-rider-directory-title">
-          <div class="report-directory-head">
-            <div>
-              <div class="report-directory-kicker">RIDER DIRECTORY</div>
-              <h3 id="report-rider-directory-title">Identify the Rider</h3>
-              <p>Select a registered rider when available, or report any motorcycle directly by plate number. A registered rider is linked when found; otherwise, the plate number is retained as the report identifier.</p>
-            </div>
-            <span class="directory-count" id="report-rider-count">0 riders</span>
+        <div class="report-notice"><strong>Important:</strong> GeoFare records and manages complaints only. For immediate emergencies, contact the appropriate local emergency service.</div>
+        <div class="report-stepper"><div class="report-step active"><span>1</span><div><strong>Identify</strong><small>Find the rider or enter a plate</small></div></div><div class="report-step"><span>2</span><div><strong>Incident</strong><small>Add trip and violation details</small></div></div><div class="report-step"><span>3</span><div><strong>Submit</strong><small>Review and generate your report</small></div></div></div>
+        <div class="report-layout">
+          <div class="report-main-column">
+            <section class="report-section report-rider-directory" aria-labelledby="report-rider-directory-title">
+              <div class="report-section-head"><div><span class="report-section-kicker">STEP 1</span><h3 id="report-rider-directory-title">Identify the Rider</h3><p>Search the registered rider directory. If the rider is not registered, enter the motorcycle plate number manually.</p></div><span class="directory-count" id="report-rider-count">0 riders</span></div>
+              <input type="hidden" id="report-rider-id">
+              <div class="report-directory-search"><span aria-hidden="true">⌕</span><input class="form-input" id="report-rider-search" type="search" autocomplete="off" placeholder="Search by name, Rider ID, plate, association, or permit"></div>
+              <div class="report-rider-list" id="report-rider-list"><div class="report-rider-empty">Loading registered riders…</div></div>
+              <div class="report-directory-foot"><span>Not listed in the directory?</span><strong>You can still submit a report using the plate number.</strong></div>
+            </section>
+            <section class="report-section">
+              <div class="report-section-head"><div><span class="report-section-kicker">STEP 2</span><h3>Incident Details</h3><p>Provide the essential information about what happened.</p></div></div>
+              <div class="report-form-grid">
+                <div class="form-group full"><label class="form-label">Motorcycle Plate Number <b>*</b></label><input class="form-input plate-input" id="rpt-plate" placeholder="e.g. MF-1234"><div class="form-hint">This is the primary identifier for the complaint.</div></div>
+                <div class="form-group"><label class="form-label">Date & Time <b>*</b></label><input class="form-input" type="datetime-local" id="rpt-datetime"></div>
+                <div class="form-group"><label class="form-label">Fare Demanded (₱) <b>*</b></label><input class="form-input" type="number" id="rpt-fare" placeholder="e.g. 150"></div>
+                <div class="form-group full"><label class="form-label">Route <b>*</b></label><input class="form-input" id="rpt-route" placeholder="e.g. Manolo Fortich Poblacion → Dahilayan"></div>
+                <div class="form-group full"><label class="form-label">Type of Violation <b>*</b></label><select class="form-select" id="rpt-type"><option value="">Select a violation type</option><option value="overcharging">Overcharging / Higher fare than matrix</option><option value="refuse-discount">Refusing PWD / Senior / SP discount</option><option value="rude-conduct">Rude or threatening conduct</option><option value="unsafe-driving">Unsafe or reckless driving</option><option value="other">Other violation</option></select></div>
+                <div class="form-group full"><label class="form-label">Detailed Description <b>*</b></label><textarea class="form-textarea" id="rpt-desc" placeholder="Clearly describe what happened, including relevant actions, statements, or circumstances."></textarea><div class="form-hint">Provide factual details to help the administrator review the report.</div></div>
+              </div>
+            </section>
           </div>
-          <input type="hidden" id="report-rider-id">
-          <div class="report-directory-search">
-            <span aria-hidden="true">⌕</span>
-            <input class="form-input" id="report-rider-search" type="search" autocomplete="off" placeholder="Search rider name, Rider ID, plate, association, make, or permit">
-          </div>
-          <div class="report-rider-list" id="report-rider-list"><div class="report-rider-empty">Loading registered riders…</div></div>
-          <div class="report-directory-foot"><span>Can't find the rider?</span><strong>Enter the motorcycle plate number below to report an unregistered rider.</strong></div>
-        </section>
-
-        <div class="form-group">
-          <label class="form-label">Driver's Plate Number *</label>
-          <input class="form-input" id="rpt-plate" placeholder="e.g. MF-1234" style="text-transform:uppercase;letter-spacing:2px;font-weight:700;font-size:15px">
-          <div class="form-hint">The plate number is the report identifier. Registered riders are linked automatically when available; unregistered riders can still be reported by plate number.</div>
+          <aside class="report-side-column">
+            <section class="report-section reporter-card"><div class="report-section-head"><div><span class="report-section-kicker">OPTIONAL</span><h3>Your Information</h3><p>You may remain anonymous.</p></div></div><div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="rpt-name" placeholder="Anonymous by default"></div><div class="report-privacy">🔒 Your identity is treated as confidential information.</div></section>
+            <section class="report-summary-card"><span class="report-section-kicker">BEFORE YOU CONTINUE</span><h3>Review Your Report</h3><ul><li>Confirm the plate number</li><li>Check the incident date and route</li><li>Select the correct violation</li><li>Describe the incident clearly</li></ul><button class="btn btn-primary report-generate" onclick="generateReport()">Generate Report Slip</button><button class="btn btn-secondary report-reset" onclick="clearReport()">Reset Form</button></section>
+          </aside>
         </div>
-
-        <div class="form-group">
-          <label class="form-label">Date & Time of Incident *</label>
-          <input class="form-input" type="datetime-local" id="rpt-datetime">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Route (From → To) *</label>
-          <input class="form-input" id="rpt-route" placeholder="e.g. Manolo Fortich Poblacion → Dahilayan">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Fare Demanded (₱) *</label>
-          <input class="form-input" type="number" id="rpt-fare" placeholder="e.g. 150">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Type of Violation *</label>
-          <select class="form-select" id="rpt-type">
-            <option value="">— Select violation type —</option>
-            <option value="overcharging">Overcharging / Demanding higher fare than matrix</option>
-            <option value="refuse-discount">Refusing to honor PWD / Senior / SP discount</option>
-            <option value="rude-conduct">Rude or threatening conduct</option>
-            <option value="unsafe-driving">Unsafe or reckless driving</option>
-            <option value="other">Other violation</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Detailed Description *</label>
-          <textarea class="form-textarea" id="rpt-desc" placeholder="Describe what happened in detail. Include any verbal exchanges, demands, or threatening behavior."></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Your Name (optional)</label>
-          <input class="form-input" id="rpt-name" placeholder="Anonymous by default">
-          <div class="form-hint">Your identity will be kept confidential.</div>
-        </div>
-
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="generateReport()" style="flex:1">📄 Generate Report Slip</button>
-          <button class="btn btn-secondary" onclick="clearReport()">Reset</button>
-        </div>
-
-        
         <div class="report-preview" id="report-preview">
-          <div class="rp-header">
-            <div class="rp-badge">Citizen Complaint Report</div>
-            <div class="rp-title">Habal-Habal Driver Complaint</div>
-            <div class="rp-sub">Manolo Fortich, Bukidnon • MFRTA-CADO</div>
-          </div>
-          <div id="rp-fields"></div>
-          <div class="rp-footer">
-            Reference No: <span class="rp-ref" id="rp-ref">—</span><br>
-            Generated via GeoFare Fare Calculator · manolofortich.gov.ph<br>
-           Submit to: <a href="mailto:mfrta@manolofortich.gov.ph">mfrta@manolofortich.gov.ph</a> or call 0917-159-5855<br>
-            <em>This document serves as a prima facie record of your complaint.</em>
-          </div>
+          <div class="rp-header"><div class="rp-badge">Citizen Complaint Report</div><div class="rp-title">Habal-Habal Driver Complaint</div><div class="rp-sub">Manolo Fortich, Bukidnon • MFRTA-CADO</div></div><div id="rp-fields"></div><div class="rp-footer">Reference No: <span class="rp-ref" id="rp-ref">—</span><br>Generated via GeoFare Fare Calculator · manolofortich.gov.ph<br>Submit to: <a href="mailto:mfrta@manolofortich.gov.ph">mfrta@manolofortich.gov.ph</a> or call 0917-159-5855<br><em>This document serves as a prima facie record of your complaint.</em></div>
         </div>
-
-        <div id="report-actions" style="display:none; margin-top:12px; flex-wrap:wrap; gap:8px;">
-          <button class="btn btn-primary btn-sm" onclick="printReport()">🖨️ Print / Save as Image</button>
-          <button class="btn btn-secondary btn-sm" onclick="clearReport()">✕ Start New Report</button>
-        </div>
-
-        
-        <div id="saved-reports-section" style="margin-top:28px; display:none;">
-          <div class="about-section-title">📁 Saved Reports</div>
-          <div class="report-list" id="saved-reports-list"></div>
-        </div>
+        <div id="report-actions" class="report-actions"><button class="btn btn-primary btn-sm" onclick="printReport()">🖨️ Print / Save as Image</button><button class="btn btn-secondary btn-sm" onclick="clearReport()">✕ Start New Report</button></div>
+        <div id="saved-reports-section" class="saved-reports-section"><div class="about-section-title">📁 Saved Reports</div><div class="report-list" id="saved-reports-list"></div></div>
       </div>
     </div>
 
@@ -2982,9 +2947,21 @@ async function reverseGeocode(lat,lng){
     return [a.road,a.suburb||a.village||a.town||a.municipality,a.province||a.state].filter(Boolean).slice(0,3).join(', ')||`${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   }catch{return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;}
 }
-function setMode(m){state.currentMode=m;document.querySelectorAll('.map-mode-btn').forEach(b=>b.classList.remove('active-mode'));$('mode-'+m)?.classList.add('active-mode');document.querySelectorAll('.pin-row').forEach(r=>r.classList.remove('active-pin'));$(''+m+'-row')?.classList.add('active-pin');updateInstruction();}
+function setMode(m){
+  state.currentMode=m;
+  document.querySelectorAll('.map-mode-btn').forEach(b=>b.classList.remove('active-mode'));
+  $('mode-'+m)?.classList.add('active-mode');
+  document.querySelectorAll('.pin-row').forEach(r=>r.classList.remove('active-pin'));
+  if(m==='pickup'||m==='dropoff')$(''+m+'-row')?.classList.add('active-pin');
+  updateInstruction();
+}
 function updateInstruction(){
   const el=$('map-instruction'); if(!el)return;
+  if(state.currentMode==='live'){
+    el.innerHTML='Live monitoring uses your device location automatically. <strong>No pickup or drop-off points are required.</strong>';
+    el.style.display='block';
+    return;
+  }
   if(!state.pickupMarker&&!state.dropoffMarker)el.innerHTML='Tap anywhere on the map to set your <strong>pickup</strong> point';
   else if(state.pickupMarker&&!state.dropoffMarker)el.innerHTML='Now tap to set the <strong>drop-off</strong> point';
   else if(!state.pickupMarker&&state.dropoffMarker)el.innerHTML='Now tap to set the <strong>pickup</strong> point';
@@ -2992,12 +2969,25 @@ function updateInstruction(){
   if(state.pickupMarker&&state.dropoffMarker)el.style.display='none'; else el.style.display='block';
 }
 map.on('click',async e=>{
+  if(state.currentMode==='live'){
+    toast('Live Monitor is active. Your device location is tracked automatically.','info');
+    return;
+  }
   const {lat,lng}=e.latlng; setBusy(true,'Looking up location…');
   try{
     const addr=await reverseGeocode(lat,lng);
-    if(state.currentMode==='pickup'){if(state.pickupMarker)map.removeLayer(state.pickupMarker);state.pickupMarker=L.marker([lat,lng],{icon:iconPickup}).addTo(map).bindPopup(`<b>Pickup</b><br>${esc(addr)}`);$('pickup-addr').textContent=addr;if(!state.dropoffMarker)setMode('dropoff');}
-    else {if(state.dropoffMarker)map.removeLayer(state.dropoffMarker);state.dropoffMarker=L.marker([lat,lng],{icon:iconDropoff}).addTo(map).bindPopup(`<b>Drop-off</b><br>${esc(addr)}`);$('dropoff-addr').textContent=addr;}
-    updateInstruction(); if(state.pickupMarker&&state.dropoffMarker) await calculateFare();
+    if(state.currentMode==='pickup'){
+      if(state.pickupMarker)map.removeLayer(state.pickupMarker);
+      state.pickupMarker=L.marker([lat,lng],{icon:iconPickup}).addTo(map).bindPopup(`<b>Pickup</b><br>${esc(addr)}`);
+      $('pickup-addr').textContent=addr;
+      if(!state.dropoffMarker)setMode('dropoff');
+    }else{
+      if(state.dropoffMarker)map.removeLayer(state.dropoffMarker);
+      state.dropoffMarker=L.marker([lat,lng],{icon:iconDropoff}).addTo(map).bindPopup(`<b>Drop-off</b><br>${esc(addr)}`);
+      $('dropoff-addr').textContent=addr;
+    }
+    updateInstruction();
+    if(state.pickupMarker&&state.dropoffMarker)await calculateFare();
   }catch(err){toast(err.message||'Unable to set location.','error');}finally{setBusy(false);}
 });
 function clearPin(type){
@@ -3689,7 +3679,7 @@ function startLiveTrip(){
   state.livePoints=[];state.liveDistanceKm=0;state.liveStartedAt=new Date().toISOString();
   if(state.liveLine){map.removeLayer(state.liveLine);state.liveLine=null;}
   $('live-trip-btn').style.display='none';$('stop-live-trip-btn').style.display='flex';
-  $('live-trip-status').style.display='block';$('live-trip-status').textContent='Waiting for live GPS location…';
+  $('live-trip-status').style.display='block';$('live-trip-status').textContent='Waiting for live GPS location…';$('live-monitor-pill').textContent='Connecting';
   state.liveWatchId=navigator.geolocation.watchPosition(pos=>{
     const point={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:Number(pos.coords.accuracy||0),timestamp:new Date(pos.timestamp).toISOString()};
     const prev=state.livePoints[state.livePoints.length-1];
@@ -3714,7 +3704,7 @@ function stopLiveTrip(){
   if(state.liveWatchId!==null){navigator.geolocation.clearWatch(state.liveWatchId);state.liveWatchId=null;}
   $('live-trip-btn').style.display='flex';$('stop-live-trip-btn').style.display='none';
   $('live-trip-status').style.display='block';
-  $('live-trip-status').textContent=`Live trip ended · ${state.liveDistanceKm.toFixed(2)} km recorded`;
+  $('live-trip-status').textContent=`Live trip ended · ${state.liveDistanceKm.toFixed(2)} km recorded`;$('live-monitor-pill').textContent='Ended';$('live-monitor-card')?.classList.remove('tracking');
   updateLiveFare();
   toast(`Live trip ended. Distance recorded: ${state.liveDistanceKm.toFixed(2)} km.`,'success');
 }

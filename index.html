@@ -1924,7 +1924,8 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
             <div class="safety-section-head"><div><span class="section-label">Quick action</span><h3>Send SOS Alert</h3></div><span class="safety-priority-chip">Critical channel</span></div>
             <p class="small-note" style="margin-bottom:14px">Briefly describe the situation. Your current location may be attached when permission is available.</p>
             <div class="form-group"><label class="form-label">What is happening?</label><textarea class="form-textarea" id="sos-message" maxlength="500" placeholder="Describe the safety concern clearly and briefly."></textarea></div>
-            <button class="btn sos-btn" id="sos-submit">🆘 Send SOS Alert</button>
+            <div class="form-group"><label class="form-label" for="sos-photo">Emergency photo</label><input class="form-input" id="sos-photo" type="file" accept="image/*" required><div class="form-hint">Attach a clear photo relevant to the emergency. This helps authorized personnel review the alert.</div></div>
+            <button class="btn sos-btn" id="sos-submit" type="button">🆘 Send SOS Alert</button>
           </section>
           <section class="form-card safety-recent-card">
             <div class="safety-section-head"><div><span class="section-label">Activity</span><h3 id="safety-list-title">My recent alerts</h3></div><button class="btn btn-secondary btn-sm" type="button" onclick="renderSafety()">↻ Refresh</button></div>
@@ -2161,11 +2162,11 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     <form id="rating-form" class="form-card">
       <h3>Submit Rider Feedback</h3>
       <div class="form-group"><label class="form-label" for="rating-rider">Verified Rider</label><select class="form-select" id="rating-rider" required></select></div>
-      <div class="rating-grid">
-        <label>Professionalism<input type="number" min="1" max="5" id="rate-prof" required></label>
-        <label>Safety<input type="number" min="1" max="5" id="rate-safe" required></label>
-        <label>Punctuality<input type="number" min="1" max="5" id="rate-punct" required></label>
-        <label>Service Quality<input type="number" min="1" max="5" id="rate-service" required></label>
+      <div class="rating-grid star-rating-grid">
+        <div class="star-field"><span>Professionalism</span><div class="star-input" data-input="rate-prof" aria-label="Professionalism rating"></div><input type="hidden" id="rate-prof" value="" required></div>
+        <div class="star-field"><span>Safety</span><div class="star-input" data-input="rate-safe" aria-label="Safety rating"></div><input type="hidden" id="rate-safe" value="" required></div>
+        <div class="star-field"><span>Punctuality</span><div class="star-input" data-input="rate-punct" aria-label="Punctuality rating"></div><input type="hidden" id="rate-punct" value="" required></div>
+        <div class="star-field"><span>Service Quality</span><div class="star-input" data-input="rate-service" aria-label="Service Quality rating"></div><input type="hidden" id="rate-service" value="" required></div>
       </div>
       <div class="form-group"><label class="form-label" for="rate-comment">Comment (optional)</label><textarea class="form-textarea" id="rate-comment" maxlength="500"></textarea></div>
       <button class="btn btn-primary" type="submit">Submit Rating</button>
@@ -2521,8 +2522,7 @@ function navForRole(role){
     ['fare-admin','⚙','Fare Matrix Management'],
     ['registered-riders','🛵','Registered Riders'],
     ['riders','✓','Rider Verification'],
-    ['reports','⚠','Incident Management'],
-    ['safety','🆘','Safety Alert Management'],
+    ['reports','🛡️','Reports & Safety Management'],
     ['route-records','🗺️','Route Calculation Records'],
     ['ratings','★','Ratings Monitoring'],
     ['users','◉','User Management'],
@@ -2922,14 +2922,36 @@ function getFare(km){
     const max=Number(f.maximum_distance??f.km??min);
     return rounded>=min && rounded<=max;
   });
-  if(!range){
-    const maxConfigured=Math.max(...rows.map(f=>Number(f.maximum_distance??f.km??f.minimum_distance??0)));
-    throw new Error(`No official active fare rule applies to ${rounded} km. The current official matrix supports up to ${maxConfigured} km.`);
+  if(range){
+    const regular=Number(range.regular_fare??range.regular);
+    const discounted=Number(range.discounted_fare??range.discount);
+    if(!Number.isFinite(regular)||!Number.isFinite(discounted)) throw new Error('The active fare rule contains an invalid fare value.');
+    return {regular,discount:discounted,version:range.id||range.version_code||'ACTIVE',extended:false};
   }
-  const regular=Number(range.regular_fare??range.regular);
-  const discounted=Number(range.discounted_fare??range.discount);
-  if(!Number.isFinite(regular)||!Number.isFinite(discounted)) throw new Error('The active fare rule contains an invalid fare value.');
-  return {regular,discount:discounted,version:range.id||range.version_code||'ACTIVE'};
+  const ordered=[...rows].sort((a,b)=>Number(a.maximum_distance??a.km??a.minimum_distance??0)-Number(b.maximum_distance??b.km??b.minimum_distance??0));
+  const last=ordered[ordered.length-1];
+  const lastMax=Number(last.maximum_distance??last.km??last.minimum_distance??0);
+  const lastRegular=Number(last.regular_fare??last.regular);
+  const lastDiscount=Number(last.discounted_fare??last.discount);
+  if(!Number.isFinite(lastMax)||!Number.isFinite(lastRegular)||!Number.isFinite(lastDiscount)) throw new Error('The active fare matrix contains invalid values.');
+  let regularStep=0,discountStep=0;
+  if(ordered.length>=2){
+    const previous=ordered[ordered.length-2];
+    const previousMax=Number(previous.maximum_distance??previous.km??previous.minimum_distance??0);
+    const previousRegular=Number(previous.regular_fare??previous.regular);
+    const previousDiscount=Number(previous.discounted_fare??previous.discount);
+    const kmStep=lastMax-previousMax;
+    if(kmStep>0 && Number.isFinite(previousRegular) && Number.isFinite(previousDiscount)){
+      regularStep=(lastRegular-previousRegular)/kmStep;
+      discountStep=(lastDiscount-previousDiscount)/kmStep;
+    }
+  }
+  if(!Number.isFinite(regularStep)||regularStep<=0) regularStep=lastRegular/Math.max(lastMax,1);
+  if(!Number.isFinite(discountStep)||discountStep<=0) discountStep=lastDiscount/Math.max(lastMax,1);
+  const extraKm=Math.max(0,rounded-lastMax);
+  const regular=Math.round((lastRegular+(extraKm*regularStep))*100)/100;
+  const discounted=Math.round((lastDiscount+(extraKm*discountStep))*100)/100;
+  return {regular,discount:discounted,version:last.id||last.version_code||'ACTIVE',extended:true,baseDistance:lastMax};
 }
 function renderMatrix(){
   const tb=$('matrix-tbody'); if(!tb)return; const rows=activeFareRows();
@@ -3061,7 +3083,7 @@ async function calculateFare(manual=false){
     $('save-btn').style.display='flex';
     $('mff-dist').textContent=distLabel;$('mff-reg').textContent=money(fare.regular);$('mff-disc').textContent=money(fare.discount);$('mobile-fare-float').classList.add('visible');
     state.lastCalculation={user_id:state.user.id,pickup:$('pickup-addr').textContent,dropoff:$('dropoff-addr').textContent,pickup_lat:p.lat,pickup_lng:p.lng,dropoff_lat:d.lat,dropoff_lng:d.lng,distance_km:Number(km.toFixed(3)),regular_fare:fare.regular,discounted_fare:fare.discount,fare_matrix_version:fare.version,route_method:routeMethod,routing_fallback:usedFallback,timestamp:new Date().toISOString(),created_at:new Date().toISOString()};
-    if(!usedFallback)toast('Fare calculated from actual road-network distance.','success');
+    if(!usedFallback)toast(fare.extended?`Fare calculated from ${km.toFixed(2)} km road distance using the matrix rate beyond ${fare.baseDistance} km.`:'Fare calculated from actual road-network distance.','success');
   }catch(err){
     console.error('GeoFare fare calculation:',err);
     $('fare-result').style.display='none';$('fare-actions').style.display='none';
@@ -4428,6 +4450,82 @@ html,body{height:100%;overflow:hidden}.app,.main,.panel{min-height:0}.panel.acti
   const oldShow=window.showPanel;
   if(typeof oldShow==='function')window.showPanel=function(panel){if(!window.GeoFarePanelRegistry.has(panel)){console.warn('Invalid panel:',panel);return;}return oldShow(panel);};
   document.addEventListener('click',e=>{const b=e.target.closest('[data-panel]');if(!b)return;const p=b.dataset.panel;if(p&&!window.GeoFarePanelRegistry.has(p)){e.preventDefault();e.stopPropagation();}},true);
+})();
+</script>
+<style id="geofare-safe-enhancements">
+.star-rating-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.star-field{padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface2);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.star-field:hover{transform:translateY(-2px);border-color:var(--accent2);box-shadow:var(--shadow)}
+.star-field>span{display:block;font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:9px}
+.star-input{display:flex;gap:5px;align-items:center;min-height:34px}
+.star-input .star{border:0;background:transparent;padding:0;cursor:pointer;font-size:29px;line-height:1;color:#c4ced8;transition:color .16s ease,transform .16s ease,filter .16s ease}
+.star-input .star:hover,.star-input .star:focus-visible{transform:translateY(-2px) scale(1.08);outline:none}
+.star-input .star.active{color:#f5b301;text-shadow:0 2px 8px rgba(245,179,1,.22)}
+.sos-photo-preview{display:none;margin-top:9px;max-width:180px;max-height:130px;object-fit:cover;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.safety-alert-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.safety-alert-map{height:250px;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:10px;background:var(--surface2)}
+.safety-alert-photo{display:block;width:min(100%,420px);max-height:300px;object-fit:cover;border-radius:14px;border:1px solid var(--border);margin-top:10px;box-shadow:var(--shadow)}
+.admin-record-tools{margin-bottom:14px}
+.admin-record-checks{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0}
+.admin-record-check{display:flex;align-items:center;gap:8px;padding:10px 11px;border:1px solid var(--border);background:var(--surface2);border-radius:10px;font-size:11.5px;font-weight:700;color:var(--text2);cursor:pointer;transition:.18s ease}
+.admin-record-check:hover{border-color:var(--accent2);transform:translateY(-1px)}
+.admin-record-check input{accent-color:var(--accent);width:16px;height:16px}
+.admin-record-range{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.admin-record-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.admin-record-count{font-size:11px;color:var(--text3);margin-top:8px}
+.admin-record-print-area{background:#fff;color:#111;padding:28px;font-family:Arial,sans-serif}
+.admin-record-print-area h1{font-size:22px;margin:0 0 5px}.admin-record-print-area .print-meta{font-size:11px;color:#555;margin-bottom:18px}
+.admin-record-print-area table{width:100%;border-collapse:collapse;font-size:10px}.admin-record-print-area th,.admin-record-print-area td{border:1px solid #ccc;padding:7px;text-align:left;vertical-align:top}.admin-record-print-area th{background:#eef3f7}
+.integrated-safety-wrap{margin-top:16px}.integrated-safety-card{border-left:4px solid var(--red)}
+.stat-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--accent-dim);color:var(--accent);font-size:18px;margin-bottom:9px}
+@media(max-width:900px){.admin-record-checks{grid-template-columns:repeat(2,minmax(0,1fr))}.star-rating-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.admin-record-range{grid-template-columns:1fr}.admin-record-checks{grid-template-columns:1fr}.star-rating-grid{grid-template-columns:1fr}.star-input .star{font-size:27px}}
+@media print{.admin-record-print-area{padding:0}.admin-record-print-area table{font-size:9px}}
+
+/* Final visual sizing */
+#admin-stats .stat-card{position:relative;min-height:132px;padding:18px 18px 16px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+#admin-stats .stat-card .stat-icon{width:54px;height:54px;border-radius:15px;font-size:29px;line-height:1;margin-bottom:12px;box-shadow:0 5px 14px rgba(18,62,115,.14);border:1px solid var(--border)}
+#admin-stats .stat-card .stat-value{font-size:30px;line-height:1.05;letter-spacing:-.4px}
+#admin-stats .stat-card .stat-label{font-size:12px;font-weight:700;line-height:1.3;margin-top:7px}
+.nav-icon{font-size:22px!important;width:28px;min-width:28px;text-align:center;line-height:1;filter:saturate(1.1)}
+.nav-link{min-height:46px}
+@media(max-width:768px){#admin-stats .stat-card{min-height:118px;padding:15px}.nav-icon{font-size:21px!important;width:26px;min-width:26px}}
+</style>
+<script id="geofare-safe-enhancements-runtime">
+(function(){
+'use strict';
+const gfPhotoKey=id=>'geofare.sos.photo.'+String(id);
+const gfGetPhoto=id=>{try{return localStorage.getItem(gfPhotoKey(id))||''}catch(_){return ''}};
+const gfSetPhoto=(id,value)=>{try{localStorage.setItem(gfPhotoKey(id),value);return true}catch(_){return false}};
+function gfCoords(message){const m=String(message||'').match(/Location:\s*(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/i);return m?{lat:Number(m[1]),lng:Number(m[2])}:null;}
+function gfMessage(message){return String(message||'').replace(/\n?Location:\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?/i,'').trim();}
+function gfStars(){document.querySelectorAll('.star-field').forEach(field=>{const box=field.querySelector('.star-input'),input=field.querySelector('input[type="hidden"]');if(!box||!input||box.dataset.ready==='1')return;box.dataset.ready='1';box.innerHTML='';for(let i=1;i<=5;i++){const b=document.createElement('button');b.type='button';b.className='star';b.textContent='★';b.setAttribute('aria-label',i+' star'+(i===1?'':'s'));b.addEventListener('click',()=>{input.value=String(i);Array.from(box.children).forEach((x,n)=>x.classList.toggle('active',n<i));box.setAttribute('aria-valuenow',String(i));});b.addEventListener('mouseenter',()=>Array.from(box.children).forEach((x,n)=>x.classList.toggle('active',n<i)));b.addEventListener('mouseleave',()=>{const v=Number(input.value||0);Array.from(box.children).forEach((x,n)=>x.classList.toggle('active',n<v));});box.appendChild(b);}box.setAttribute('role','radiogroup');box.setAttribute('aria-valuemin','1');box.setAttribute('aria-valuemax','5');});}
+function gfPhotoPreview(){const input=$('sos-photo');if(!input||input.dataset.previewReady==='1')return;input.dataset.previewReady='1';const img=document.createElement('img');img.className='sos-photo-preview';img.alt='Selected emergency photo preview';input.insertAdjacentElement('afterend',img);input.addEventListener('change',()=>{const file=input.files&&input.files[0];if(!file){img.style.display='none';img.removeAttribute('src');return}if(!file.type.startsWith('image/')){input.value='';img.style.display='none';toast('Please select an image file.','error');return}const reader=new FileReader();reader.onload=()=>{img.src=reader.result;img.style.display='block'};reader.readAsDataURL(file);});}
+async function gfSendSOS(){const message=($('sos-message')?.value||'').trim(),file=$('sos-photo')?.files?.[0];if(!message)return toast('Please describe the safety concern before sending an SOS alert.','error');if(!file)return toast('Please attach an emergency photo before sending the SOS alert.','error');if(!state.user)return toast('You must be signed in to send an SOS alert.','error');if(!file.type.startsWith('image/'))return toast('The SOS attachment must be an image.','error');if(file.size>8*1024*1024)return toast('Please keep the emergency photo below 8 MB.','error');if(!confirm('Send an SOS safety alert now?'))return;setBusy(true,'Sending SOS alert…');try{let coords={latitude:null,longitude:null};if(navigator.geolocation){try{const pos=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:true,timeout:10000,maximumAge:15000}));coords={latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude)};}catch(_){} }const dataUrl=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=reject;r.readAsDataURL(file)});const now=new Date().toISOString(),random=(globalThis.crypto?.randomUUID?.()||Math.random().toString(36)).replace(/-/g,'').slice(0,10).toUpperCase(),ref='SOS-'+new Date().getFullYear()+'-'+random,locationText=coords.latitude!=null?'Location: '+coords.latitude.toFixed(6)+', '+coords.longitude.toFixed(6):'Location unavailable',payload={user_id:state.user.id,title:'SOS Alert '+ref,message:message+'\n'+locationText,severity:'critical',is_read:false,created_at:now};let saved;if(usingSupabase()){const result=await supabaseClient.from('safety_alerts').insert(payload).select('*').single();if(result.error)throw result.error;saved=result.data;gfSetPhoto(saved.id,dataUrl);try{const path='sos/'+String(saved.id)+'-'+Date.now()+'.jpg';const blob=await (await fetch(dataUrl)).blob();const up=await supabaseClient.storage.from('safety-alerts').upload(path,blob,{contentType:file.type,upsert:true});if(!up.error){const pub=supabaseClient.storage.from('safety-alerts').getPublicUrl(path);if(pub?.data?.publicUrl)gfSetPhoto(saved.id,pub.data.publicUrl);}}catch(_){ }await loadData();}else{const a=read(STORAGE.safety,[]);saved={id:globalThis.crypto?.randomUUID?.()||'sos-'+Date.now(),...payload,local_only:true};a.unshift(saved);write(STORAGE.safety,a);state.safetyAlerts=a;gfSetPhoto(saved.id,dataUrl);}$('sos-message').value='';$('sos-photo').value='';const preview=document.querySelector('.sos-photo-preview');if(preview){preview.style.display='none';preview.removeAttribute('src')}renderSafety();renderCommuterDashboard();renderRiderDashboard();toast('SOS '+ref+' recorded successfully.','success');}catch(error){console.error('SOS submission failed:',error);toast('SOS was not recorded: '+(error.message||'database rejected the submission')+'. Your message and photo remain on this form.','error')}finally{setBusy(false);}}
+function gfReplaceSOSButton(){const old=$('sos-submit');if(!old||old.dataset.gfReady==='1')return;const btn=old.cloneNode(true);btn.dataset.gfReady='1';old.replaceWith(btn);btn.addEventListener('click',gfSendSOS);gfPhotoPreview();}
+function gfSafetyRows(){const rows=state.safetyAlerts||[];return rows;}
+function gfRenderSafetyMaps(){document.querySelectorAll('.gf-safety-map[data-map-ready="0"]').forEach(el=>{el.dataset.mapReady='1';const c=el.dataset.coords;if(!c||typeof L==='undefined')return;const [lat,lng]=c.split(',').map(Number);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;setTimeout(()=>{try{const mapInstance=L.map(el,{zoomControl:true,attributionControl:false}).setView([lat,lng],16);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(mapInstance);L.marker([lat,lng]).addTo(mapInstance).bindPopup('SOS emergency location').openPopup();setTimeout(()=>mapInstance.invalidateSize(),120);}catch(e){console.warn('Safety map failed',e)}},0);});}
+function gfSafetyMarkup(a){const coords=gfCoords(a.message),photo=gfGetPhoto(a.id),photoIsUrl=/^(https?:|data:)/i.test(photo);return '<article class="data-card safety-record integrated-safety-card"><div class="report-record-head"><div><div class="card-title">'+esc(a.title||'SOS Safety Alert')+'</div><div class="muted">'+esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))+'</div></div><span class="status-badge '+esc(safetyDisplayClass(a))+'">'+esc(safetyDisplayStatus(a))+'</span></div><div class="small-note">Severity: '+esc(a.severity||'critical')+' · '+(a.is_read?'Read':'Unread')+'</div><p class="report-description">'+esc(gfMessage(a.message))+'</p>'+(coords?'<div class="safety-alert-detail"><strong>Current emergency location</strong><div class="safety-alert-map gf-safety-map" data-map-ready="0" data-coords="'+esc(coords.lat+','+coords.lng)+'"></div></div>':'<div class="safety-alert-detail"><strong>Current emergency location</strong><p class="small-note">Location was not available when this SOS was submitted.</p></div>')+(photo?'<div class="safety-alert-detail"><strong>Emergency photo</strong><img class="safety-alert-photo" src="'+esc(photo)+'" alt="SOS emergency evidence"></div>':'<div class="safety-alert-detail"><strong>Emergency photo</strong><p class="small-note">No photo evidence is attached to this alert record.</p></div>')+'<div class="table-actions"><button type="button" class="btn btn-secondary btn-sm gf-safety-read" data-id="'+esc(a.id)+'" data-read="'+(a.is_read?'false':'true')+'">'+(a.is_read?'Mark unread':'Mark read')+'</button></div></article>';}
+function gfRenderIntegratedSafety(){if(state.role!=='admin')return;const target=$('integrated-safety-content');if(!target)return;const filter=$('safety-filter')?.value||'all',q=($('safety-search')?.value||'').trim().toLowerCase(),rows=gfSafetyRows().filter(a=>(filter==='all'||safetyDisplayStatus(a)===filter)&&(!q||String(a.title||'').toLowerCase().includes(q)||String(a.message||'').toLowerCase().includes(q)||String(a.id||'').toLowerCase().includes(q)));target.innerHTML=rows.length?rows.map(gfSafetyMarkup).join(''):'<div class="empty-state">No SOS safety alerts match the current filter.</div>';document.querySelectorAll('.gf-safety-read').forEach(b=>b.addEventListener('click',async()=>{await updateSafetyReadState(b.dataset.id,b.dataset.read==='true');gfEnhanceReports();}));gfRenderSafetyMaps();}
+function gfRecordDate(x){return new Date(x.created_at||x.updated_at||x.calculated_at||x.timestamp||x.date||0);}
+function gfRecordSets(){return {reports:state.reports||[],safety:state.safetyAlerts||[],calculations:state.calculations||[],audit:state.audit||[],users:state.users||[]};}
+function gfSelectedTypes(){return Array.from(document.querySelectorAll('.gf-record-type:checked')).map(x=>x.value);}
+function gfRecordsForPrint(){const types=gfSelectedTypes(),fromVal=$('gf-record-from')?.value||'',toVal=$('gf-record-to')?.value||'',from=fromVal?new Date(fromVal):null,to=toVal?new Date(toVal):null,sets=gfRecordSets();let rows=[];types.forEach(type=>(sets[type]||[]).forEach(x=>rows.push({...x,_type:type})));if(from)rows=rows.filter(x=>gfRecordDate(x)>=from);if(to)rows=rows.filter(x=>gfRecordDate(x)<=to);return {rows,from,to,types};}
+function gfRecordLabel(type){return ({reports:'Rider Report',safety:'SOS Safety Alert',calculations:'Fare Calculation',audit:'Audit Log',users:'Account Activity'})[type]||type;}
+function gfRecordDetails(x){return String(x.description||x.message||x.action||x.target||x.route||x.notes||'').replace(/Location:\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?/i,'').trim();}
+function gfUpdatePrintCount(){const r=gfRecordsForPrint(),el=$('gf-record-count');if(el)el.textContent=r.rows.length+' record'+(r.rows.length===1?'':'s')+' match the selected filters.';}
+function gfPrintRecords(){const r=gfRecordsForPrint();if(!r.types.length)return toast('Select at least one record or log type to print.','error');if(!r.rows.length)return toast('No records match the selected type and time range.','info');const w=window.open('','_blank','width=1100,height=800');if(!w)return toast('The print window was blocked. Please allow pop-ups for GeoFare.','error');const range=(r.from?r.from.toLocaleString('en-PH'):'All time')+' to '+(r.to?r.to.toLocaleString('en-PH'):'Present');const body=r.rows.sort((a,b)=>gfRecordDate(b)-gfRecordDate(a)).map(x=>'<tr><td>'+esc(gfRecordLabel(x._type))+'</td><td>'+esc(x.reference_no||x.title||x.action||x.id||'Record')+'</td><td>'+esc(gfRecordDate(x).toLocaleString('en-PH'))+'</td><td>'+esc(x.status||x.severity||'Recorded')+'</td><td>'+esc(gfRecordDetails(x))+'</td></tr>').join('');w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>GeoFare Administrative Records</title><style>body{font-family:Arial,sans-serif;color:#111;padding:28px}h1{font-size:22px;margin:0 0 6px}.meta{font-size:11px;color:#555;margin-bottom:18px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid #bbb;padding:7px;text-align:left;vertical-align:top}th{background:#edf2f7}@media print{body{padding:0}}</style></head><body><h1>GeoFare Administrative Records</h1><div class="meta">Record types: '+esc(r.types.map(gfRecordLabel).join(', '))+'<br>Time range: '+esc(range)+'<br>Generated: '+esc(new Date().toLocaleString('en-PH'))+'</div><table><thead><tr><th>Type</th><th>Reference / Record</th><th>Date & Time</th><th>Status</th><th>Details</th></tr></thead><tbody>'+body+'</tbody></table><scr'+'ipt>window.onload=function(){window.print();}</scr'+'ipt></body></html>');w.document.close();}
+function gfBuildTools(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('admin-record-tools'))return;const box=document.createElement('section');box.id='admin-record-tools';box.className='form-card admin-record-tools';box.innerHTML='<div class="report-record-head"><div><span class="section-label">Administrative records</span><h3>Reports & Logs Print Center</h3><p class="small-note">Choose exactly which records the administrator wants to keep or print, with an editable date and time range.</p></div><span class="role-chip">PRINTABLE RECORDS</span></div><div class="admin-record-checks"><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="reports" checked> Rider reports</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="safety" checked> SOS alerts</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="calculations"> Fare calculations</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="audit"> Audit logs</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="users"> Account activity</label></div><div class="admin-record-range"><div class="form-group"><label class="form-label" for="gf-record-from">From</label><input class="form-input" id="gf-record-from" type="datetime-local"></div><div class="form-group"><label class="form-label" for="gf-record-to">To</label><input class="form-input" id="gf-record-to" type="datetime-local"></div></div><div class="admin-record-actions"><button type="button" class="btn btn-primary" id="gf-print-records">🖨 Print selected records</button><button type="button" class="btn btn-secondary btn-sm" id="gf-clear-record-filters">Reset filters</button></div><div class="admin-record-count" id="gf-record-count"></div>';host.insertBefore(box,host.querySelector('#reports-content'));box.querySelectorAll('.gf-record-type').forEach(x=>x.addEventListener('change',gfUpdatePrintCount));$('gf-record-from').addEventListener('change',gfUpdatePrintCount);$('gf-record-to').addEventListener('change',gfUpdatePrintCount);$('gf-print-records').addEventListener('click',gfPrintRecords);$('gf-clear-record-filters').addEventListener('click',()=>{box.querySelectorAll('.gf-record-type').forEach(x=>x.checked=['reports','safety'].includes(x.value));$('gf-record-from').value='';$('gf-record-to').value='';gfUpdatePrintCount()});gfUpdatePrintCount();}
+function gfBuildSafetySection(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('integrated-safety-section'))return;const sec=document.createElement('section');sec.id='integrated-safety-section';sec.className='form-card integrated-safety-wrap';sec.innerHTML='<div class="report-record-head"><div><span class="section-label">Unified safety management</span><h3>Safety Alerts & Emergency Evidence</h3><p class="small-note">SOS alerts are managed here together with rider reports. Each alert shows the sender’s current location directly on a map and its submitted photo evidence.</p></div><div class="safety-queue-tools"><input class="form-input" id="safety-search" placeholder="Search SOS alerts"><select class="form-select" id="safety-filter"><option value="all">All statuses</option><option value="New">New</option><option value="Acknowledged">Acknowledged</option><option value="Responded">Responded</option><option value="Resolved">Resolved</option><option value="Dismissed">Dismissed</option></select></div></div><div id="integrated-safety-content"></div>';host.appendChild(sec);$('safety-search').addEventListener('input',gfRenderIntegratedSafety);$('safety-filter').addEventListener('change',gfRenderIntegratedSafety);}
+function gfEnhanceReports(){if(state.role!=='admin')return;gfBuildTools();gfBuildSafetySection();gfRenderIntegratedSafety();}
+function gfDecorateStats(){if(state.role!=='admin')return;const icons=['👥','🧑‍💼','🛵','🛺','✓','⏳','💵','⚠️','🔎','✓','🆘'];document.querySelectorAll('#admin-stats .stat-card').forEach((card,i)=>{if(card.querySelector('.stat-icon'))return;const icon=document.createElement('div');icon.className='stat-icon';icon.textContent=icons[i]||'📊';card.insertBefore(icon,card.firstChild);});}
+function gfAfterPanel(){gfStars();gfPhotoPreview();gfReplaceSOSButton();if(state.role==='admin'){gfDecorateStats();if(state.currentPanel==='reports')setTimeout(gfEnhanceReports,0);}}
+const originalRenderAdmin=window.renderAdmin;if(typeof originalRenderAdmin==='function'){window.renderAdmin=function(){const r=originalRenderAdmin.apply(this,arguments);setTimeout(gfDecorateStats,0);return r;};}
+const originalRenderRatings=window.renderRatings;if(typeof originalRenderRatings==='function'){window.renderRatings=function(){const r=originalRenderRatings.apply(this,arguments);setTimeout(gfStars,0);return r;};}
+const originalShowPanel=window.showPanel;if(typeof originalShowPanel==='function'){window.showPanel=function(panel){const r=originalShowPanel.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
+const originalRenderSafety=window.renderSafety;if(typeof originalRenderSafety==='function'){window.renderSafety=function(){const r=originalRenderSafety.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
+const originalLoadData=window.loadData;if(typeof originalLoadData==='function'){window.loadData=async function(){const r=await originalLoadData.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
+setTimeout(gfAfterPanel,300);
 })();
 </script>
 </body></html>

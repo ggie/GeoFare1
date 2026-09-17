@@ -1659,13 +1659,14 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     <p class="auth-sub">GIS-based habal-habal fare computation, fare management, and public safety/accountability.</p>
     <div id="auth-alert" class="auth-alert" role="alert"></div>
     <form id="login-form">
-      <div class="form-group"><label class="form-label" for="login-email">Email</label><input class="form-input" id="login-email" type="email" required autocomplete="email"></div>
+      <div class="form-group"><label class="form-label" for="login-identifier">Email Address</label><input class="form-input" id="login-identifier" type="text" autocomplete="username" placeholder="you@example.com" required><div class="form-hint">Use the email address registered to your GeoFare account.</div></div>
       <div class="form-group"><label class="form-label" for="login-password">Password</label><input class="form-input" id="login-password" type="password" required autocomplete="current-password"></div>
       <button class="btn btn-primary auth-submit" type="submit">Sign in</button>
+      <button class="btn btn-secondary auth-submit" id="forgot-password-btn" type="button">Forgot password?</button>
     </form>
     <form id="signup-form" style="display:none">
       <div class="form-group"><label class="form-label" for="signup-name">Full Name</label><input class="form-input" id="signup-name" required maxlength="120"></div>
-      <div class="form-group"><label class="form-label" for="signup-email">Email</label><input class="form-input" id="signup-email" type="email" required></div>
+      <div class="form-group"><label class="form-label" for="signup-identifier">Email Address</label><input class="form-input" id="signup-identifier" type="text" autocomplete="username" placeholder="you@example.com" required><div class="form-hint">Use a valid email address. You will receive a confirmation link before signing in.</div></div>
       <div class="form-group"><label class="form-label" for="signup-password">Password</label><input class="form-input" id="signup-password" type="password" minlength="8" required></div>
       <div class="form-group"><label class="form-label" for="signup-confirm">Confirm Password</label><input class="form-input" id="signup-confirm" type="password" minlength="8" required></div>
       <div class="form-group commuter-only-signup"><label class="form-label" for="signup-contact">Contact Number</label><input class="form-input" id="signup-contact" maxlength="30"></div>
@@ -1677,6 +1678,12 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
         <div class="form-group"><label class="form-label" for="signup-plate">Plate Number</label><input class="form-input" id="signup-plate" maxlength="30"></div>
       </div>
       <button class="btn btn-primary auth-submit" type="submit">Create account</button>
+    </form>
+    <form id="password-reset-form" style="display:none">
+      <div class="form-group"><label class="form-label" for="reset-email">Registered Email Address</label><input class="form-input" id="reset-email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
+      <div class="form-hint" style="margin-bottom:12px">Password recovery uses email because GeoFare authentication is handled through Supabase Email Auth. Mobile-number logins do not receive SMS reset codes.</div>
+      <button class="btn btn-primary auth-submit" id="send-reset-link" type="button">Send Password Reset Email</button>
+      <button class="btn btn-secondary auth-submit" id="password-reset-back" type="button">Back to Sign in</button>
     </form>
     <div class="auth-switch"><span id="auth-switch-text">Need an account?</span> <button id="auth-switch" type="button">Sign up</button></div>
     <div class="demo-note" id="demo-note"></div>
@@ -2637,13 +2644,7 @@ function startSafetyRealtime(){
     .subscribe(status=>console.debug('GeoFare safety realtime:',status));
 }
 function setupAuthUI(){
-  $('auth-switch').onclick=()=>{
-    const login=$('login-form'), signup=$('signup-form'), isLogin=login.style.display!=='none';
-    login.style.display=isLogin?'none':'block'; signup.style.display=isLogin?'block':'none';
-    $('auth-title').textContent=isLogin?'Create your GeoFare account':'Sign in to GeoFare';
-    $('auth-switch-text').textContent=isLogin?'Already have an account?':'Need an account?';
-    $('auth-switch').textContent=isLogin?'Sign in':'Sign up'; clearAuthMessage();
-  };
+  $('auth-switch').onclick=()=>{const isLogin=$('login-form').style.display!=='none';showAuthForm(isLogin?'signup':'login');clearAuthMessage();};
   $('signup-role').onchange=()=>{
     const rider=$('signup-role').value==='rider';
     $('rider-fields').style.display=rider?'block':'none';
@@ -2651,108 +2652,164 @@ function setupAuthUI(){
   };
   $('login-form').onsubmit=handleLogin;
   $('signup-form').onsubmit=handleSignup;
+  $('forgot-password-btn').onclick=()=>{showAuthForm('reset');const value=$('login-identifier').value.trim();if(value.includes('@'))$('reset-email').value=value;clearAuthMessage();};
+  $('password-reset-form').onsubmit=e=>e.preventDefault();
+  $('send-reset-link').onclick=sendPasswordResetLink;
+  $('password-reset-back').onclick=()=>{showAuthForm('login');clearAuthMessage();};
   $('logout-btn').onclick=logout;
   $('profile-btn').onclick=()=>showPanel('profile');
   const demoLine = HAS_SUPABASE
-    ? 'Connected mode: authentication, rider records, ratings, reports, and management data use Supabase. Public sign-up is limited to Commuter and Habal-Habal Rider.'
+    ? 'Connected mode: email authentication accepts either a real email address or a Philippine mobile number as an email-style login identifier. Rider records, ratings, reports, and management data use Supabase.'
     : '<strong>Supabase is not configured.</strong> Configure the existing Supabase project before using GeoFare.';
   $('demo-note').innerHTML = demoLine;
 }
-
+function normalizePhoneNumber(value){
+  let raw=String(value||'').trim().replace(/[\s().-]/g,'');
+  if(!raw)return '';
+  if(raw.startsWith('00'))raw='+'+raw.slice(2);
+  if(raw.startsWith('+'))return raw;
+  if(/^09\d{9}$/.test(raw))return '+63'+raw.slice(1);
+  if(/^9\d{9}$/.test(raw))return '+63'+raw;
+  if(/^639\d{9}$/.test(raw))return '+'+raw;
+  return raw;
+}
+function validPhilippinePhone(value){return /^\+639\d{9}$/.test(normalizePhoneNumber(value));}
+function normalizePlate(value){return String(value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+function phoneDisplay(value){const p=normalizePhoneNumber(value);return p||String(value||'').trim();}
+const GEOFARE_PHONE_EMAIL_DOMAIN='geofare.local';
+function identifierToEmail(value){
+  const raw=String(value||'').trim().toLowerCase();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)?raw:'';
+}
+function identifierType(value){return 'email';}
+function authIdentifierDisplay(value){return String(value||'').trim().toLowerCase();}
+function getAuthContactNumber(identifier,fallback=''){
+  if(validPhilippinePhone(identifier))return normalizePhoneNumber(identifier);
+  if(validPhilippinePhone(fallback))return normalizePhoneNumber(fallback);
+  return '';
+}
+function showAuthForm(name){
+  const forms={login:$('login-form'),signup:$('signup-form'),reset:$('password-reset-form')};
+  Object.entries(forms).forEach(([key,el])=>{if(el)el.style.display=key===name?'block':'none';});
+  if($('auth-switch'))$('auth-switch').style.display=['login','signup'].includes(name)?'inline':'none';
+  if(name==='login'){
+    $('auth-title').textContent='Sign in to GeoFare';
+    $('auth-switch-text').textContent='Need an account?';
+    $('auth-switch').textContent='Sign up';
+  }else if(name==='signup'){
+    $('auth-title').textContent='Create your GeoFare account';
+    $('auth-switch-text').textContent='Already have an account?';
+    $('auth-switch').textContent='Sign in';
+  }else if(name==='reset')$('auth-title').textContent='Reset your password';
+}
+async function sendPasswordResetLink(){
+  clearAuthMessage();
+  const email=$('reset-email').value.trim().toLowerCase();
+  if(!email||!/^[^\s@]+@[^\s@]+$/.test(email))return authMessage('Enter the real email address registered to the account.');
+  setBusy(true,'Sending password reset email…');
+  try{
+    const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+    if(error)throw error;
+    authMessage('Password reset instructions were sent to '+email+'.','success');
+  }catch(err){authMessage(err.message||'Unable to send the password reset email.');}
+  finally{setBusy(false);}
+}
 async function handleLogin(e){
   e.preventDefault(); clearAuthMessage(); setBusy(true,'Signing in…');
   try{
-    const email=$('login-email').value.trim().toLowerCase(), password=$('login-password').value;
-    if(!email || !password) throw new Error('Email and password are required.');
-    if(!HAS_SUPABASE) throw new Error('Supabase is not configured. Configure GEOFARE_SUPABASE_URL and GEOFARE_SUPABASE_ANON_KEY before signing in.');
-    if(HAS_SUPABASE){
-      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
-      if(error) throw new Error('Invalid email or password.');
-      await establishSupabaseSession(data.session);
-    }
+    const email=$('login-identifier').value.trim().toLowerCase(), password=$('login-password').value;
+    if(!identifierToEmail(email)||!password)throw new Error('Enter your registered email address and password.');
+    if(!HAS_SUPABASE)throw new Error('Supabase is not configured. Configure GEOFARE_SUPABASE_URL and GEOFARE_SUPABASE_ANON_KEY before signing in.');
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    if(error)throw new Error('Invalid email address or password.');
+    await establishSupabaseSession(data.session);
   }catch(err){authMessage(err.message||'Unable to sign in.');}
   finally{setBusy(false);}
 }
 async function ensureSupabaseProfile(user, fallback = {}){
   if(!HAS_SUPABASE || !user?.id) return null;
   const meta = user.user_metadata || {};
-  const role = ['commuter','rider','admin'].includes(fallback.role || meta.role) ? (fallback.role || meta.role) : 'commuter';
+  const role = ['commuter','rider','admin','responder'].includes(fallback.role || meta.role) ? (fallback.role || meta.role) : 'commuter';
+  const authEmail=String(user.email||fallback.email||'').trim().toLowerCase();
+  const contact=normalizePhoneNumber(fallback.contact_number || meta.contact_number || (authEmail.endsWith('@'+GEOFARE_PHONE_EMAIL_DOMAIN)?authEmail.slice(0,-('@'+GEOFARE_PHONE_EMAIL_DOMAIN).length):''));
   const profile = {
     id: user.id,
-    email: user.email || fallback.email || '',
-    full_name: fallback.full_name || meta.full_name || user.email?.split('@')[0] || 'GeoFare User',
+    email: authEmail,
+    full_name: fallback.full_name || meta.full_name || contact || authEmail || 'GeoFare User',
     role,
-    contact_number: fallback.contact_number ?? meta.contact_number ?? '',
+    contact_number: contact || fallback.contact_number || meta.contact_number || '',
     address: fallback.address ?? meta.address ?? '',
     status: fallback.status || 'active'
   };
   const {data,error}=await supabaseClient.from('profiles').upsert(profile,{onConflict:'id'}).select('*').single();
-  if(error){
-    console.warn('GeoFare profile sync:',error.message);
-    return profile;
-  }
+  if(error){console.warn('GeoFare profile sync:',error.message);return profile;}
   return data || profile;
 }
-
+async function findUnlinkedRiderMatch(plate,permit){
+  if(!HAS_SUPABASE)return null;
+  const normalizedPlate=normalizePlate(plate), normalizedPermit=String(permit||'').trim().toLowerCase();
+  if(!normalizedPlate)return null;
+  const result=await supabaseClient.from('rider_profiles').select('*').is('profile_id',null);
+  if(result.error)throw result.error;
+  const matches=(result.data||[]).filter(r=>normalizePlate(r.plate_number)===normalizedPlate && normalizedPermit && String(r.business_permit_reference||'').trim().toLowerCase()===normalizedPermit);
+  return matches.length===1?matches[0]:matches.length>1?{ambiguous:true,count:matches.length}:null;
+}
 async function ensureSupabaseRiderProfile(user, signupData={}){
   if(!HAS_SUPABASE || !user?.id || signupData.role!=='rider') return null;
-  const rider = {
-    profile_id:user.id,
-    public_id:signupData.public_id || ('RDR-'+crypto.randomUUID().slice(0,8).toUpperCase()),
-    business_permit_reference:signupData.business_permit_reference || '',
-    ally_group:signupData.ally_group || '',
-    plate_number:signupData.plate_number || '',
-    verification_status:'Pending',
-    qr_token:signupData.qr_token || crypto.randomUUID(),
-    average_rating:null
-  };
-  const {data,error}=await supabaseClient.from('rider_profiles').upsert(rider,{onConflict:'profile_id'}).select('*').single();
-  if(error){
-    console.warn('GeoFare rider profile sync:',error.message);
-    throw new Error('Rider profile could not be created. Confirm the rider_profiles columns and RLS policy.');
+  const plate=String(signupData.plate_number||'').trim().toUpperCase();
+  const permit=String(signupData.business_permit_reference||'').trim();
+  let existing=await findUnlinkedRiderMatch(plate,permit);
+  if(existing && existing.ambiguous)existing=null;
+  if(existing){
+    const linked=await supabaseClient.from('rider_profiles').update({profile_id:user.id,updated_at:new Date().toISOString()}).eq('id',existing.id).is('profile_id',null).select('*').single();
+    if(linked.error)throw linked.error;
+    await addAudit('Existing MFRTA rider record linked to new rider account',existing.id,{plate_number:plate,business_permit_reference:permit,automatic_link:true});
+    return linked.data;
   }
+  const rider={profile_id:user.id,public_id:signupData.public_id||('RDR-'+crypto.randomUUID().slice(0,8).toUpperCase()),business_permit_reference:permit,ally_group:signupData.ally_group||'',plate_number:plate,verification_status:'Pending',qr_token:signupData.qr_token||crypto.randomUUID(),average_rating:null};
+  const {data,error}=await supabaseClient.from('rider_profiles').upsert(rider,{onConflict:'profile_id'}).select('*').single();
+  if(error)throw new Error('Rider profile could not be created. Confirm the rider_profiles columns and RLS policy.');
   const verification={rider_id:data.id||data.profile_id||user.id,status:'Pending',submitted_at:new Date().toISOString(),note:null};
   const vr=await supabaseClient.from('rider_verifications').insert(verification);
-  if(vr.error && !/relation .*rider_verifications|column .*rider_id/i.test(vr.error.message||'')){
-    console.warn('GeoFare rider verification sync:',vr.error.message);
-  }
+  if(vr.error && !/relation .*rider_verifications|column .*rider_id/i.test(vr.error.message||''))console.warn('GeoFare rider verification sync:',vr.error.message);
   await addAudit('Rider registration submitted',data.id||data.profile_id,{});
   return data;
 }
-
+async function finishEmailSignup(session,user,payload){
+  const profile=await ensureSupabaseProfile(user,payload);
+  if(payload.role==='rider')await ensureSupabaseRiderProfile(user,payload);
+  state.profile=profile;
+  authMessage('Account created successfully. Opening your GeoFare dashboard…','success');
+  await establishSupabaseSession(session);
+}
 async function handleSignup(e){
-  e.preventDefault(); clearAuthMessage(); setBusy(true,'Creating account…');
+  e.preventDefault();clearAuthMessage();setBusy(true,'Creating account…');
   try{
-    const name=$('signup-name').value.trim();
-    const email=$('signup-email').value.trim().toLowerCase();
-    const password=$('signup-password').value;
-    const confirm=$('signup-confirm').value;
-    const role=normalizeRole($('signup-role').value);
-    const contact=role==='rider' ? '' : $('signup-contact').value.trim();
-    const address=role==='rider' ? '' : $('signup-address').value.trim();
-    const group=role==='rider' ? $('signup-group').value.trim() : '';
-    const permit=role==='rider' ? $('signup-permit').value.trim() : '';
-    const plate=role==='rider' ? $('signup-plate').value.trim() : '';
-    if(!name || !email) throw new Error('Full name and email are required.');
-    if(password!==confirm) throw new Error('Passwords do not match.');
-    if(password.length<8) throw new Error('Password must be at least 8 characters.');
-    if(role==='rider' && !group) throw new Error('Rider accounts require an association/group.');
-    if(role==='rider' && !permit) throw new Error('Rider accounts require a registered business permit number.');
-    if(role==='rider' && !plate) throw new Error('Rider accounts require a plate number.');
-    if(!usingSupabase()) throw new Error('Supabase is not configured.');
-    const payload={full_name:name,role,contact_number:contact,address,business_permit_reference:permit||null,ally_group:group||null,plate_number:plate||null};
-    const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:payload}});
-    if(error) throw new Error(/already registered|already exists/i.test(error.message||'')?'An account with this email already exists.':error.message);
-    if(!data?.user) throw new Error('Supabase did not return the new account. Please try again.');
+    const name=$('signup-name').value.trim(), email=$('signup-identifier').value.trim().toLowerCase();
+    const password=$('signup-password').value, confirm=$('signup-confirm').value, role=normalizeRole($('signup-role').value);
+    const contact=normalizePhoneNumber($('signup-contact').value);
+    const address=role==='rider'?'':$('signup-address').value.trim();
+    const group=role==='rider'?$('signup-group').value.trim():'';
+    const permit=role==='rider'?$('signup-permit').value.trim():'';
+    const plate=role==='rider'?$('signup-plate').value.trim():'';
+    if(!name||!identifierToEmail(email))throw new Error('Full name and a valid email address are required.');
+    if(password!==confirm)throw new Error('Passwords do not match.');
+    if(password.length<8)throw new Error('Password must be at least 8 characters.');
+    if(role==='rider'&&!group)throw new Error('Rider accounts require an association/group.');
+    if(role==='rider'&&!permit)throw new Error('Rider accounts require a registered business permit number.');
+    if(role==='rider'&&!plate)throw new Error('Rider accounts require a plate number.');
+    if(!usingSupabase())throw new Error('Supabase is not configured.');
+    const payload={full_name:name,role,contact_number:contact,address,business_permit_reference:permit||null,ally_group:group||null,plate_number:plate||null,real_email:email};
+    const redirectUrl=`${window.location.origin}${window.location.pathname}`;
+    const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:payload,emailRedirectTo:redirectUrl}});
+    if(error)throw new Error(/already registered|already exists/i.test(error.message||'')?'An account with this email already exists.':error.message);
+    if(!data?.user)throw new Error('Supabase did not return the new account. Please try again.');
     if(data.session){
-      const profile=await ensureSupabaseProfile(data.user,{...payload,email});
-      if(role==='rider') await ensureSupabaseRiderProfile(data.user,{...payload,role});
-      state.profile=profile;
-      authMessage('Account created successfully. Opening your GeoFare dashboard…','success');
-      await establishSupabaseSession(data.session);
+      await finishEmailSignup(data.session,data.user,payload);
     }else{
-      authMessage('Account created successfully. Check your email to confirm your account, then sign in.','success');
-      $('signup-form').reset(); $('rider-fields').style.display='none';
+      showAuthForm('login');
+      $('login-identifier').value=email;
+      authMessage('Account created. Check your email for the Supabase confirmation link, then return to GeoFare and sign in.','success');
     }
   }catch(err){authMessage(err.message||'Unable to create account.');}
   finally{setBusy(false);}
@@ -2766,15 +2823,15 @@ async function establishSupabaseSession(session){
   if(lookup.error) console.warn('Profile lookup:',lookup.error.message);
   profile=lookup.data||null;
   profile=await ensureSupabaseProfile(session.user,profile||{
-    email:session.user.email,
+    email:session.user.email || '',
     full_name:meta.full_name,
     role:meta.role,
-    contact_number:meta.contact_number,
+    contact_number:meta.contact_number || getAuthContactNumber('',session.user.email || ''),
     address:meta.address,
     status:'active'
   });
   if(!profile) throw new Error('Your account is authenticated, but its GeoFare profile could not be synchronized. Please contact the administrator.');
-  if(String(session.user.email||'').toLowerCase()===MFRTA_ADMIN_EMAIL.toLowerCase() && profile.role!=='admin'){
+  if(profile.role!=='admin' && String(session.user.email||'').toLowerCase()===MFRTA_ADMIN_EMAIL.toLowerCase()){
     const roleUpdate=await supabaseClient.from('profiles').update({role:'admin',updated_at:new Date().toISOString()}).eq('id',session.user.id);
     if(roleUpdate.error) throw new Error('MFRTA administrator account is authenticated, but its profile could not be assigned the admin role. Check Supabase RLS for profiles.');
     profile={...profile,role:'admin'};
@@ -2790,8 +2847,26 @@ async function establishSupabaseSession(session){
   }
   await enterApplication();
 }
+async function handleEmailConfirmationReturn(){
+  const hash=window.location.hash||'';
+  const search=window.location.search||'';
+  const hasAuthCallback=/(access_token|refresh_token|type=signup|type=email|error_code|error_description)/.test(hash+' '+search);
+  if(!hasAuthCallback)return false;
+  try{
+    const {data}=await supabaseClient.auth.getSession();
+    if(data.session){
+      await supabaseClient.auth.signOut();
+      if(window.history&&window.history.replaceState)window.history.replaceState({},document.title,window.location.pathname+window.location.search.replace(/([?&])(code|token_hash|type|error|error_code|error_description)=[^&]*&?/g,'$1').replace(/[?&]$/,''));
+      showAuthForm('login');
+      authMessage('Email confirmed successfully. You can now sign in to GeoFare.','success');
+      return true;
+    }
+  }catch(err){console.warn('Email confirmation callback:',err.message||err);}
+  return false;
+}
 async function restoreSession(){
   if(!usingSupabase()){$('auth-screen').classList.remove('hidden');authMessage('GeoFare cannot start because the Supabase configuration is missing.');return;}
+  if(await handleEmailConfirmationReturn()){return;}
   const {data,error}=await supabaseClient.auth.getSession();
   if(error){console.warn('Session restore:',error.message);$('auth-screen').classList.remove('hidden');return;}
   if(data.session){try{await establishSupabaseSession(data.session);return;}catch(e){console.warn('Session initialization:',e);}}
@@ -3475,8 +3550,8 @@ document.getElementById('rider-check-btn')?.addEventListener('click',checkRiderF
 document.querySelectorAll('[data-panel]').forEach(b=>b.addEventListener('click',()=>showPanel(b.dataset.panel)));
 
 
-function accountEvents(){const audit=(state.audit||[]).filter(a=>/account|registration|rider|profile|user/i.test(String(a.action||'')));const derived=(state.users||[]).map(u=>({action:u.role==='rider'?'Rider account registered':'User account registered',target:u.full_name||u.email,created_at:u.created_at,metadata:{role:u.role,status:u.status||'active'}}));return [...audit,...derived].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));}
-function renderAdminLiveMonitoring(){if(state.role!=='admin')return;const users=[...(state.users||[])].sort((a,b)=>new Date(b.updated_at||b.created_at||0)-new Date(a.updated_at||a.created_at||0));const target=$('admin-live-users');if(target)target.innerHTML=users.length?users.slice(0,20).map(u=>{const rider=state.riders.find(r=>r.profile_id===u.id);return `<div class="monitor-row"><div class="monitor-avatar">${u.role==='rider'?'🛵':u.role==='admin'?'M':'👤'}</div><div class="monitor-main"><strong>${esc(u.full_name||u.email||'Unnamed User')}</strong><span>${esc(roleLabel(u.role))}${rider?` · ${esc(rider.plate_number||rider.public_id||'Rider')}`:''} · <span class="status-badge ${statusClass(u.status||'active')}">${esc(u.status||'active')}</span></span></div><div class="monitor-time">${esc(new Date(u.updated_at||u.created_at||Date.now()).toLocaleString('en-PH'))}</div></div>`}).join(''):'<div class="empty-state">No user accounts have been registered yet.</div>';const events=accountEvents(),eventTarget=$('admin-account-events');if(eventTarget)eventTarget.innerHTML=events.length?events.slice(0,12).map(e=>`<div class="account-event"><strong>${esc(e.action||'Account activity')}</strong><small>${esc(e.target||'—')} · ${esc(new Date(e.created_at||Date.now()).toLocaleString('en-PH'))}</small></div>`).join(''):'<div class="empty-state">No account activity recorded yet.</div>';}
+function accountEvents(){const audit=(state.audit||[]).filter(a=>/account|registration|rider|profile|user/i.test(String(a.action||'')));const derived=(state.users||[]).map(u=>({action:u.role==='rider'?'Rider account registered':'User account registered',target:u.full_name||u.contact_number||u.email,created_at:u.created_at,metadata:{role:u.role,status:u.status||'active'}}));return [...audit,...derived].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));}
+function renderAdminLiveMonitoring(){if(state.role!=='admin')return;const users=[...(state.users||[])].sort((a,b)=>new Date(b.updated_at||b.created_at||0)-new Date(a.updated_at||a.created_at||0));const target=$('admin-live-users');if(target)target.innerHTML=users.length?users.slice(0,20).map(u=>{const rider=state.riders.find(r=>r.profile_id===u.id);return `<div class="monitor-row"><div class="monitor-avatar">${u.role==='rider'?'🛵':u.role==='admin'?'M':'👤'}</div><div class="monitor-main"><strong>${esc(u.full_name||u.contact_number||u.email||'Unnamed User')}</strong><span>${esc(roleLabel(u.role))}${rider?` · ${esc(rider.plate_number||rider.public_id||'Rider')}`:''} · <span class="status-badge ${statusClass(u.status||'active')}">${esc(u.status||'active')}</span></span></div><div class="monitor-time">${esc(new Date(u.updated_at||u.created_at||Date.now()).toLocaleString('en-PH'))}</div></div>`}).join(''):'<div class="empty-state">No user accounts have been registered yet.</div>';const events=accountEvents(),eventTarget=$('admin-account-events');if(eventTarget)eventTarget.innerHTML=events.length?events.slice(0,12).map(e=>`<div class="account-event"><strong>${esc(e.action||'Account activity')}</strong><small>${esc(e.target||'—')} · ${esc(new Date(e.created_at||Date.now()).toLocaleString('en-PH'))}</small></div>`).join(''):'<div class="empty-state">No account activity recorded yet.</div>';}
 
 function renderAdmin(){
   if(state.role!=='admin')return;
@@ -3581,7 +3656,7 @@ $('fare-admin-form').onsubmit=async e=>{
 function renderUsers(){
   if(!state.users.length){$('users-content').innerHTML='<div class="log-empty"><div class="log-empty-icon">◉</div>No user records are available.</div>';return;}
   const rows=[...state.users].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
-  $('users-content').innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Rider ID</th><th>Created</th><th>Actions</th></tr></thead><tbody>${rows.map(u=>{const rider=state.riders.find(r=>r.profile_id===u.id);const isSelf=u.id===state.user?.id;const suspended=String(u.status||'active').toLowerCase()==='suspended';return `<tr><td>${esc(u.full_name||u.name||'Unnamed User')}</td><td>${esc(u.email||'—')}</td><td><span class="role-chip">${esc(roleLabel(u.role))}</span></td><td><span class="status-badge ${statusClass(u.status||'active')}">${esc(u.status||'active')}</span></td><td>${esc(rider?.public_id||'—')}</td><td>${u.created_at?esc(new Date(u.created_at).toLocaleString('en-PH')):'—'}</td><td class="table-actions"><button class="btn btn-secondary btn-sm edit-user-btn" data-id="${esc(u.id)}">Edit</button><button class="btn ${suspended?'btn-primary':'btn-danger'} btn-sm toggle-user-status" data-id="${esc(u.id)}" data-status="${suspended?'active':'suspended'}" ${isSelf?'disabled title="You cannot suspend your own account"':''}>${suspended?'Activate':'Suspend'}</button></td></tr>`;}).join('')}</tbody></table></div>`;
+  $('users-content').innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Name</th><th>Mobile Number</th><th>Role</th><th>Status</th><th>Rider ID</th><th>Created</th><th>Actions</th></tr></thead><tbody>${rows.map(u=>{const rider=state.riders.find(r=>r.profile_id===u.id);const isSelf=u.id===state.user?.id;const suspended=String(u.status||'active').toLowerCase()==='suspended';return `<tr><td>${esc(u.full_name||u.name||'Unnamed User')}</td><td>${esc(u.contact_number||u.email||'—')}</td><td><span class="role-chip">${esc(roleLabel(u.role))}</span></td><td><span class="status-badge ${statusClass(u.status||'active')}">${esc(u.status||'active')}</span></td><td>${esc(rider?.public_id||'—')}</td><td>${u.created_at?esc(new Date(u.created_at).toLocaleString('en-PH')):'—'}</td><td class="table-actions"><button class="btn btn-secondary btn-sm edit-user-btn" data-id="${esc(u.id)}">Edit</button><button class="btn ${suspended?'btn-primary':'btn-danger'} btn-sm toggle-user-status" data-id="${esc(u.id)}" data-status="${suspended?'active':'suspended'}" ${isSelf?'disabled title="You cannot suspend your own account"':''}>${suspended?'Activate':'Suspend'}</button></td></tr>`;}).join('')}</tbody></table></div>`;
   document.querySelectorAll('.edit-user-btn').forEach(b=>b.onclick=()=>openUserEdit(b.dataset.id));document.querySelectorAll('.toggle-user-status').forEach(b=>b.onclick=()=>updateUserStatus(b.dataset.id,b.dataset.status));
 }
 function openUserEdit(id){if(state.role!=='admin')return;const u=state.users.find(x=>String(x.id)===String(id));if(!u)return;const rider=state.riders.find(r=>String(r.profile_id)===String(id));$('edit-user-id').value=u.id;$('edit-full-name').value=u.full_name||'';$('edit-email').value=u.email||'';$('edit-contact').value=u.contact_number||'';$('edit-address').value=u.address||'';$('edit-role').value=['commuter','rider','admin','responder'].includes(u.role)?u.role:'commuter';$('edit-status').value=String(u.status||'active').toLowerCase()==='suspended'?'suspended':'active';$('edit-group').value=rider?.ally_group||'';$('edit-permit').value=rider?.business_permit_reference||'';$('edit-plate').value=rider?.plate_number||'';$('edit-verification').value=rider?.verification_status||'Pending';$('edit-rider-fields').style.display=$('edit-role').value==='rider'?'block':'none';$('user-edit-subtitle').textContent=`${roleLabel(u.role)} · ${u.email||u.id}`;$('user-edit-modal').classList.add('active');}
@@ -3635,7 +3710,7 @@ function renderAudit(){
 }
 function renderProfile(){
   const p=state.profile||state.user||{};
-  $('profile-content').innerHTML=`<div class="data-card" style="max-width:650px"><div class="card-title">${esc(p.full_name||p.name||'')}</div><div class="muted">${esc(p.email||'')}</div><div class="score-row"><span>Role</span><strong>${esc(roleLabel(state.role))}</strong></div><div class="score-row"><span>Contact</span><strong>${esc(p.contact_number||'—')}</strong></div><div class="score-row"><span>Address</span><strong>${esc(p.address||'—')}</strong></div><div class="score-row"><span>Account status</span><strong>${esc(p.status||'active')}</strong></div>${state.role==='rider'?`<div class="score-row"><span>Verification</span><strong>${esc(state.riders.find(r=>r.profile_id===state.user.id)?.verification_status||'Pending')}</strong></div>`:''}</div>`;
+  $('profile-content').innerHTML=`<div class="data-card" style="max-width:650px"><div class="card-title">${esc(p.full_name||p.name||'')}</div><div class="muted">${esc(p.contact_number||p.email||'')}</div><div class="score-row"><span>Role</span><strong>${esc(roleLabel(state.role))}</strong></div><div class="score-row"><span>Contact</span><strong>${esc(p.contact_number||'—')}</strong></div><div class="score-row"><span>Address</span><strong>${esc(p.address||'—')}</strong></div><div class="score-row"><span>Account status</span><strong>${esc(p.status||'active')}</strong></div>${state.role==='rider'?`<div class="score-row"><span>Verification</span><strong>${esc(state.riders.find(r=>r.profile_id===state.user.id)?.verification_status||'Pending')}</strong></div>`:''}</div>`;
 }
 
 function bindMisc(){
@@ -4482,7 +4557,7 @@ html,body{height:100%;overflow:hidden}.app,.main,.panel{min-height:0}.panel.acti
 @media(max-width:560px){.admin-record-range{grid-template-columns:1fr}.admin-record-checks{grid-template-columns:1fr}.star-rating-grid{grid-template-columns:1fr}.star-input .star{font-size:27px}}
 @media print{.admin-record-print-area{padding:0}.admin-record-print-area table{font-size:9px}}
 
-/* Final visual sizing */
+
 #admin-stats .stat-card{position:relative;min-height:132px;padding:18px 18px 16px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
 #admin-stats .stat-card .stat-icon{width:54px;height:54px;border-radius:15px;font-size:29px;line-height:1;margin-bottom:12px;box-shadow:0 5px 14px rgba(18,62,115,.14);border:1px solid var(--border)}
 #admin-stats .stat-card .stat-value{font-size:30px;line-height:1.05;letter-spacing:-.4px}

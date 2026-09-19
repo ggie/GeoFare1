@@ -1695,10 +1695,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 </style>
 
 <style id="geofare-mobile-topbar-final-fix">
-/* Final mobile portrait topbar layout:
-   LEFT  = GEOSPATIAL TRANSPORTATION SYSTEM + current role
-   RIGHT = light/dark + profile + logout
-   DATABASE status is intentionally hidden on portrait screens. */
+
 @media (max-width: 768px) {
   .topbar {
     position: relative !important;
@@ -1755,13 +1752,13 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     gap: 5px !important;
   }
 
-  /* Never show DATABASE CONNECTED / DATABASE NOT CONFIGURED in mobile topbar. */
+  
   .topbar-actions .dev-badge,
   #mode-badge {
     display: none !important;
   }
 
-  /* The three and only three mobile top-right controls. */
+  
   .topbar-actions .theme-icon-btn,
   .topbar-actions .profile-icon-btn,
   .topbar-actions #logout-btn {
@@ -1864,7 +1861,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     z-index: 1000 !important;
   }
 
-  /* Only these three controls are shown on portrait mobile. */
+  
   #theme-toggle,
   #profile-btn,
   #logout-btn {
@@ -1896,7 +1893,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
     visibility: visible !important;
   }
 
-  /* Hide database/development status from the mobile top-right area. */
+  
   #mode-badge,
   .topbar-actions .dev-badge {
     display: none !important;
@@ -6090,5 +6087,157 @@ body.sidebar-open{overflow:hidden}
 <style id="geofare-admin-responsive-final">
 html[data-role="admin"] #app,html[data-role="admin"] .app{min-width:0!important;width:100%!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;user-select:auto!important}
 html[data-role="admin"] .main{min-width:0!important;width:auto!important}
+</style>
+
+<style id="geofare-final-mobile-topbar-authoritative">
+@media (max-width:768px){
+  .topbar{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"title actions"!important;
+    align-items:center!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:70px!important;
+    height:auto!important;
+    box-sizing:border-box!important;
+    padding:10px 8px 10px 66px!important;
+    gap:6px!important;
+    overflow:visible!important;
+    position:relative!important;
+  }
+  .topbar-title{
+    grid-area:title!important;
+    display:flex!important;
+    min-width:0!important;
+    width:auto!important;
+    max-width:none!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    align-self:center!important;
+  }
+  .topbar-title .eyebrow{
+    display:block!important;
+    max-width:100%!important;
+    font-size:7px!important;
+    letter-spacing:.55px!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .topbar-title strong{
+    display:block!important;
+    max-width:100%!important;
+    font-size:14px!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .topbar-actions{
+    grid-area:actions!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:4px!important;
+    width:auto!important;
+    min-width:126px!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    position:static!important;
+    transform:none!important;
+    visibility:visible!important;
+    opacity:1!important;
+    overflow:visible!important;
+    z-index:9999!important;
+  }
+  .topbar-actions #mode-badge,.topbar-actions .dev-badge{
+    display:none!important;
+    visibility:hidden!important;
+    width:0!important;
+    min-width:0!important;
+    max-width:0!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+  }
+  .topbar-actions #theme-toggle,.topbar-actions #profile-btn,.topbar-actions #logout-btn{
+    display:inline-flex!important;
+    flex:0 0 auto!important;
+    visibility:visible!important;
+    opacity:1!important;
+    position:relative!important;
+    z-index:10000!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+  }
+  .topbar-actions #theme-toggle,.topbar-actions #profile-btn{
+    width:34px!important;
+    min-width:34px!important;
+    max-width:34px!important;
+    height:34px!important;
+    min-height:34px!important;
+    max-height:34px!important;
+    padding:0!important;
+  }
+  .topbar-actions #logout-btn{
+    width:auto!important;
+    min-width:55px!important;
+    max-width:70px!important;
+    height:34px!important;
+    min-height:34px!important;
+    max-height:34px!important;
+    padding:0 8px!important;
+    white-space:nowrap!important;
+  }
+  .topbar-actions #theme-toggle svg,.topbar-actions #profile-btn svg{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+}
+@media (max-width:420px){
+  .topbar{
+    grid-template-columns:minmax(0,1fr) 124px!important;
+    min-height:68px!important;
+    padding-left:62px!important;
+    padding-right:5px!important;
+    gap:3px!important;
+  }
+  .topbar-actions{
+    min-width:124px!important;
+    gap:2px!important;
+  }
+  .topbar-actions #theme-toggle,.topbar-actions #profile-btn{
+    width:32px!important;
+    min-width:32px!important;
+    max-width:32px!important;
+    height:32px!important;
+    min-height:32px!important;
+    max-height:32px!important;
+  }
+  .topbar-actions #logout-btn{
+    min-width:52px!important;
+    max-width:62px!important;
+    height:32px!important;
+    min-height:32px!important;
+    max-height:32px!important;
+    padding:0 6px!important;
+    font-size:10px!important;
+  }
+  .topbar-title .eyebrow{font-size:6.7px!important;letter-spacing:.5px!important}
+  .topbar-title strong{font-size:13.5px!important}
+}
+@media (max-width:340px){
+  .topbar{grid-template-columns:minmax(0,1fr) 116px!important;padding-left:58px!important}
+  .topbar-actions{min-width:116px!important;gap:2px!important}
+  .topbar-actions #theme-toggle,.topbar-actions #profile-btn{width:30px!important;min-width:30px!important;max-width:30px!important;height:30px!important;min-height:30px!important;max-height:30px!important}
+  .topbar-actions #logout-btn{min-width:50px!important;max-width:58px!important;height:30px!important;min-height:30px!important;max-height:30px!important;font-size:9px!important}
+  .topbar-title strong{font-size:12.5px!important}
+}
 </style>
 </body></html>

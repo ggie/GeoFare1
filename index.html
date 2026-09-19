@@ -5810,22 +5810,31 @@ body.sidebar-open{overflow:hidden}
 }
 @media(max-width:420px){
   .menu-toggle{top:max(8px,env(safe-area-inset-top))!important;left:8px!important;width:48px!important;height:48px!important;min-width:48px!important;font-size:22px!important}
-  .topbar{min-height:62px!important;padding-left:66px!important;padding-right:7px!important}
-  .topbar-title .eyebrow{display:none!important}
-  .topbar-title strong{font-size:13.5px!important;line-height:1.2!important}
-  .topbar-actions{gap:3px!important}
-  .topbar-actions .icon-btn{width:32px!important;height:32px!important;flex-basis:32px!important}
-  .topbar-actions .btn{padding-left:8px!important;padding-right:8px!important;font-size:10.5px!important}
+  .topbar{min-height:70px!important;padding-left:66px!important;padding-right:7px!important;position:relative!important}
+  .topbar-title{padding-right:142px!important}
+  .topbar-title .eyebrow{display:block!important;font-size:6.8px!important;letter-spacing:.55px!important;line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .topbar-title strong{font-size:13.5px!important;line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .topbar-actions{position:absolute!important;right:7px!important;top:50%!important;transform:translateY(-50%)!important;gap:3px!important;display:flex!important;align-items:center!important}
+  .topbar-actions .dev-badge{display:inline-flex!important;align-items:center!important;justify-content:center!important;max-width:88px!important;min-width:0!important;padding:4px 6px!important;font-size:7px!important;letter-spacing:.35px!important;line-height:1.05!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .topbar-actions .icon-btn{width:32px!important;height:32px!important;flex:0 0 32px!important}
+  .topbar-actions .btn{padding-left:7px!important;padding-right:7px!important;font-size:9.5px!important;white-space:nowrap!important}
   .sidebar-header{padding-left:68px!important}
   .geofare-logo{width:min(175px,100%)!important}
 }
 @media(max-width:360px){
-  .topbar{padding-left:62px!important}
-  .topbar-title strong{font-size:13px!important}
-  .topbar-actions .theme-icon-btn{display:none!important}
+  .topbar{padding-left:62px!important;padding-right:5px!important}
+  .topbar-title{padding-right:112px!important}
+  .topbar-title .eyebrow{font-size:6.2px!important;letter-spacing:.4px!important}
+  .topbar-title strong{font-size:12.5px!important}
+  .topbar-actions{right:5px!important;gap:2px!important}
+  .topbar-actions .dev-badge{max-width:78px!important;font-size:6.5px!important;padding:4px 5px!important}
+  .topbar-actions .theme-icon-btn{display:flex!important}
+  .topbar-actions .profile-icon-btn{display:none!important}
+  .topbar-actions .logout-btn,.topbar-actions #logout-btn{display:none!important}
 }
 @media(max-width:340px){
-  .topbar-actions .logout-btn,.topbar-actions #logout-btn{display:none!important}
+  .topbar-title{padding-right:105px!important}
+  .topbar-actions .dev-badge{max-width:72px!important}
   .sidebar-header{padding-left:66px!important}
 }
 

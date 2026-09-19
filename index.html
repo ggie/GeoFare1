@@ -1939,6 +1939,67 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   .topbar-actions #theme-toggle .theme-svg{width:18px!important;height:18px!important}
 }
 </style>
+<style id="geofare-rating-final-fix">
+.star-rating-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.star-field{display:flex!important;flex-direction:column!important;gap:8px!important}
+.star-input{display:flex!important;align-items:center!important;gap:6px!important;min-height:40px!important;visibility:visible!important;opacity:1!important}
+.star-input .star{appearance:none!important;-webkit-appearance:none!important;border:0!important;background:transparent!important;color:#c7d0d9!important;padding:0!important;margin:0!important;width:34px!important;height:38px!important;display:inline-grid!important;place-items:center!important;font-family:Arial,sans-serif!important;font-size:31px!important;line-height:1!important;cursor:pointer!important;pointer-events:auto!important;position:relative!important;z-index:20!important;transition:transform .15s ease,color .15s ease,filter .15s ease!important}
+.star-input .star.active{color:#f5b301!important;text-shadow:0 2px 8px rgba(245,179,1,.22)!important}
+.star-input .star:hover,.star-input .star:focus-visible{color:#f5b301!important;transform:translateY(-2px) scale(1.08)!important;outline:none!important}
+@media(max-width:700px){.star-rating-grid{grid-template-columns:1fr!important}.star-input .star{width:32px!important;height:36px!important;font-size:29px!important}}
+</style>
+<script id="geofare-rating-final-init">
+function gfEnsureRatingStarsFinal(){
+  document.querySelectorAll('#rating-form .star-field').forEach(field=>{
+    const box=field.querySelector('.star-input');
+    const input=field.querySelector('input[type="hidden"]');
+    if(!box||!input)return;
+    if(box.dataset.gfFinalReady!=='1'){
+      box.dataset.gfFinalReady='1';
+      box.innerHTML='';
+      for(let i=1;i<=5;i++){
+        const button=document.createElement('button');
+        button.type='button';
+        button.className='star';
+        button.textContent='★';
+        button.setAttribute('aria-label',i+' star'+(i===1?'':'s'));
+        button.addEventListener('click',function(ev){
+          ev.preventDefault();
+          ev.stopPropagation();
+          input.value=String(i);
+          box.querySelectorAll('.star').forEach((item,index)=>item.classList.toggle('active',index<i));
+          box.setAttribute('aria-valuenow',String(i));
+          input.dispatchEvent(new Event('input',{bubbles:true}));
+          input.dispatchEvent(new Event('change',{bubbles:true}));
+        });
+        button.addEventListener('mouseenter',()=>box.querySelectorAll('.star').forEach((item,index)=>item.classList.toggle('active',index<i)));
+        button.addEventListener('mouseleave',()=>{
+          const value=Number(input.value||0);
+          box.querySelectorAll('.star').forEach((item,index)=>item.classList.toggle('active',index<value));
+        });
+        box.appendChild(button);
+      }
+      box.setAttribute('role','radiogroup');
+      box.setAttribute('aria-valuemin','1');
+      box.setAttribute('aria-valuemax','5');
+    }
+    const value=Number(input.value||0);
+    box.querySelectorAll('.star').forEach((item,index)=>item.classList.toggle('active',index<value));
+  });
+}
+function gfRefreshRatingUIFinal(){
+  const form=document.getElementById('rating-form');
+  if(!form)return;
+  gfEnsureRatingStarsFinal();
+  const rider=document.getElementById('rating-rider');
+  if(rider && window.state && window.state.role==='commuter' && rider.options.length<=1 && typeof window.renderRiders==='function'){
+    try{window.renderRiders();}catch(_){}
+  }
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',()=>setTimeout(gfRefreshRatingUIFinal,50));}else{setTimeout(gfRefreshRatingUIFinal,50);}
+const gfRatingFinalPanel=document.getElementById('panel-ratings');
+if(gfRatingFinalPanel)new MutationObserver(()=>setTimeout(gfRefreshRatingUIFinal,0)).observe(gfRatingFinalPanel,{childList:true,subtree:true});
+</script>
 </head>
 <body>
 <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" title="Open navigation menu" aria-label="Open navigation menu" aria-expanded="false" type="button">☰</button>
@@ -3571,7 +3632,7 @@ function renderRatings(){
   const mine=state.role==='rider'?state.ratings.filter(r=>String(r.rider_id)===String(getCurrentRider()?.id)||String(r.rider_id)===String(state.profile?.rider_id)||String(r.rider_id)===String(state.user?.id)):state.ratings;
   if(!mine.length)$('ratings-content').innerHTML='<div class="log-empty"><div class="log-empty-icon">★</div>No ratings yet.<br>Ratings will appear after commuters submit feedback.</div>';
   else $('ratings-content').innerHTML=`<div class="card-grid">${mine.map(r=>`<div class="data-card rating-record-card"><div class="card-title">${esc(r.rider_name||r.rider_id||'Rider')}</div><div class="score-row"><span>Professionalism</span><strong>${ratingStars(r.professionalism)} <span class="gf-rating-number">${Number(r.professionalism||0)}/5</span></strong></div><div class="score-row"><span>Safety</span><strong>${ratingStars(r.safety)} <span class="gf-rating-number">${Number(r.safety||0)}/5</span></strong></div><div class="score-row"><span>Punctuality</span><strong>${ratingStars(r.punctuality)} <span class="gf-rating-number">${Number(r.punctuality||0)}/5</span></strong></div><div class="score-row"><span>Service Quality</span><strong>${ratingStars(r.service_quality)} <span class="gf-rating-number">${Number(r.service_quality||0)}/5</span></strong></div><p class="muted" style="margin-top:10px">${esc(r.comment||'No comment')}</p></div>`).join('')}</div>`;
-  setTimeout(()=>{if(typeof gfStars==='function')gfStars();},0);
+  setTimeout(()=>{if(typeof gfStars==='function')gfStars();if(typeof gfEnsureRatingStarsFinal==='function')gfEnsureRatingStarsFinal();},0);
 }
 $('rating-form').onsubmit=async e=>{
   e.preventDefault();
@@ -5129,7 +5190,7 @@ function gfEnhanceReports(){if(state.role!=='admin')return;const panel=document.
 function gfDecorateStats(){if(state.role!=='admin')return;const icons=['👥','🧑‍💼','🛵','🛺','✓','⏳','💵','⚠️','🔎','✓','🆘'];document.querySelectorAll('#admin-stats .stat-card').forEach((card,i)=>{if(card.querySelector('.stat-icon'))return;const icon=document.createElement('div');icon.className='stat-icon';icon.textContent=icons[i]||'📊';card.insertBefore(icon,card.firstChild);});}
 function gfAfterPanel(){gfStars();gfPhotoPreview();gfReplaceSOSButton();if(state.role==='admin'){gfDecorateStats();if(state.currentPanel==='reports')setTimeout(gfEnhanceReports,0);}}
 const originalRenderAdmin=window.renderAdmin;if(typeof originalRenderAdmin==='function'){window.renderAdmin=function(){const r=originalRenderAdmin.apply(this,arguments);setTimeout(gfDecorateStats,0);return r;};}
-const originalRenderRatings=window.renderRatings;if(typeof originalRenderRatings==='function'){window.renderRatings=function(){const r=originalRenderRatings.apply(this,arguments);setTimeout(gfStars,0);return r;};}
+const originalRenderRatings=window.renderRatings;if(typeof originalRenderRatings==='function'){window.renderRatings=function(){const r=originalRenderRatings.apply(this,arguments);setTimeout(()=>{gfStars();if(typeof gfEnsureRatingStarsFinal==='function')gfEnsureRatingStarsFinal();},0);return r;};}
 const originalShowPanel=window.showPanel;if(typeof originalShowPanel==='function'){window.showPanel=function(panel){const r=originalShowPanel.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
 const originalRenderSafety=window.renderSafety;if(typeof originalRenderSafety==='function'){window.renderSafety=function(){const r=originalRenderSafety.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
 const originalLoadData=window.loadData;if(typeof originalLoadData==='function'){window.loadData=async function(){const r=await originalLoadData.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}

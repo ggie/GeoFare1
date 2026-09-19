@@ -1693,6 +1693,141 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 .safety-alert-photo{display:block!important;max-width:100%!important;max-height:320px!important;border-radius:14px!important;margin-top:10px!important;object-fit:contain!important}
 #integrated-safety-content{display:grid!important;gap:14px!important}
 </style>
+
+<style id="geofare-mobile-topbar-final-fix">
+/* Final mobile portrait topbar layout:
+   LEFT  = GEOSPATIAL TRANSPORTATION SYSTEM + current role
+   RIGHT = light/dark + profile + logout
+   DATABASE status is intentionally hidden on portrait screens. */
+@media (max-width: 768px) {
+  .topbar {
+    position: relative !important;
+    min-height: 58px !important;
+    height: auto !important;
+    padding: 8px 8px 8px 58px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .topbar-title {
+    order: 1 !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    width: auto !important;
+    max-width: calc(100% - 145px) !important;
+    overflow: hidden !important;
+    padding-right: 0 !important;
+  }
+
+  .topbar-title .eyebrow {
+    display: block !important;
+    font-size: 8px !important;
+    font-weight: 800 !important;
+    letter-spacing: .55px !important;
+    line-height: 1.25 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .topbar-title strong,
+  #role-heading {
+    display: block !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1.3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .topbar-actions {
+    order: 2 !important;
+    position: static !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+    gap: 5px !important;
+  }
+
+  /* Never show DATABASE CONNECTED / DATABASE NOT CONFIGURED in mobile topbar. */
+  .topbar-actions .dev-badge,
+  #mode-badge {
+    display: none !important;
+  }
+
+  /* The three and only three mobile top-right controls. */
+  .topbar-actions .theme-icon-btn,
+  .topbar-actions .profile-icon-btn,
+  .topbar-actions #logout-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+  }
+
+  .topbar-actions .icon-btn {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+  }
+
+  .topbar-actions #logout-btn {
+    width: auto !important;
+    min-width: 54px !important;
+    height: 34px !important;
+    padding: 0 9px !important;
+    font-size: 9.5px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .topbar {
+    padding-left: 56px !important;
+    padding-right: 7px !important;
+  }
+
+  .topbar-title {
+    max-width: calc(100% - 130px) !important;
+  }
+
+  .topbar-title .eyebrow {
+    font-size: 7.5px !important;
+    letter-spacing: .4px !important;
+  }
+
+  .topbar-title strong,
+  #role-heading {
+    font-size: 11.5px !important;
+  }
+
+  .topbar-actions {
+    gap: 3px !important;
+  }
+
+  .topbar-actions .icon-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+  }
+
+  .topbar-actions #logout-btn {
+    min-width: 50px !important;
+    height: 32px !important;
+    padding: 0 7px !important;
+    font-size: 9px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" title="Open navigation menu" aria-label="Open navigation menu" aria-expanded="false" type="button">☰</button>

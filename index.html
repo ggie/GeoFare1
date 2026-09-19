@@ -4,8 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GeoFare — Road-Distance Fare & Public Safety Management System</title>
-<link rel="icon" type="image/svg+xml" href="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-app-icon.svg">
+<link rel="icon" type="image/svg+xml" data-geofare-theme-icon href="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-icon-light.svg" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/svg+xml" href="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-icon-dark.svg" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-app-icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="GeoFare">
+<meta name="theme-color" content="#0b4f82">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22GeoFare%22%2C%22short_name%22%3A%22GeoFare%22%2C%22description%22%3A%22Road-Distance%20Fare%20and%20Public%20Safety%20Management%20System%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230b1f33%22%2C%22theme_color%22%3A%22%230b4f82%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fydizkrfjxkzxfxtelncb.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2FGeofare%2520logo%2Fgeofare-app-icon.svg%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -907,7 +913,13 @@
 .rating-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.rating-grid label{font-size:11px;font-weight:700;color:var(--text2)}.rating-grid input{width:100%;margin-top:5px;padding:10px;border:1px solid var(--border);border-radius:8px}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px}.stat-card .stat-value{font:800 24px 'Syne',sans-serif}.stat-card .stat-label{font-size:11px;color:var(--text3);margin-top:3px}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .table-wrap{overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm)}.data-table{width:100%;border-collapse:collapse;min-width:650px}.data-table th,.data-table td{padding:11px 13px;border-bottom:1px solid var(--border);font-size:12px;text-align:left}.data-table th{background:var(--surface2);font-weight:800}.data-table tr:last-child td{border-bottom:0}
-.auth-screen{position:fixed;inset:0;z-index:3000;background:linear-gradient(135deg,#f4f7fb,#eaf2f9);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}.auth-screen.hidden{display:none}.auth-card{width:min(520px,100%);background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow-lg);padding:30px}.auth-brand{font:800 28px 'Syne',sans-serif;color:var(--accent)}.auth-brand span{color:var(--text)}.auth-kicker{font-size:9px;letter-spacing:1.4px;color:var(--text3);font-weight:800;margin-top:4px}.auth-card h1{font:800 25px 'Syne',sans-serif;margin-top:24px}.auth-sub{font-size:13px;color:var(--text2);line-height:1.5;margin:6px 0 18px}.auth-alert{display:none;padding:10px 12px;border-radius:9px;font-size:12px;margin-bottom:12px}.auth-alert.show{display:block}.auth-alert.error{background:var(--red-dim);color:var(--red);border:1px solid rgba(220,38,38,.2)}.auth-alert.success{background:var(--green-dim);color:var(--green);border:1px solid rgba(22,163,74,.2)}.auth-submit{width:100%;margin-top:2px}.auth-switch{text-align:center;margin-top:15px;font-size:12px;color:var(--text2)}.auth-switch button{border:0;background:none;color:var(--accent);font-weight:700;cursor:pointer}.demo-note{margin-top:16px;padding:11px 12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;font-size:11px;line-height:1.5;color:#9a3412}.auth-credit{margin-top:18px;padding-top:15px;border-top:1px solid var(--border);font-size:10px;color:var(--text3);line-height:1.5;text-align:center}
+.auth-screen{position:fixed;inset:0;z-index:3000;background:linear-gradient(135deg,#f4f7fb,#eaf2f9);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}.auth-screen.hidden{display:none}.auth-card{width:min(520px,100%);background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow-lg);padding:30px}.auth-brand{font:800 28px 'Syne',sans-serif;color:var(--accent)}.auth-brand span{color:var(--text)}.auth-kicker{font-size:9px;letter-spacing:1.4px;color:var(--text3);font-weight:800;margin-top:4px}.auth-card h1{font:800 25px 'Syne',sans-serif;margin-top:24px}.auth-sub{font-size:13px;color:var(--text2);line-height:1.5;margin:6px 0 18px}.auth-alert{display:none;padding:10px 12px;border-radius:9px;font-size:12px;margin-bottom:12px}.auth-alert.show{display:block}.auth-alert.error{background:var(--red-dim);color:var(--red);border:1px solid rgba(220,38,38,.2)}.auth-alert.success{background:var(--green-dim);color:var(--green);border:1px solid rgba(22,163,74,.2)}.auth-submit{width:100%;margin-top:2px}
+.login-password-group{margin-bottom:18px!important}
+.forgot-password-row{display:flex;justify-content:flex-end;align-items:center;margin-top:6px}
+.forgot-password-link{border:0;background:transparent;color:var(--accent);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;line-height:1.2;padding:2px 0;cursor:pointer;text-decoration:none;transition:color .18s ease,opacity .18s ease}
+.forgot-password-link:hover{color:var(--accent2);text-decoration:underline}
+.forgot-password-link:focus-visible{outline:2px solid var(--accent2);outline-offset:3px;border-radius:4px}
+.auth-switch{text-align:center;margin-top:15px;font-size:12px;color:var(--text2)}.auth-switch button{border:0;background:none;color:var(--accent);font-weight:700;cursor:pointer}.demo-note{margin-top:16px;padding:11px 12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;font-size:11px;line-height:1.5;color:#9a3412}.auth-credit{margin-top:18px;padding-top:15px;border-top:1px solid var(--border);font-size:10px;color:var(--text3);line-height:1.5;text-align:center}
 .loading-overlay{position:fixed;inset:0;z-index:2800;background:rgba(15,31,46,.25);display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}.loading-overlay.active{display:flex}.loading-card{background:#fff;border-radius:14px;padding:18px 22px;box-shadow:var(--shadow-lg);font-size:13px}
 @media(max-width:900px){.admin-grid{grid-template-columns:1fr}.rating-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.topbar{padding:0 12px 0 58px}.topbar-actions .dev-badge{display:none}.management-content{padding:16px}.auth-card{padding:22px}.rating-grid{grid-template-columns:1fr 1fr}}
@@ -1344,9 +1356,8 @@ body { overflow:hidden; }
 .toast{pointer-events:auto;animation:gfToastIn .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 18px 45px rgba(15,23,42,.18);border-radius:14px;backdrop-filter:blur(12px)}
 .toast.fare-success{min-width:min(420px,calc(100vw - 32px));font-weight:800;text-align:center;border:1px solid rgba(22,163,74,.28);background:rgba(240,253,244,.98)}
 @keyframes gfToastIn{from{opacity:0;transform:translateY(-18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-.admin-desktop-gate{display:none;position:fixed;inset:0;z-index:999999;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;padding:32px;align-items:center;justify-content:center;text-align:center}.admin-desktop-gate-card{max-width:520px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:34px;box-shadow:0 24px 80px rgba(0,0,0,.35)}.admin-desktop-gate h2{margin:0 0 10px;font-family:'Syne',sans-serif}.admin-desktop-gate p{margin:0;color:#cbd5e1;line-height:1.6}.admin-desktop-icon{font-size:46px;margin-bottom:12px}
 .admin-layout-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.72fr);gap:18px;align-items:start}.admin-layout-grid>*{min-width:0}.management-content{scrollbar-gutter:stable;scrollbar-width:thin}.management-content::-webkit-scrollbar,.panel.active::-webkit-scrollbar{width:10px;height:10px}.management-content::-webkit-scrollbar-thumb,.panel.active::-webkit-scrollbar-thumb{background:rgba(100,116,139,.42);border-radius:999px;border:3px solid transparent;background-clip:padding-box}.management-content::-webkit-scrollbar-track,.panel.active::-webkit-scrollbar-track{background:transparent}
-@media(max-width:1023px){html[data-role="admin"] .admin-desktop-gate{display:flex!important}html[data-role="admin"] #app{pointer-events:none;filter:blur(2px);user-select:none}.admin-layout-grid{grid-template-columns:1fr}}
+@media(max-width:1023px){html[data-role="admin"] #app{pointer-events:none;filter:blur(2px);user-select:none}.admin-layout-grid{grid-template-columns:1fr}}
 @media(min-width:1024px){#panel-admin .management-content,#panel-registered-riders .management-content,#panel-fare-admin .management-content,#panel-users .management-content,#panel-audit .management-content,#panel-route-records .management-content{padding-bottom:42px}.panel-header{position:sticky;top:0;background:var(--bg);z-index:20;padding-top:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}}
 .fare-admin-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.fare-admin-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.fare-admin-actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-top:12px}.fare-admin-actions .btn{min-height:42px}@media(max-width:760px){.fare-admin-form-grid,.fare-admin-meta{grid-template-columns:1fr}}
 
@@ -1584,11 +1595,8 @@ html,body{width:100%;height:100%;overflow:hidden!important}
 }
 
 
-#gf-desktop-gate,.admin-desktop-gate{display:none!important}
 @media(max-width:1024px){
-  html[data-role="admin"] #gf-desktop-gate{display:flex!important}
   html[data-role="admin"] .app{display:none!important}
-  html[data-role="admin"] .admin-desktop-gate{display:none!important}
 }
 
 
@@ -1674,29 +1682,38 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 @media(max-width:700px){.geofare-logo,.auth-geofare-logo{width:220px!important;height:55px!important;max-width:220px!important}.geofare-mark-logo{width:42px!important;height:42px!important}}
 @media(max-width:768px){.dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card,.safety-kpi,.hero-stat{min-height:156px!important;padding:18px!important;border-radius:22px!important}.dashboard-wrap .kpi .kpi-icon,.dashboard-wrap .stat-card .stat-icon,#admin-stats .stat-card .stat-icon,.safety-kpi .kpi-icon,.hero-stat .kpi-icon{width:54px!important;height:54px!important;min-width:54px!important;min-height:54px!important;font-size:26px!important}}
 </style>
+
+
+<style id="geofare-admin-reports-safety-final">
+#admin-record-tools{display:block!important;margin:0 0 18px!important}
+#integrated-safety-section{display:block!important;margin:0 0 18px!important}
+.integrated-safety-wrap{overflow:visible!important}
+.integrated-safety-card{margin-top:14px!important;padding:18px!important}
+.safety-alert-map{width:100%!important;height:280px!important;min-height:280px!important;border-radius:14px!important;overflow:hidden!important;background:var(--surface2,#eef3f7)!important;margin-top:10px!important}
+.safety-alert-photo{display:block!important;max-width:100%!important;max-height:320px!important;border-radius:14px!important;margin-top:10px!important;object-fit:contain!important}
+#integrated-safety-content{display:grid!important;gap:14px!important}
+</style>
 </head>
 <body>
-<div class="admin-desktop-gate" id="admin-desktop-gate"><div class="admin-desktop-gate-card"><div class="admin-desktop-icon">🖥️</div><h2>Administrator Desktop Workspace</h2><p>The GeoFare Administrator and MFRTA management dashboard is optimized for desktop screens to safely manage riders, reports, fares, route records, and activity logs.</p><p style="margin-top:12px;font-size:12px">Please open GeoFare on a desktop screen at least 1200px wide.</p></div></div>
 <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" title="Open navigation menu" aria-label="Open navigation menu" aria-expanded="false" type="button">☰</button>
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 
 <div id="auth-screen" class="auth-screen">
   <div class="auth-card">
-    <div class="auth-brand"><img class="auth-geofare-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal.svg" data-logo-light="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal.svg" data-logo-dark="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/ChatGPT%20Image%20Sep%2019,%202026,%2009_16_42%20AM.png" alt="GeoFare logo"></div>
+    <div class="auth-brand"><img class="auth-geofare-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal-light.svg" data-logo-light="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal-light.svg" data-logo-dark="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal-dark%20(1).svg" alt="GeoFare logo"></div>
     <div class="auth-kicker">MANOLO FORTICH · BUKIDNON</div>
     <h1 id="auth-title">Sign in to GeoFare</h1>
     <p class="auth-sub">GIS-based habal-habal fare computation, fare management, and public safety/accountability.</p>
     <div id="auth-alert" class="auth-alert" role="alert"></div>
     <form id="login-form">
-      <div class="form-group"><label class="form-label" for="login-identifier">Email Address</label><input class="form-input" id="login-identifier" type="text" autocomplete="username" placeholder="you@example.com" required><div class="form-hint">Use the email address registered to your GeoFare account.</div></div>
-      <div class="form-group password-field"><label class="form-label" for="login-password">Password</label><div class="password-input-wrap"><input class="form-input" id="login-password" type="password" required autocomplete="current-password"><button class="password-toggle" type="button" data-password-target="login-password" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg></button></div></div>
+      <div class="form-group"><label class="form-label" for="login-identifier">Email Address</label><input class="form-input" id="login-identifier" type="email" inputmode="email" autocomplete="username" placeholder="you@example.com" required><div class="form-hint">Enter your GeoFare account email address.</div></div>
+      <div class="form-group password-field login-password-group"><label class="form-label" for="login-password">Password</label><div class="password-input-wrap"><input class="form-input" id="login-password" type="password" required autocomplete="current-password"><button class="password-toggle" type="button" data-password-target="login-password" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg></button></div><div class="forgot-password-row"><button class="forgot-password-link" id="forgot-password-btn" type="button">Forgot password?</button></div></div>
       <button class="btn btn-primary auth-submit" type="submit">Sign in</button>
-      <button class="btn btn-secondary auth-submit" id="forgot-password-btn" type="button">Forgot password?</button>
     </form>
     <form id="signup-form" style="display:none">
       <div class="form-group"><label class="form-label" for="signup-name">Full Name</label><input class="form-input" id="signup-name" required maxlength="120"></div>
-      <div class="form-group"><label class="form-label" for="signup-identifier">Email Address</label><input class="form-input" id="signup-identifier" type="text" autocomplete="username" placeholder="you@example.com" required><div class="form-hint">Use a valid email address. You will receive a confirmation link before signing in.</div></div>
+      <div class="form-group"><label class="form-label" for="signup-identifier">Email Address</label><input class="form-input" id="signup-identifier" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required><div class="form-hint">Use an email address for account confirmation and password recovery.</div></div>
       <div class="form-group password-field"><label class="form-label" for="signup-password">Password</label><div class="password-input-wrap"><input class="form-input" id="signup-password" type="password" minlength="8" required><button class="password-toggle" type="button" data-password-target="signup-password" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg></button></div></div>
       <div class="form-group password-field"><label class="form-label" for="signup-confirm">Confirm Password</label><div class="password-input-wrap"><input class="form-input" id="signup-confirm" type="password" minlength="8" required><button class="password-toggle" type="button" data-password-target="signup-confirm" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg></button></div></div>
       <div class="form-group commuter-only-signup"><label class="form-label" for="signup-contact">Contact Number</label><input class="form-input" id="signup-contact" maxlength="30"></div>
@@ -1726,7 +1743,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="brand-lockup">
-        <img class="geofare-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal.svg" data-light-logo="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal.svg" data-dark-logo="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/ChatGPT%20Image%20Sep%2019,%202026,%2009_16_42%20AM.png" alt="GeoFare logo"><img class="geofare-mark-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-mark.svg" alt="GeoFare">
+        <img class="geofare-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal-light.svg" data-light-logo="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal-light.svg" data-dark-logo="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal-dark%20(1).svg" alt="GeoFare logo"><img class="geofare-mark-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-mark-light.svg" data-light-logo="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-mark-light.svg" data-dark-logo="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-mark-dark.svg" alt="GeoFare">
         <div class="logo-sub">Manolo Fortich • Habal-Habal</div>
       </div>
       <button class="collapse-toggle" id="sidebar-collapse-btn" title="Collapse sidebar" type="button">⟨</button>
@@ -2223,6 +2240,7 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
       <button class="btn btn-secondary btn-sm" id="refresh-reports">Refresh</button>
     </div>
     <div id="reports-content"></div>
+    <div id="integrated-safety-section-anchor"></div>
   </div>
 </div>
 
@@ -2701,7 +2719,7 @@ function setupAuthUI(){
   $('logout-btn').onclick=logout;
   $('profile-btn').onclick=()=>showPanel('profile');
   const demoLine = HAS_SUPABASE
-    ? 'Connected mode: email authentication accepts either a real email address or a Philippine mobile number as an email-style login identifier. Rider records, ratings, reports, and management data use Supabase.'
+    ? 'Connected mode: Supabase email authentication is enabled.'
     : '<strong>Supabase is not configured.</strong> Configure the existing Supabase project before using GeoFare.';
   $('demo-note').innerHTML = demoLine;
 }
@@ -2748,7 +2766,7 @@ function showAuthForm(name){
 async function sendPasswordResetLink(){
   clearAuthMessage();
   const email=$('reset-email').value.trim().toLowerCase();
-  if(!email||!/^[^\s@]+@[^\s@]+$/.test(email))return authMessage('Enter the real email address registered to the account.');
+  if(!email||!/^[^\s@]+@[^\s@]+$/.test(email))return authMessage('Enter a valid email address.');
   setBusy(true,'Sending password reset email…');
   try{
     const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
@@ -3272,11 +3290,14 @@ async function clearLogs(){
   }catch(e){toast('Fare history could not be cleared.','error');}
 }
 
+function ratingStars(value){
+  const n=Math.max(0,Math.min(5,Math.round(Number(value)||0)));
+  return '<span class="gf-rating-stars" aria-label="'+n+' out of 5 stars">'+Array.from({length:5},(_,i)=>'<span class="gf-rating-star '+(i<n?'is-filled':'')+'">★</span>').join('')+'</span>';
+}
 function riderPublicCard(r){
-  const p=r.profile||{}, verified=(r.verification_status||r.status)==='Verified';
-  const rs=state.ratings.filter(x=>x.rider_id===r.id);
-  const avg=rs.length?(rs.reduce((a,x)=>a+Number(x.professionalism+x.safety+x.punctuality+x.service_quality)/4,0)/rs.length).toFixed(1):'—';
-  return `<div class="data-card"><div style="display:flex;justify-content:space-between;gap:10px"><div><div class="card-title">${esc(mergedRiderName(r))}</div><div class="muted">${esc(r.public_id||'Verified MFRTA rider')}</div></div><span class="status-badge status-verified">Verified</span></div><div class="score-row"><span>Association</span><strong>${esc(r.ally_group||'—')}</strong></div><div class="score-row"><span>Plate / Make</span><strong>${esc((r.plate_number||'—')+' · '+(r.make||'—'))}</strong></div><div class="score-row"><span>Business permit</span><strong>${esc(r.business_permit_reference||'—')}</strong></div><div class="score-row"><span>Average rating</span><strong>${avg}</strong></div><button class="btn btn-primary btn-sm public-rider-open" data-id="${esc(r.id)}" type="button" style="margin-top:12px">View Verified Profile</button></div>`;
+  const rs=state.ratings.filter(x=>String(x.rider_id)===String(r.id));
+  const avg=rs.length?(rs.reduce((a,x)=>a+(Number(x.professionalism||0)+Number(x.safety||0)+Number(x.punctuality||0)+Number(x.service_quality||0))/4,0)/rs.length).toFixed(1):null;
+  return `<div class="data-card"><div style="display:flex;justify-content:space-between;gap:10px"><div><div class="card-title">${esc(mergedRiderName(r))}</div><div class="muted">${esc(r.public_id||'Verified MFRTA rider')}</div></div><span class="status-badge status-verified">Verified</span></div><div class="score-row"><span>Association</span><strong>${esc(r.ally_group||'—')}</strong></div><div class="score-row"><span>Plate / Make</span><strong>${esc((r.plate_number||'—')+' · '+(r.make||'—'))}</strong></div><div class="score-row"><span>Business permit</span><strong>${esc(r.business_permit_reference||'—')}</strong></div><div class="score-row"><span>Average rating</span><strong>${avg?ratingStars(avg)+' <span class=\"gf-rating-number\">'+esc(avg)+'/5</span>':'No ratings yet'}</strong></div><button class="btn btn-primary btn-sm public-rider-open" data-id="${esc(r.id)}" type="button" style="margin-top:12px">View Verified Profile</button></div>`;
 }
 function renderRiders(){
   const q=($('rider-search')?.value||'').trim().toLowerCase();
@@ -3301,9 +3322,10 @@ function renderRiders(){
 
 function renderRatings(){
   const form=document.getElementById('rating-form'); if(form)form.style.display=state.role==='commuter'?'block':'none';
-  const mine=state.role==='rider'?state.ratings.filter(r=>r.rider_id===getCurrentRider()?.id||r.rider_id===state.profile?.rider_id||r.rider_id===state.user?.id):state.ratings;
+  const mine=state.role==='rider'?state.ratings.filter(r=>String(r.rider_id)===String(getCurrentRider()?.id)||String(r.rider_id)===String(state.profile?.rider_id)||String(r.rider_id)===String(state.user?.id)):state.ratings;
   if(!mine.length)$('ratings-content').innerHTML='<div class="log-empty"><div class="log-empty-icon">★</div>No ratings yet.<br>Ratings will appear after commuters submit feedback.</div>';
-  else $('ratings-content').innerHTML=`<div class="card-grid">${mine.map(r=>`<div class="data-card"><div class="card-title">${esc(r.rider_name||r.rider_id||'Rider')}</div><div class="score-row"><span>Professionalism</span><strong>${r.professionalism}/5</strong></div><div class="score-row"><span>Safety</span><strong>${r.safety}/5</strong></div><div class="score-row"><span>Punctuality</span><strong>${r.punctuality}/5</strong></div><div class="score-row"><span>Service Quality</span><strong>${r.service_quality}/5</strong></div><p class="muted" style="margin-top:10px">${esc(r.comment||'No comment')}</p></div>`).join('')}</div>`;
+  else $('ratings-content').innerHTML=`<div class="card-grid">${mine.map(r=>`<div class="data-card rating-record-card"><div class="card-title">${esc(r.rider_name||r.rider_id||'Rider')}</div><div class="score-row"><span>Professionalism</span><strong>${ratingStars(r.professionalism)} <span class="gf-rating-number">${Number(r.professionalism||0)}/5</span></strong></div><div class="score-row"><span>Safety</span><strong>${ratingStars(r.safety)} <span class="gf-rating-number">${Number(r.safety||0)}/5</span></strong></div><div class="score-row"><span>Punctuality</span><strong>${ratingStars(r.punctuality)} <span class="gf-rating-number">${Number(r.punctuality||0)}/5</span></strong></div><div class="score-row"><span>Service Quality</span><strong>${ratingStars(r.service_quality)} <span class="gf-rating-number">${Number(r.service_quality||0)}/5</span></strong></div><p class="muted" style="margin-top:10px">${esc(r.comment||'No comment')}</p></div>`).join('')}</div>`;
+  setTimeout(()=>{if(typeof gfStars==='function')gfStars();},0);
 }
 $('rating-form').onsubmit=async e=>{
   e.preventDefault();
@@ -3596,20 +3618,15 @@ select option{background:var(--surface)!important;color:var(--text)!important}
 :root[data-theme="dark"] .about-hero,:root[data-theme="dark"] .hero-card{background:var(--surface)!important;color:var(--text)!important}
 :root[data-theme="dark"] .hero-stat,:root[data-theme="dark"] .kpi,:root[data-theme="dark"] .data-card,:root[data-theme="dark"] .form-card,:root[data-theme="dark"] .stat-card,:root[data-theme="dark"] .auth-card{background:var(--surface)!important;color:var(--text)!important}
 :root[data-theme="dark"] .data-table th{background:var(--surface2)!important;color:var(--text)!important}
-:root[data-theme="dark"] .admin-desktop-gate{background:linear-gradient(135deg,#232323,#064439)!important;color:#FBF8F3!important}
-:root[data-theme="dark"] .admin-desktop-gate-card{background:rgba(6,68,57,.82)!important;border-color:rgba(175,201,220,.28)!important}
 
-#gf-desktop-gate,.admin-desktop-gate{display:none!important}
 @media(max-width:1024px){
-  html[data-role="admin"] #gf-desktop-gate,
-  html[data-role="admin"] .admin-desktop-gate{display:flex!important;pointer-events:auto!important}
   html[data-role="admin"] #app{display:none!important;pointer-events:none!important;user-select:none!important;filter:none!important}
   html[data-role="admin"] .sidebar,
   html[data-role="admin"] .main,
   html[data-role="admin"] .panel,
   html[data-role="admin"] .topbar{pointer-events:none!important}
 }
-@media(min-width:1025px){html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{display:none!important}}
+@media(min-width:1025px){}
 </style>
 
 
@@ -3654,6 +3671,10 @@ select option{background:var(--surface)!important;color:var(--text)!important}
 
 
 
+
+<style id="geofare-rating-stars-final">
+.gf-rating-stars{display:inline-flex;align-items:center;gap:1px;white-space:nowrap;vertical-align:middle;margin-right:5px}.gf-rating-star{font-size:18px;line-height:1;color:#c6d0da}.gf-rating-star.is-filled{color:#f5b301;text-shadow:0 1px 5px rgba(245,179,1,.22)}.gf-rating-number{font-size:12px;font-weight:800;color:var(--text2);vertical-align:middle}.rating-record-card .score-row strong{display:flex;align-items:center;gap:3px}.star-input .star{font-family:Arial,sans-serif!important}.star-input .star.active{color:#f5b301!important}.star-input .star:not(.active){color:#c4ced8!important}
+</style>
 </body>`);w.document.close();w.print();}
 function clearReport(){['rpt-plate','rpt-datetime','rpt-route','rpt-fare','rpt-desc','rpt-name'].forEach(id=>{if($(id))$(id).value=''});$('rpt-type').value='';if($('report-rider-id'))$('report-rider-id').value='';if($('report-rider-search'))$('report-rider-search').value='';$('report-preview').classList.remove('visible');$('report-actions').style.display='none';window._currentReport=null;renderReportRiderDirectory();}
 $('save-report-btn')?.addEventListener('click',saveReportLog);
@@ -3962,10 +3983,15 @@ function bindMisc(){
 function applyTheme(theme){
   document.documentElement.setAttribute('data-theme',theme);
   localStorage.setItem('geofare.theme',theme);
+  const isDark=theme==='dark';
+  const favicon=document.querySelector('link[rel="icon"][data-geofare-theme-icon]');
+  if(favicon) favicon.href=isDark?'https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-icon-dark.svg':'https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-icon-light.svg';
   const sidebarLogo=document.querySelector('.geofare-logo[data-light-logo]');
-  if(sidebarLogo) sidebarLogo.src=theme==='dark'?sidebarLogo.dataset.darkLogo:sidebarLogo.dataset.lightLogo;
+  if(sidebarLogo) sidebarLogo.src=isDark?sidebarLogo.dataset.darkLogo:sidebarLogo.dataset.lightLogo;
+  const sidebarMark=document.querySelector('.geofare-mark-logo[data-light-logo]');
+  if(sidebarMark) sidebarMark.src=isDark?sidebarMark.dataset.darkLogo:sidebarMark.dataset.lightLogo;
   const authLogo=document.querySelector('.auth-geofare-logo[data-logo-dark]');
-  if(authLogo) authLogo.src=theme==='dark'?authLogo.dataset.logoDark:authLogo.dataset.logoLight;
+  if(authLogo) authLogo.src=isDark?authLogo.dataset.logoDark:authLogo.dataset.logoLight;
   const btn=$('theme-toggle');
   if(btn){
     btn.classList.toggle('theme-is-dark',theme==='dark');
@@ -4725,19 +4751,7 @@ body{ background:
   min-height:0;
 }
 #panel-map .map-ctrl-body{ overflow-y:auto !important; min-height:0; }
-
-#gf-desktop-gate{
-  display:none; position:fixed; inset:0; z-index:20000;
-  background:linear-gradient(160deg,var(--accent),#0a1930 120%);
-  color:#fff; align-items:center; justify-content:center; text-align:center;
-  padding:32px; flex-direction:column; gap:14px;
-}
-#gf-desktop-gate .gf-gate-icon{ font-size:44px; }
-#gf-desktop-gate h2{ font-family:'Syne',sans-serif; font-size:22px; }
-#gf-desktop-gate p{ max-width:380px; font-size:13.5px; line-height:1.6; opacity:.88; }
-#gf-desktop-gate button{ margin-top:8px; }
 @media(max-width:1024px){
-  html[data-role="admin"] #gf-desktop-gate{ display:flex; }
   html[data-role="admin"] .app{ display:none !important; }
 }
 </style>
@@ -4749,8 +4763,7 @@ body{ background:
 html,body{height:100%;overflow:hidden}.app,.main,.panel{min-height:0}.panel.active{overflow:auto!important;overscroll-behavior:contain}.management-content,.dashboard-wrap,.matrix-content,.logs-content,.report-content,.about-content{min-height:0;overflow:auto!important;overscroll-behavior:contain}.table-wrap{overflow:auto!important;border:1px solid var(--border);border-radius:12px}.data-table{min-width:900px}.data-table th{position:sticky;top:0;z-index:2;background:var(--surface2);color:var(--text)}
 .report-record-card,.safety-record{border-color:var(--border);background:var(--surface);box-shadow:0 8px 22px rgba(10,30,50,.06)}.report-record-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.report-meta-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}.report-meta-grid>div{padding:9px;background:var(--surface2);border-radius:9px;border:1px solid var(--border)}.report-meta-grid small{display:block;color:var(--text3);font-size:10px;text-transform:uppercase}.report-meta-grid strong{display:block;color:var(--text);font-size:12px;margin-top:3px;overflow-wrap:anywhere}.report-description{white-space:pre-line;line-height:1.55;color:var(--text)}.report-admin-actions{margin-top:12px}
 .status-badge{font-weight:800;border:1px solid currentColor}.btn:focus-visible,.form-input:focus-visible,.form-select:focus-visible,.form-textarea:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:2px}.btn{transition:transform .16s ease,box-shadow .16s ease,background .16s ease}.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 18px rgba(10,30,50,.14)}.btn:disabled{opacity:.58;cursor:not-allowed;transform:none}
-::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:var(--surface2)}::-webkit-scrollbar-thumb{background:var(--text3);border-radius:999px;border:2px solid var(--surface2)}::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-#gf-desktop-gate{display:none;position:fixed;inset:0;z-index:30000;background:#081a2b;color:#fff;align-items:center;justify-content:center;text-align:center;padding:32px;flex-direction:column;gap:14px}#gf-desktop-gate p{max-width:430px;line-height:1.6;color:#d9e5ef}@media(max-width:1024px){html[data-role="admin"] #gf-desktop-gate{display:flex}html[data-role="admin"] .app{display:none!important}}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:var(--surface2)}::-webkit-scrollbar-thumb{background:var(--text3);border-radius:999px;border:2px solid var(--surface2)}::-webkit-scrollbar-thumb:hover{background:var(--accent)}@media(max-width:1024px){html[data-role="admin"] .app{display:none!important}}
 @media(max-width:760px){.report-meta-grid{grid-template-columns:1fr 1fr}.data-table{min-width:760px}.panel-header{position:sticky;top:0;z-index:5;background:var(--bg)}}
 @media(max-width:480px){.report-meta-grid{grid-template-columns:1fr}.table-actions{flex-wrap:wrap}}
 
@@ -4761,13 +4774,11 @@ html,body{height:100%;overflow:hidden}.app,.main,.panel{min-height:0}.panel.acti
 :root[data-theme="dark"] .map-sidebar-toggle{background:#176fae!important;color:#ffffff!important;border-color:#9cccf3!important}
 :root:not([data-theme="dark"]) .map-sidebar-toggle{background:#176fae!important;color:#ffffff!important;border-color:#9cccf3!important}
 </style>
-<div id="gf-desktop-gate"><div style="font-size:46px">🖥️</div><h2>Administrator desktop view</h2><p>The MFRTA dashboard is intentionally limited to larger screens so rider records, management tables, and administrative controls remain safe and readable.</p><button class="btn btn-secondary" id="gf-desktop-gate-logout" type="button">Log out</button></div>
 <script id="geofare-consolidated-final-runtime">
 (function(){
   'use strict';
   const syncRole=()=>{try{document.documentElement.dataset.role=window.state?.role||'';}catch(_){}};
   syncRole();setInterval(syncRole,1000);
-  document.getElementById('gf-desktop-gate-logout')?.addEventListener('click',()=>window.logout?.());
   const panels=['commuter-dashboard','rider-dashboard','map','matrix','riders','ratings','safety','report','reports','logs','profile','about','responder','route-records','admin','registered-riders','fare-admin','users','audit'];
   window.GeoFarePanelRegistry=new Set(panels);
   const oldShow=window.showPanel;
@@ -4816,6 +4827,21 @@ html,body{height:100%;overflow:hidden}.app,.main,.panel{min-height:0}.panel.acti
 </style>
 <script id="geofare-safe-enhancements-runtime">
 (function(){
+  function syncAdminLayout(){
+    const role=window.state?.role||'';
+    document.documentElement.dataset.role=role;
+  }
+  function syncMenuState(){
+    const open=document.getElementById('sidebar')?.classList.contains('active');
+    document.body.classList.toggle('sidebar-open',!!open);
+    document.getElementById('menu-toggle')?.setAttribute('aria-expanded',String(!!open));
+  }
+  syncAdminLayout();
+  syncMenuState();
+  window.addEventListener('resize',syncAdminLayout,{passive:true});
+  document.addEventListener('click',syncMenuState);
+  setInterval(syncAdminLayout,800);
+
 'use strict';
 const gfPhotoKey=id=>'geofare.sos.photo.'+String(id);
 const gfGetPhoto=id=>{try{return localStorage.getItem(gfPhotoKey(id))||''}catch(_){return ''}};
@@ -4829,7 +4855,7 @@ function gfReplaceSOSButton(){const old=$('sos-submit');if(!old||old.dataset.gfR
 function gfSafetyRows(){const rows=state.safetyAlerts||[];return rows;}
 function gfRenderSafetyMaps(){document.querySelectorAll('.gf-safety-map[data-map-ready="0"]').forEach(el=>{el.dataset.mapReady='1';const c=el.dataset.coords;if(!c||typeof L==='undefined')return;const [lat,lng]=c.split(',').map(Number);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;setTimeout(()=>{try{const mapInstance=L.map(el,{zoomControl:true,attributionControl:false}).setView([lat,lng],16);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(mapInstance);L.marker([lat,lng]).addTo(mapInstance).bindPopup('SOS emergency location').openPopup();setTimeout(()=>mapInstance.invalidateSize(),120);}catch(e){console.warn('Safety map failed',e)}},0);});}
 function gfSafetyMarkup(a){const coords=gfCoords(a.message),photo=gfGetPhoto(a.id),photoIsUrl=/^(https?:|data:)/i.test(photo);return '<article class="data-card safety-record integrated-safety-card"><div class="report-record-head"><div><div class="card-title">'+esc(a.title||'SOS Safety Alert')+'</div><div class="muted">'+esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))+'</div></div><span class="status-badge '+esc(safetyDisplayClass(a))+'">'+esc(safetyDisplayStatus(a))+'</span></div><div class="small-note">Severity: '+esc(a.severity||'critical')+' · '+(a.is_read?'Read':'Unread')+'</div><p class="report-description">'+esc(gfMessage(a.message))+'</p>'+(coords?'<div class="safety-alert-detail"><strong>Current emergency location</strong><div class="safety-alert-map gf-safety-map" data-map-ready="0" data-coords="'+esc(coords.lat+','+coords.lng)+'"></div></div>':'<div class="safety-alert-detail"><strong>Current emergency location</strong><p class="small-note">Location was not available when this SOS was submitted.</p></div>')+(photo?'<div class="safety-alert-detail"><strong>Emergency photo</strong><img class="safety-alert-photo" src="'+esc(photo)+'" alt="SOS emergency evidence"></div>':'<div class="safety-alert-detail"><strong>Emergency photo</strong><p class="small-note">No photo evidence is attached to this alert record.</p></div>')+'<div class="table-actions"><button type="button" class="btn btn-secondary btn-sm gf-safety-read" data-id="'+esc(a.id)+'" data-read="'+(a.is_read?'false':'true')+'">'+(a.is_read?'Mark unread':'Mark read')+'</button></div></article>';}
-function gfRenderIntegratedSafety(){if(state.role!=='admin')return;const target=$('integrated-safety-content');if(!target)return;const filter=$('safety-filter')?.value||'all',q=($('safety-search')?.value||'').trim().toLowerCase(),rows=gfSafetyRows().filter(a=>(filter==='all'||safetyDisplayStatus(a)===filter)&&(!q||String(a.title||'').toLowerCase().includes(q)||String(a.message||'').toLowerCase().includes(q)||String(a.id||'').toLowerCase().includes(q)));target.innerHTML=rows.length?rows.map(gfSafetyMarkup).join(''):'<div class="empty-state">No SOS safety alerts match the current filter.</div>';document.querySelectorAll('.gf-safety-read').forEach(b=>b.addEventListener('click',async()=>{await updateSafetyReadState(b.dataset.id,b.dataset.read==='true');gfEnhanceReports();}));gfRenderSafetyMaps();}
+function gfRenderIntegratedSafety(){if(state.role!=='admin')return;const target=$('integrated-safety-content');if(!target)return;const filter=$('admin-safety-filter')?.value||'all',q=($('admin-safety-search')?.value||'').trim().toLowerCase(),rows=gfSafetyRows().filter(a=>(filter==='all'||safetyDisplayStatus(a)===filter)&&(!q||String(a.title||'').toLowerCase().includes(q)||String(a.message||'').toLowerCase().includes(q)||String(a.id||'').toLowerCase().includes(q)));target.innerHTML=rows.length?rows.map(gfSafetyMarkup).join(''):'<div class="empty-state">No SOS safety alerts match the current filter.</div>';document.querySelectorAll('.gf-safety-read').forEach(b=>b.addEventListener('click',async()=>{await updateSafetyReadState(b.dataset.id,b.dataset.read==='true');gfEnhanceReports();}));gfRenderSafetyMaps();}
 function gfRecordDate(x){return new Date(x.created_at||x.updated_at||x.calculated_at||x.timestamp||x.date||0);}
 function gfRecordSets(){return {reports:state.reports||[],safety:state.safetyAlerts||[],calculations:state.calculations||[],audit:state.audit||[],users:state.users||[]};}
 function gfSelectedTypes(){return Array.from(document.querySelectorAll('.gf-record-type:checked')).map(x=>x.value);}
@@ -4845,7 +4871,38 @@ function gfPrintRecords(){
   if(!w)return toast('The print window was blocked. Please allow pop-ups for GeoFare.','error');
   const range=(r.from?r.from.toLocaleString('en-PH'):'All time')+' to '+(r.to?r.to.toLocaleString('en-PH'):'Present');
   const body=r.rows.sort((a,b)=>gfRecordDate(b)-gfRecordDate(a)).map(x=>'<tr><td>'+esc(gfRecordLabel(x._type))+'</td><td>'+esc(x.reference_no||x.title||x.action||x.id||'Record')+'</td><td>'+esc(gfRecordDate(x).toLocaleString('en-PH'))+'</td><td>'+esc(x.status||x.severity||'Recorded')+'</td><td>'+esc(gfRecordDetails(x))+'</td></tr>').join('');
-  const printHtml='<!doctype html><html><head><meta charset="utf-8"><title>GeoFare Administrative Records</title><style>body{font-family:Arial,sans-serif;color:#111;padding:28px}h1{font-size:22px;margin:0 0 6px}.meta{font-size:11px;color:#555;margin-bottom:18px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid #bbb;padding:7px;text-align:left;vertical-align:top}th{background:#edf2f7}@media print{body{padding:0}}</style></head><body><h1>GeoFare Administrative Records</h1><div class="meta">Record types: '+esc(r.types.map(gfRecordLabel).join(', '))+'<br>Time range: '+esc(range)+'<br>Generated: '+esc(new Date().toLocaleString('en-PH'))+'</div><table><thead><tr><th>Type</th><th>Reference / Record</th><th>Date & Time</th><th>Status</th><th>Details</th></tr></thead><tbody>'+body+'</tbody></table>
+  const printHtml='<!doctype html><html><head><meta charset="utf-8"><title>GeoFare Administrative Records</title><style>body{font-family:Arial,sans-serif;color:#111;padding:28px}h1{font-size:22px;margin:0 0 6px}.meta{font-size:11px;color:#555;margin-bottom:18px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid #bbb;padding:7px;text-align:left;vertical-align:top}th{background:#edf2f7}@media print{body{padding:0}}</style></head><body><h1>GeoFare Administrative Records</h1><div class="meta">Record types: '+esc(r.types.map(gfRecordLabel).join(', '))+'<br>Time range: '+esc(range)+'<br>Generated: '+esc(new Date().toLocaleString('en-PH'))+'</div><table><thead><tr><th>Type</th><th>Reference / Record</th><th>Date & Time</th><th>Status</th><th>Details</th></tr></thead><tbody>'+body+'</tbody></table></body></html>';
+  w.document.open();
+  w.document.write(printHtml);
+  w.document.close();
+  setTimeout(()=>w.print(),120);
+}
+function gfBuildTools(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('admin-record-tools'))return;const box=document.createElement('section');box.id='admin-record-tools';box.className='form-card admin-record-tools';box.innerHTML='<div class="report-record-head"><div><span class="section-label">Administrative records</span><h3>Reports & Logs Print Center</h3><p class="small-note">Choose exactly which records the administrator wants to keep or print, with an editable date and time range.</p></div><span class="role-chip">PRINTABLE RECORDS</span></div><div class="admin-record-checks"><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="reports" checked> Rider reports</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="safety" checked> SOS alerts</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="calculations"> Fare calculations</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="audit"> Audit logs</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="users"> Account activity</label></div><div class="admin-record-range"><div class="form-group"><label class="form-label" for="gf-record-from">From</label><input class="form-input" id="gf-record-from" type="datetime-local"></div><div class="form-group"><label class="form-label" for="gf-record-to">To</label><input class="form-input" id="gf-record-to" type="datetime-local"></div></div><div class="admin-record-actions"><button type="button" class="btn btn-primary" id="gf-print-records">🖨 Print selected records</button><button type="button" class="btn btn-secondary btn-sm" id="gf-clear-record-filters">Reset filters</button></div><div class="admin-record-count" id="gf-record-count"></div>';host.insertBefore(box,host.querySelector('#reports-content'));box.querySelectorAll('.gf-record-type').forEach(x=>x.addEventListener('change',gfUpdatePrintCount));$('gf-record-from').addEventListener('change',gfUpdatePrintCount);$('gf-record-to').addEventListener('change',gfUpdatePrintCount);$('gf-print-records').addEventListener('click',gfPrintRecords);$('gf-clear-record-filters').addEventListener('click',()=>{box.querySelectorAll('.gf-record-type').forEach(x=>x.checked=['reports','safety'].includes(x.value));$('gf-record-from').value='';$('gf-record-to').value='';gfUpdatePrintCount()});gfUpdatePrintCount();}
+function gfBuildSafetySection(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('integrated-safety-section'))return;const sec=document.createElement('section');sec.id='integrated-safety-section';sec.className='form-card integrated-safety-wrap';sec.innerHTML='<div class="report-record-head"><div><span class="section-label">Unified safety management</span><h3>Safety Alerts & Emergency Evidence</h3><p class="small-note">SOS alerts are managed here together with rider reports. Each alert shows the sender’s current location directly on a map and its submitted photo evidence.</p></div><div class="safety-queue-tools"><input class="form-input" id="safety-search" placeholder="Search SOS alerts"><select class="form-select" id="safety-filter"><option value="all">All statuses</option><option value="New">New</option><option value="Acknowledged">Acknowledged</option><option value="Responded">Responded</option><option value="Resolved">Resolved</option><option value="Dismissed">Dismissed</option></select></div></div><div id="integrated-safety-content"></div>';host.appendChild(sec);$('admin-safety-search').addEventListener('input',gfRenderIntegratedSafety);$('admin-safety-filter').addEventListener('change',gfRenderIntegratedSafety);}
+function gfEnhanceReports(){if(state.role!=='admin')return;const panel=document.getElementById('panel-reports');if(!panel)return;const title=panel.querySelector('.panel-title');const sub=panel.querySelector('.panel-sub');if(title)title.textContent='Reports & Safety Management';if(sub)sub.textContent='Rider reports, SOS safety alerts, emergency locations, evidence, and printable administrative records.';gfBuildTools();gfBuildSafetySection();gfRenderIntegratedSafety();}
+function gfDecorateStats(){if(state.role!=='admin')return;const icons=['👥','🧑‍💼','🛵','🛺','✓','⏳','💵','⚠️','🔎','✓','🆘'];document.querySelectorAll('#admin-stats .stat-card').forEach((card,i)=>{if(card.querySelector('.stat-icon'))return;const icon=document.createElement('div');icon.className='stat-icon';icon.textContent=icons[i]||'📊';card.insertBefore(icon,card.firstChild);});}
+function gfAfterPanel(){gfStars();gfPhotoPreview();gfReplaceSOSButton();if(state.role==='admin'){gfDecorateStats();if(state.currentPanel==='reports')setTimeout(gfEnhanceReports,0);}}
+const originalRenderAdmin=window.renderAdmin;if(typeof originalRenderAdmin==='function'){window.renderAdmin=function(){const r=originalRenderAdmin.apply(this,arguments);setTimeout(gfDecorateStats,0);return r;};}
+const originalRenderRatings=window.renderRatings;if(typeof originalRenderRatings==='function'){window.renderRatings=function(){const r=originalRenderRatings.apply(this,arguments);setTimeout(gfStars,0);return r;};}
+const originalShowPanel=window.showPanel;if(typeof originalShowPanel==='function'){window.showPanel=function(panel){const r=originalShowPanel.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
+const originalRenderSafety=window.renderSafety;if(typeof originalRenderSafety==='function'){window.renderSafety=function(){const r=originalRenderSafety.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
+const originalLoadData=window.loadData;if(typeof originalLoadData==='function'){window.loadData=async function(){const r=await originalLoadData.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
+setTimeout(gfAfterPanel,300);
+
+function gfEnsureAdminReports(){if(window.state?.role!=='admin')return;const panel=document.getElementById('panel-reports');if(!panel)return;const active=panel.classList.contains('active');if(active){gfEnhanceReports();}}
+setTimeout(gfEnsureAdminReports,700);
+setInterval(gfEnsureAdminReports,1000);
+document.addEventListener('click',function(e){const b=e.target.closest('[data-panel="reports"],#nav-reports');if(b)setTimeout(gfEnsureAdminReports,80);});
+
+
+function gfEnsureAdminReports(){if(window.state?.role!=='admin')return;const panel=document.getElementById('panel-reports');if(!panel)return;const active=panel.classList.contains('active');if(active){gfEnhanceReports();}}
+setTimeout(gfEnsureAdminReports,700);
+setInterval(gfEnsureAdminReports,1000);
+document.addEventListener('click',function(e){const b=e.target.closest('[data-panel="reports"],#nav-reports');if(b)setTimeout(gfEnsureAdminReports,80);});
+
+})();
+
+</script>
 <style id="geofare-final-layout-repair">
 html,body{min-height:100%;overflow-x:hidden}
 body.sidebar-open{overflow:hidden}
@@ -4918,75 +4975,14 @@ body.sidebar-open{overflow:hidden}
   .auth-screen{padding:8px 10px 22px!important}
   .auth-card{border-radius:16px!important;padding:22px!important}
 }
-html[data-role="admin"] .app,html[data-role="admin"] #app{min-width:1200px}
-@media(max-width:1199px){
-  html[data-role="admin"],html[data-role="admin"] body{width:100%!important;min-width:100%!important;overflow:hidden!important}
-  html[data-role="admin"] #app,html[data-role="admin"] .app{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;user-select:none!important}
-  html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{
-    display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-width:100vw!important;z-index:2147483647!important;
-    align-items:center!important;justify-content:center!important;flex-direction:column!important;text-align:center!important;padding:24px!important;box-sizing:border-box!important;
-    background:linear-gradient(145deg,#04101b 0%,#075a9b 100%)!important;color:#fff!important;pointer-events:auto!important
-  }
-  html[data-role="admin"] .admin-desktop-gate-card{
-    width:min(520px,calc(100vw - 40px))!important;max-width:520px!important;background:rgba(5,24,41,.94)!important;
-    border:1px solid rgba(105,185,242,.40)!important;border-radius:24px!important;padding:34px!important;
-    box-shadow:0 24px 80px rgba(0,0,0,.45),0 0 0 5px rgba(105,185,242,.10)!important
-  }
-  html[data-role="admin"] .admin-desktop-gate h2{color:#fff!important}
-  html[data-role="admin"] .admin-desktop-gate p{color:#dcecff!important;line-height:1.65!important}
-}
-@media(min-width:1200px){
-  html[data-role="admin"] #app,html[data-role="admin"] .app{min-width:1200px!important;width:max(100%,1200px)!important}
-  html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{display:none!important}
-}
+
 </style>
 
 <script id="geofare-final-layout-runtime">
-(function(){
-  function syncAdminLayout(){
-    const role=window.state?.role||'';
-    document.documentElement.dataset.role=role;
-    const gate=document.getElementById('admin-desktop-gate');
-    const blocked=role==='admin'&&window.innerWidth<1200;
-    if(gate)gate.querySelector('p:last-child')?.replaceChildren(document.createTextNode('Please open GeoFare on a desktop screen at least 1200px wide.'));
-    if(blocked){
-      document.body.classList.remove('sidebar-open');
-      document.getElementById('sidebar')?.classList.remove('active');
-      document.getElementById('overlay')?.classList.remove('active');
-    }
-  }
-  function syncMenuState(){
-    const open=document.getElementById('sidebar')?.classList.contains('active');
-    document.body.classList.toggle('sidebar-open',!!open);
-    document.getElementById('menu-toggle')?.setAttribute('aria-expanded',String(!!open));
-  }
-  syncAdminLayout();
-  syncMenuState();
-  window.addEventListener('resize',syncAdminLayout,{passive:true});
-  document.addEventListener('click',syncMenuState);
-  setInterval(syncAdminLayout,800);
-})();
+
 </script>
 
-</body></html>';
-  w.document.open();
-  w.document.write(printHtml);
-  w.document.close();
-  setTimeout(()=>w.print(),120);
-}
-function gfBuildTools(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('admin-record-tools'))return;const box=document.createElement('section');box.id='admin-record-tools';box.className='form-card admin-record-tools';box.innerHTML='<div class="report-record-head"><div><span class="section-label">Administrative records</span><h3>Reports & Logs Print Center</h3><p class="small-note">Choose exactly which records the administrator wants to keep or print, with an editable date and time range.</p></div><span class="role-chip">PRINTABLE RECORDS</span></div><div class="admin-record-checks"><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="reports" checked> Rider reports</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="safety" checked> SOS alerts</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="calculations"> Fare calculations</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="audit"> Audit logs</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="users"> Account activity</label></div><div class="admin-record-range"><div class="form-group"><label class="form-label" for="gf-record-from">From</label><input class="form-input" id="gf-record-from" type="datetime-local"></div><div class="form-group"><label class="form-label" for="gf-record-to">To</label><input class="form-input" id="gf-record-to" type="datetime-local"></div></div><div class="admin-record-actions"><button type="button" class="btn btn-primary" id="gf-print-records">🖨 Print selected records</button><button type="button" class="btn btn-secondary btn-sm" id="gf-clear-record-filters">Reset filters</button></div><div class="admin-record-count" id="gf-record-count"></div>';host.insertBefore(box,host.querySelector('#reports-content'));box.querySelectorAll('.gf-record-type').forEach(x=>x.addEventListener('change',gfUpdatePrintCount));$('gf-record-from').addEventListener('change',gfUpdatePrintCount);$('gf-record-to').addEventListener('change',gfUpdatePrintCount);$('gf-print-records').addEventListener('click',gfPrintRecords);$('gf-clear-record-filters').addEventListener('click',()=>{box.querySelectorAll('.gf-record-type').forEach(x=>x.checked=['reports','safety'].includes(x.value));$('gf-record-from').value='';$('gf-record-to').value='';gfUpdatePrintCount()});gfUpdatePrintCount();}
-function gfBuildSafetySection(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('integrated-safety-section'))return;const sec=document.createElement('section');sec.id='integrated-safety-section';sec.className='form-card integrated-safety-wrap';sec.innerHTML='<div class="report-record-head"><div><span class="section-label">Unified safety management</span><h3>Safety Alerts & Emergency Evidence</h3><p class="small-note">SOS alerts are managed here together with rider reports. Each alert shows the sender’s current location directly on a map and its submitted photo evidence.</p></div><div class="safety-queue-tools"><input class="form-input" id="safety-search" placeholder="Search SOS alerts"><select class="form-select" id="safety-filter"><option value="all">All statuses</option><option value="New">New</option><option value="Acknowledged">Acknowledged</option><option value="Responded">Responded</option><option value="Resolved">Resolved</option><option value="Dismissed">Dismissed</option></select></div></div><div id="integrated-safety-content"></div>';host.appendChild(sec);$('safety-search').addEventListener('input',gfRenderIntegratedSafety);$('safety-filter').addEventListener('change',gfRenderIntegratedSafety);}
-function gfEnhanceReports(){if(state.role!=='admin')return;gfBuildTools();gfBuildSafetySection();gfRenderIntegratedSafety();}
-function gfDecorateStats(){if(state.role!=='admin')return;const icons=['👥','🧑‍💼','🛵','🛺','✓','⏳','💵','⚠️','🔎','✓','🆘'];document.querySelectorAll('#admin-stats .stat-card').forEach((card,i)=>{if(card.querySelector('.stat-icon'))return;const icon=document.createElement('div');icon.className='stat-icon';icon.textContent=icons[i]||'📊';card.insertBefore(icon,card.firstChild);});}
-function gfAfterPanel(){gfStars();gfPhotoPreview();gfReplaceSOSButton();if(state.role==='admin'){gfDecorateStats();if(state.currentPanel==='reports')setTimeout(gfEnhanceReports,0);}}
-const originalRenderAdmin=window.renderAdmin;if(typeof originalRenderAdmin==='function'){window.renderAdmin=function(){const r=originalRenderAdmin.apply(this,arguments);setTimeout(gfDecorateStats,0);return r;};}
-const originalRenderRatings=window.renderRatings;if(typeof originalRenderRatings==='function'){window.renderRatings=function(){const r=originalRenderRatings.apply(this,arguments);setTimeout(gfStars,0);return r;};}
-const originalShowPanel=window.showPanel;if(typeof originalShowPanel==='function'){window.showPanel=function(panel){const r=originalShowPanel.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
-const originalRenderSafety=window.renderSafety;if(typeof originalRenderSafety==='function'){window.renderSafety=function(){const r=originalRenderSafety.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
-const originalLoadData=window.loadData;if(typeof originalLoadData==='function'){window.loadData=async function(){const r=await originalLoadData.apply(this,arguments);setTimeout(gfAfterPanel,0);return r;};}
-setTimeout(gfAfterPanel,300);
-})();
-</script>
+
 
 <style id="geofare-final-fix-styles">
 .password-input-wrap{position:relative;width:100%}
@@ -4998,16 +4994,6 @@ setTimeout(gfAfterPanel,300);
 .password-toggle.is-visible{color:var(--accent);background:var(--accent-dim)}
 .nav-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;color:currentColor!important;font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif!important}
 #admin-stats .stat-icon{display:flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important}
-#gf-desktop-gate,.admin-desktop-gate{display:none!important}
-@media(max-width:1024px){
- html[data-role="admin"],html[data-role="admin"] body{width:100%!important;height:100%!important;min-width:0!important;overflow:hidden!important;background:#081a2b!important}
- html[data-role="admin"] .app,html[data-role="admin"] #app{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;user-select:none!important}
- html[data-role="admin"] .admin-desktop-gate{display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2147483647!important;box-sizing:border-box!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;text-align:center!important;padding:28px!important;background:linear-gradient(135deg,#081a2b 0%,#155b94 100%)!important;color:#fff!important}
- html[data-role="admin"] .admin-desktop-gate-card{width:min(520px,calc(100vw - 40px))!important;max-width:520px!important;background:rgba(255,255,255,.10)!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:24px!important;padding:34px!important;box-shadow:0 24px 80px rgba(0,0,0,.35)!important}
- html[data-role="admin"] .admin-desktop-gate h2{color:#fff!important;margin:0 0 10px!important}
- html[data-role="admin"] .admin-desktop-gate p{color:#dcecff!important;line-height:1.6!important}
-}
-@media(min-width:1025px){html[data-role="admin"] .admin-desktop-gate{display:none!important}}
 </style>
 <script id="geofare-final-fix-runtime">
 (function(){
@@ -5105,22 +5091,13 @@ html,body{background:var(--bg)!important;color:var(--text)!important}
 .data-table td{border-color:var(--border)!important;color:var(--text)!important}
 .panel-header:after{background:linear-gradient(90deg,var(--accent2),var(--accent),transparent)!important;opacity:.9!important}
 .dev-badge{box-shadow:0 0 0 3px var(--accent-dim)!important}
-#gf-desktop-gate{display:none!important}
 @media(max-width:1024px){
   html[data-role="admin"],html[data-role="admin"] body{width:100%!important;height:100%!important;min-width:100%!important;overflow:hidden!important;background:#06111d!important}
   html[data-role="admin"] #app{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;user-select:none!important;filter:none!important;transform:none!important}
-  html[data-role="admin"] .admin-desktop-gate,html[data-role="admin"] #gf-desktop-gate{display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-width:100vw!important;z-index:2147483647!important;box-sizing:border-box!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;text-align:center!important;padding:24px!important;background:linear-gradient(145deg,#04101b 0%,#075a9b 100%)!important;color:#fff!important;pointer-events:auto!important}
-  html[data-role="admin"] .admin-desktop-gate-card{width:min(520px,calc(100vw - 40px))!important;max-width:520px!important;background:rgba(5,24,41,.90)!important;border:1px solid rgba(105,185,242,.38)!important;border-radius:24px!important;padding:34px!important;box-shadow:0 24px 80px rgba(0,0,0,.45),0 0 0 5px rgba(105,185,242,.10)!important}
-  html[data-role="admin"] #gf-desktop-gate>div:not(.gf-gate-card){max-width:520px!important}
-  html[data-role="admin"] #gf-desktop-gate{gap:14px!important}
-  html[data-role="admin"] #gf-desktop-gate h2,html[data-role="admin"] .admin-desktop-gate h2{color:#fff!important;margin:0 0 10px!important}
-  html[data-role="admin"] #gf-desktop-gate p,html[data-role="admin"] .admin-desktop-gate p{color:#dcecff!important;line-height:1.65!important;max-width:460px!important}
-  html[data-role="admin"] .admin-desktop-gate .admin-desktop-icon,html[data-role="admin"] #gf-desktop-gate>div:first-child{filter:drop-shadow(0 0 12px rgba(105,185,242,.42))!important}
 }
 @media(min-width:1025px){
   html[data-role="admin"] #app{min-width:1100px!important}
   html[data-role="admin"] .main{min-width:0!important}
-  html[data-role="admin"] .admin-desktop-gate,html[data-role="admin"] #gf-desktop-gate{display:none!important}
 }
 </style>
 <script id="geofare-final-visual-admin-runtime">
@@ -5243,11 +5220,8 @@ body{transition:background-color .22s ease,color .22s ease}
 .status-badge{box-shadow:none!important}
 @media(max-width:1024px){
  html[data-role="admin"] #app,html[data-role="admin"] .app{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;user-select:none!important}
- html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-width:100vw!important;z-index:2147483647!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;background:#06111d!important;color:#fff!important;pointer-events:auto!important}
- html[data-role="admin"] #gf-desktop-gate h2,html[data-role="admin"] .admin-desktop-gate h2{color:#fff!important}
- html[data-role="admin"] #gf-desktop-gate p,html[data-role="admin"] .admin-desktop-gate p{color:#d9e8f5!important}
 }
-@media(min-width:1025px){html[data-role="admin"] #app{min-width:1100px!important;width:max(100%,1100px)!important}html[data-role="admin"] .main{min-width:0!important}html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{display:none!important}}
+@media(min-width:1025px){html[data-role="admin"] #app{min-width:1100px!important;width:max(100%,1100px)!important}html[data-role="admin"] .main{min-width:0!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 
@@ -5730,54 +5704,141 @@ body.sidebar-open{overflow:hidden}
   .auth-screen{padding:8px 10px 22px!important}
   .auth-card{border-radius:16px!important;padding:22px!important}
 }
-html[data-role="admin"] .app,html[data-role="admin"] #app{min-width:1200px}
+
 @media(max-width:1199px){
   html[data-role="admin"],html[data-role="admin"] body{width:100%!important;min-width:100%!important;overflow:hidden!important}
   html[data-role="admin"] #app,html[data-role="admin"] .app{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;user-select:none!important}
-  html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{
-    display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-width:100vw!important;z-index:2147483647!important;
-    align-items:center!important;justify-content:center!important;flex-direction:column!important;text-align:center!important;padding:24px!important;box-sizing:border-box!important;
-    background:linear-gradient(145deg,#04101b 0%,#075a9b 100%)!important;color:#fff!important;pointer-events:auto!important
-  }
-  html[data-role="admin"] .admin-desktop-gate-card{
-    width:min(520px,calc(100vw - 40px))!important;max-width:520px!important;background:rgba(5,24,41,.94)!important;
-    border:1px solid rgba(105,185,242,.40)!important;border-radius:24px!important;padding:34px!important;
-    box-shadow:0 24px 80px rgba(0,0,0,.45),0 0 0 5px rgba(105,185,242,.10)!important
-  }
-  html[data-role="admin"] .admin-desktop-gate h2{color:#fff!important}
-  html[data-role="admin"] .admin-desktop-gate p{color:#dcecff!important;line-height:1.65!important}
 }
 @media(min-width:1200px){
   html[data-role="admin"] #app,html[data-role="admin"] .app{min-width:1200px!important;width:max(100%,1200px)!important}
-  html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{display:none!important}
 }
 </style>
 
-<script id="geofare-final-layout-runtime">
-(function(){
-  function syncAdminLayout(){
-    const role=window.state?.role||'';
-    document.documentElement.dataset.role=role;
-    const gate=document.getElementById('admin-desktop-gate');
-    const blocked=role==='admin'&&window.innerWidth<1200;
-    if(gate)gate.querySelector('p:last-child')?.replaceChildren(document.createTextNode('Please open GeoFare on a desktop screen at least 1200px wide.'));
-    if(blocked){
-      document.body.classList.remove('sidebar-open');
-      document.getElementById('sidebar')?.classList.remove('active');
-      document.getElementById('overlay')?.classList.remove('active');
-    }
-  }
-  function syncMenuState(){
-    const open=document.getElementById('sidebar')?.classList.contains('active');
-    document.body.classList.toggle('sidebar-open',!!open);
-    document.getElementById('menu-toggle')?.setAttribute('aria-expanded',String(!!open));
-  }
-  syncAdminLayout();
-  syncMenuState();
-  window.addEventListener('resize',syncAdminLayout,{passive:true});
-  document.addEventListener('click',syncMenuState);
-  setInterval(syncAdminLayout,800);
-})();
-</script>
 
+
+<style id="geofare-mobile-contrast-repair">
+:root:not([data-theme="dark"]) .menu-toggle{
+  background:#ffffff!important;
+  color:#0b3b63!important;
+  border:1.5px solid #76a9cf!important;
+  box-shadow:0 8px 22px rgba(31,78,121,.20),0 0 0 3px rgba(77,158,232,.08)!important;
+}
+:root:not([data-theme="dark"]) .menu-toggle:hover{
+  background:#edf6fd!important;
+  color:#07365a!important;
+  border-color:#3f91cf!important;
+  box-shadow:0 10px 26px rgba(31,78,121,.24),0 0 0 4px rgba(77,158,232,.12)!important;
+}
+:root:not([data-theme="dark"]) .menu-toggle:focus-visible{
+  outline:3px solid #4d9ee8!important;
+  outline-offset:3px!important;
+}
+:root[data-theme="dark"] .menu-toggle{
+  background:#0b2438!important;
+  color:#f4fbff!important;
+  border-color:#4c8db9!important;
+}
+.sidebar-header{isolation:isolate!important}
+.brand-lockup{position:relative!important;z-index:1!important}
+.menu-toggle{z-index:2001!important}
+.topbar-title{min-width:0!important;flex:1 1 auto!important;overflow:hidden!important;padding-right:8px!important}
+.topbar-title .eyebrow{display:block!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.25!important}
+.topbar-title strong{display:block!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.25!important}
+.topbar-actions{flex:0 0 auto!important;min-width:max-content!important}
+.auth-sub{max-width:100%!important;overflow-wrap:anywhere!important}
+.auth-kicker{max-width:100%!important;white-space:normal!important;line-height:1.35!important}
+.demo-note{overflow-wrap:anywhere!important}
+@media(max-width:768px){
+  .menu-toggle{
+    top:max(10px,env(safe-area-inset-top))!important;
+    left:10px!important;
+    width:50px!important;
+    height:50px!important;
+    min-width:50px!important;
+    font-size:23px!important;
+  }
+  .sidebar-header{
+    padding-left:76px!important;
+    padding-right:16px!important;
+  }
+  .brand-lockup{width:auto!important;max-width:100%!important;min-width:0!important}
+  .geofare-logo{width:min(205px,100%)!important;max-width:100%!important;height:auto!important}
+  .logo-sub{max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1.35!important}
+  .topbar{
+    height:auto!important;
+    min-height:70px!important;
+    padding:10px 10px 10px 74px!important;
+    align-items:center!important;
+    gap:8px!important;
+  }
+  .topbar-title{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    width:100%!important;
+    max-width:none!important;
+    padding-right:0!important;
+    overflow:hidden!important;
+  }
+  .topbar-title .eyebrow{
+    font-size:7.5px!important;
+    letter-spacing:.75px!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    margin-bottom:3px!important;
+  }
+  .topbar-title strong{
+    font-size:15px!important;
+    line-height:1.15!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .topbar-actions{gap:5px!important;flex:0 0 auto!important;min-width:0!important}
+  .topbar-actions .icon-btn{width:34px!important;height:34px!important;flex:0 0 34px!important}
+  .topbar-actions .btn{white-space:nowrap!important}
+}
+@media(max-width:520px){
+  .sidebar-header{padding-left:70px!important;padding-top:26px!important;padding-bottom:18px!important;min-height:126px!important}
+  .geofare-logo{width:min(185px,100%)!important}
+  .topbar{min-height:66px!important;padding-left:72px!important;padding-right:8px!important;gap:6px!important}
+  .topbar-title .eyebrow{font-size:7px!important;letter-spacing:.65px!important}
+  .topbar-title strong{font-size:14px!important}
+  .topbar-actions{gap:4px!important}
+  .topbar-actions .dev-badge{display:none!important}
+}
+@media(max-width:420px){
+  .menu-toggle{top:max(8px,env(safe-area-inset-top))!important;left:8px!important;width:48px!important;height:48px!important;min-width:48px!important;font-size:22px!important}
+  .topbar{min-height:62px!important;padding-left:66px!important;padding-right:7px!important}
+  .topbar-title .eyebrow{display:none!important}
+  .topbar-title strong{font-size:13.5px!important;line-height:1.2!important}
+  .topbar-actions{gap:3px!important}
+  .topbar-actions .icon-btn{width:32px!important;height:32px!important;flex-basis:32px!important}
+  .topbar-actions .btn{padding-left:8px!important;padding-right:8px!important;font-size:10.5px!important}
+  .sidebar-header{padding-left:68px!important}
+  .geofare-logo{width:min(175px,100%)!important}
+}
+@media(max-width:360px){
+  .topbar{padding-left:62px!important}
+  .topbar-title strong{font-size:13px!important}
+  .topbar-actions .theme-icon-btn{display:none!important}
+}
+@media(max-width:340px){
+  .topbar-actions .logout-btn,.topbar-actions #logout-btn{display:none!important}
+  .sidebar-header{padding-left:66px!important}
+}
+
+</style>
+<style id="geofare-logo-contrast-final">
+.geofare-logo,.auth-geofare-logo,.geofare-mark-logo{background:transparent!important;border:0!important}
+.geofare-logo,.auth-geofare-logo{object-fit:contain!important}
+:root[data-theme="dark"] .sidebar .geofare-logo,:root[data-theme="dark"] .auth-geofare-logo{filter:none!important}
+:root[data-theme="light"] .sidebar .geofare-logo,:root[data-theme="light"] .auth-geofare-logo{filter:none!important}
+</style>
+
+<style id="geofare-admin-responsive-final">
+html[data-role="admin"] #app,html[data-role="admin"] .app{min-width:0!important;width:100%!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;user-select:auto!important}
+html[data-role="admin"] .main{min-width:0!important;width:auto!important}
+</style>
 </body></html>

@@ -3952,7 +3952,7 @@ function applyTheme(theme){
   const sidebarLogo=document.querySelector('.geofare-logo[data-light-logo]');
   if(sidebarLogo) sidebarLogo.src=theme==='dark'?sidebarLogo.dataset.darkLogo:sidebarLogo.dataset.lightLogo;
   const authLogo=document.querySelector('.auth-geofare-logo[data-logo-dark]');
-  if(authLogo) authLogo.src=authLogo.dataset.logoDark;
+  if(authLogo) authLogo.src=theme==='dark'?authLogo.dataset.logoDark:authLogo.dataset.logoLight;
   const btn=$('theme-toggle');
   if(btn){
     btn.classList.toggle('theme-is-dark',theme==='dark');

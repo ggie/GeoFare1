@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GeoFare — Road-Distance Fare & Public Safety Management System</title>
+<link rel="icon" type="image/svg+xml" href="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-app-icon.svg">
+<link rel="apple-touch-icon" href="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-app-icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -1363,6 +1365,14 @@ body { overflow:hidden; }
 @media(min-width:769px){.dashboard-wrap,.management-content{max-height:calc(100dvh - 64px);padding-bottom:36px}}
 @media(max-width:768px){.map-mode-btn{flex:1 1 30%}.live-monitor-card{align-items:flex-start}.live-monitor-pill{align-self:center}}
 
+
+  .brand-lockup{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0}
+  .geofare-logo{display:block;width:min(190px,100%);height:48px;object-fit:contain;object-position:left center}
+  .geofare-mark-logo{display:none;width:42px;height:42px;object-fit:contain;object-position:center}
+  .auth-geofare-logo{display:block;width:min(260px,100%);height:72px;object-fit:contain;object-position:left center}
+  .auth-brand{display:flex;align-items:center;min-height:72px}
+  .sidebar.collapsed .geofare-logo{display:none}.sidebar.collapsed .geofare-mark-logo{display:block}
+  @media (max-width:700px){.geofare-logo{width:160px;height:42px}.geofare-mark-logo{width:38px;height:38px}.auth-geofare-logo{width:220px;height:62px}}
 </style>
 
 
@@ -1468,7 +1478,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .data-card,.form-card,.kpi,.stat-card,.hero-stat,.log-card,.report-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease}
 .data-card:hover,.form-card:hover,.hero-stat:hover,.log-card:hover,.report-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 28%,var(--border))}
 .kpi{position:relative;overflow:hidden}
-.kpi:after{content:"";position:absolute;width:70px;height:70px;border-radius:50%;right:-25px;top:-28px;background:var(--accent-dim)}
 .kpi .kpi-icon{position:relative;z-index:1}
 .kpi .kpi-value{position:relative;z-index:1;color:var(--text)}
 .hero-card{background:linear-gradient(135deg,#124b79,#2476aa 58%,#e26d18)!important;box-shadow:0 14px 36px rgba(18,75,121,.22)}
@@ -1644,6 +1653,27 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 <style>
 .report-redesign{max-width:1180px!important;margin:0 auto;width:100%;padding:28px!important}.report-hero{display:flex;gap:16px;align-items:flex-start;padding:24px;border-radius:20px;background:linear-gradient(135deg,var(--accent),#2f6696);color:#fff;margin-bottom:14px;box-shadow:var(--shadow-lg)}.report-hero-icon{width:52px;height:52px;border-radius:15px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:24px;flex:none}.report-eyebrow,.report-section-kicker{display:block;font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase}.report-eyebrow{opacity:.75;margin-bottom:5px}.report-hero h2{font:800 25px 'Syne',sans-serif;margin:0}.report-hero p{margin:7px 0 0;font-size:12.5px;line-height:1.6;opacity:.9;max-width:720px}.report-notice{padding:13px 16px;border:1px solid #fdba74;background:#fff7ed;color:#7c2d12;border-radius:12px;font-size:12px;line-height:1.55;margin-bottom:16px}.report-stepper{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.report-step{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid var(--border);background:var(--surface);border-radius:13px}.report-step span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);color:var(--text3);font-weight:800;flex:none}.report-step.active{border-color:var(--accent);background:var(--accent-dim)}.report-step.active span{background:var(--accent);color:#fff}.report-step strong{display:block;font-size:11.5px}.report-step small{display:block;font-size:10px;color:var(--text3);margin-top:2px}.report-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;align-items:start}.report-main-column{display:flex;flex-direction:column;gap:16px}.report-section,.report-summary-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)}.report-section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}.report-section-head h3,.report-summary-card h3{font:800 17px 'Syne',sans-serif;margin:4px 0}.report-section-head p{font-size:11.5px;color:var(--text2);line-height:1.55;margin:0;max-width:620px}.report-section-kicker{color:var(--accent)}.report-directory-search{position:relative;margin-bottom:10px}.report-directory-search>span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:18px}.report-directory-search .form-input{padding-left:40px}.report-rider-list{max-height:290px;overflow:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface2)}.report-directory-foot{margin-top:10px;padding:11px 12px;border-radius:10px;background:var(--accent-dim);font-size:11px;color:var(--text2);display:flex;gap:5px;flex-wrap:wrap}.report-directory-foot strong{color:var(--accent)}.report-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.report-form-grid .full{grid-column:1/-1}.report-form-grid .form-group{margin:0}.form-label b{color:var(--red)}.plate-input{text-transform:uppercase;letter-spacing:1.5px;font-weight:800}.form-input,.form-select,.form-textarea{background:var(--surface)!important}.report-side-column{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px}.reporter-card .form-group{margin-bottom:0}.report-privacy{margin-top:12px;padding:10px 11px;border-radius:10px;background:var(--green-dim);color:var(--green);font-size:11px;line-height:1.5}.report-summary-card{background:linear-gradient(180deg,var(--surface),var(--surface2))}.report-summary-card ul{list-style:none;padding:0;margin:14px 0}.report-summary-card li{padding:9px 0;border-bottom:1px solid var(--border);font-size:11.5px;color:var(--text2)}.report-summary-card li:before{content:'✓';color:var(--green);font-weight:800;margin-right:8px}.report-generate,.report-reset{width:100%;margin-top:8px}.report-preview{max-width:760px;margin:20px auto 0}.report-actions{display:none;margin-top:12px;flex-wrap:wrap;gap:8px;justify-content:center}.saved-reports-section{margin-top:28px;display:none}.directory-count{white-space:nowrap;background:var(--accent-dim);color:var(--accent);border:1px solid var(--border);padding:6px 9px;border-radius:99px;font-size:10px;font-weight:800}@media(max-width:950px){.report-layout{grid-template-columns:1fr}.report-side-column{position:static;display:grid;grid-template-columns:1fr 1fr}.report-summary-card{height:100%}}@media(max-width:700px){.report-redesign{padding:16px!important}.report-hero{padding:18px}.report-stepper{grid-template-columns:1fr}.report-form-grid,.report-side-column{grid-template-columns:1fr}.report-section{padding:16px}.report-section-head{flex-direction:column}.report-hero h2{font-size:21px}.report-rider-list{max-height:250px}}
 </style>
+
+<style id="geofare-unified-logo-dashboard-final">
+.brand-lockup{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:8px!important;min-width:0!important}
+.geofare-logo,.auth-geofare-logo{object-fit:contain!important;object-position:left center!important;display:block!important;background:transparent!important;border:0!important}
+.geofare-logo{width:240px!important;height:60px!important;max-width:240px!important}
+.auth-geofare-logo{width:240px!important;height:60px!important;max-width:240px!important}
+.geofare-mark-logo{width:44px!important;height:44px!important;background:transparent!important;border:0!important;object-fit:contain!important}
+.sidebar.collapsed .geofare-logo{display:none!important}.sidebar.collapsed .geofare-mark-logo{display:block!important}
+.dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card,.safety-kpi,.hero-stat{min-height:168px!important;padding:20px!important;border-radius:24px!important;overflow:hidden!important;position:relative!important;isolation:isolate!important}
+.dashboard-wrap .kpi .kpi-icon,.dashboard-wrap .stat-card .stat-icon,#admin-stats .stat-card .stat-icon,.safety-kpi .kpi-icon,.safety-kpi .stat-icon,.hero-stat .kpi-icon,.hero-stat .stat-icon{width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;border-radius:16px!important;font-size:27px!important;line-height:1!important;margin:0 0 14px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important}
+.dashboard-wrap .kpi .kpi-value,#admin-stats .stat-card .stat-value,.dashboard-wrap .stat-card .stat-value,.safety-kpi .num,.hero-stat .stat-value{font-size:32px!important;line-height:1.05!important;letter-spacing:-.6px!important}
+.dashboard-wrap .kpi .kpi-label,#admin-stats .stat-card .stat-label,.dashboard-wrap .stat-card .stat-label,.safety-kpi .label,.hero-stat .stat-label{font-size:12px!important;line-height:1.35!important;font-weight:700!important}
+.dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card,.safety-kpi,.hero-stat{background-image:radial-gradient(ellipse 190px 145px at 100% 0%,rgba(76,159,214,.34) 0%,rgba(58,127,175,.19) 40%,rgba(20,55,78,.06) 64%,transparent 86%),linear-gradient(145deg,#102b40 0%,#0d2233 56%,#0a1d2c 100%)!important}
+:root:not([data-theme="dark"]) .dashboard-wrap .kpi,:root:not([data-theme="dark"]) .dashboard-wrap .stat-card,:root:not([data-theme="dark"]) #admin-stats .stat-card,:root:not([data-theme="dark"]) .safety-kpi,:root:not([data-theme="dark"]) .hero-stat{background-image:radial-gradient(ellipse 190px 145px at 100% 0%,rgba(57,143,203,.22) 0%,rgba(82,157,208,.12) 40%,rgba(235,244,250,.08) 64%,transparent 86%),linear-gradient(145deg,#fff 0%,#f4f8fc 58%,#edf4f9 100%)!important}
+:root:not([data-theme="dark"]) .dashboard-wrap .kpi .kpi-icon,:root:not([data-theme="dark"]) .dashboard-wrap .stat-card .stat-icon,:root:not([data-theme="dark"]) #admin-stats .stat-card .stat-icon,:root:not([data-theme="dark"]) .safety-kpi .kpi-icon,:root:not([data-theme="dark"]) .hero-stat .kpi-icon{background:#e5f1fa!important;border-color:#9fc1da!important;color:#075a9b!important}
+:root[data-theme="dark"] .dashboard-wrap .kpi .kpi-icon,:root[data-theme="dark"] .dashboard-wrap .stat-card .stat-icon,:root[data-theme="dark"] #admin-stats .stat-card .stat-icon,:root[data-theme="dark"] .safety-kpi .kpi-icon,:root[data-theme="dark"] .hero-stat .kpi-icon{background:#16364d!important;border-color:#38627f!important;color:#f3f8fc!important}
+.dashboard-wrap .kpi>*,.dashboard-wrap .stat-card>*,#admin-stats .stat-card>*,.safety-kpi>*,.hero-stat>*{position:relative!important;z-index:2!important}
+.dashboard-wrap .kpi:hover,.dashboard-wrap .stat-card:hover,#admin-stats .stat-card:hover,.safety-kpi:hover,.hero-stat:hover{transform:translateY(-2px)!important}
+@media(max-width:700px){.geofare-logo,.auth-geofare-logo{width:220px!important;height:55px!important;max-width:220px!important}.geofare-mark-logo{width:42px!important;height:42px!important}}
+@media(max-width:768px){.dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card,.safety-kpi,.hero-stat{min-height:156px!important;padding:18px!important;border-radius:22px!important}.dashboard-wrap .kpi .kpi-icon,.dashboard-wrap .stat-card .stat-icon,#admin-stats .stat-card .stat-icon,.safety-kpi .kpi-icon,.hero-stat .kpi-icon{width:54px!important;height:54px!important;min-width:54px!important;min-height:54px!important;font-size:26px!important}}
+</style>
 </head>
 <body>
 <div class="admin-desktop-gate" id="admin-desktop-gate"><div class="admin-desktop-gate-card"><div class="admin-desktop-icon">🖥️</div><h2>Administrator Desktop Workspace</h2><p>The GeoFare Administrator and MFRTA management dashboard is optimized for desktop screens to safely manage riders, reports, fares, route records, and activity logs.</p><p style="margin-top:12px;font-size:12px">Please open GeoFare on a screen at least 1024px wide.</p></div></div>
@@ -1653,22 +1683,22 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
 
 <div id="auth-screen" class="auth-screen">
   <div class="auth-card">
-    <div class="auth-brand">Geo<span>Fare</span></div>
+    <div class="auth-brand"><img class="auth-geofare-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/ChatGPT%20Image%20Sep%2019,%202026,%2009_16_42%20AM.png" data-logo-light="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal.svg" data-logo-dark="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/ChatGPT%20Image%20Sep%2019,%202026,%2009_16_42%20AM.png" alt="GeoFare logo"></div>
     <div class="auth-kicker">MANOLO FORTICH · BUKIDNON</div>
     <h1 id="auth-title">Sign in to GeoFare</h1>
     <p class="auth-sub">GIS-based habal-habal fare computation, fare management, and public safety/accountability.</p>
     <div id="auth-alert" class="auth-alert" role="alert"></div>
     <form id="login-form">
       <div class="form-group"><label class="form-label" for="login-identifier">Email Address</label><input class="form-input" id="login-identifier" type="text" autocomplete="username" placeholder="you@example.com" required><div class="form-hint">Use the email address registered to your GeoFare account.</div></div>
-      <div class="form-group"><label class="form-label" for="login-password">Password</label><input class="form-input" id="login-password" type="password" required autocomplete="current-password"></div>
+      <div class="form-group password-field"><label class="form-label" for="login-password">Password</label><div class="password-input-wrap"><input class="form-input" id="login-password" type="password" required autocomplete="current-password"><button class="password-toggle" type="button" data-password-target="login-password" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg></button></div></div>
       <button class="btn btn-primary auth-submit" type="submit">Sign in</button>
       <button class="btn btn-secondary auth-submit" id="forgot-password-btn" type="button">Forgot password?</button>
     </form>
     <form id="signup-form" style="display:none">
       <div class="form-group"><label class="form-label" for="signup-name">Full Name</label><input class="form-input" id="signup-name" required maxlength="120"></div>
       <div class="form-group"><label class="form-label" for="signup-identifier">Email Address</label><input class="form-input" id="signup-identifier" type="text" autocomplete="username" placeholder="you@example.com" required><div class="form-hint">Use a valid email address. You will receive a confirmation link before signing in.</div></div>
-      <div class="form-group"><label class="form-label" for="signup-password">Password</label><input class="form-input" id="signup-password" type="password" minlength="8" required></div>
-      <div class="form-group"><label class="form-label" for="signup-confirm">Confirm Password</label><input class="form-input" id="signup-confirm" type="password" minlength="8" required></div>
+      <div class="form-group password-field"><label class="form-label" for="signup-password">Password</label><div class="password-input-wrap"><input class="form-input" id="signup-password" type="password" minlength="8" required><button class="password-toggle" type="button" data-password-target="signup-password" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg></button></div></div>
+      <div class="form-group password-field"><label class="form-label" for="signup-confirm">Confirm Password</label><div class="password-input-wrap"><input class="form-input" id="signup-confirm" type="password" minlength="8" required><button class="password-toggle" type="button" data-password-target="signup-confirm" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg></button></div></div>
       <div class="form-group commuter-only-signup"><label class="form-label" for="signup-contact">Contact Number</label><input class="form-input" id="signup-contact" maxlength="30"></div>
       <div class="form-group commuter-only-signup"><label class="form-label" for="signup-address">Address / Barangay</label><input class="form-input" id="signup-address" maxlength="180"></div>
       <div class="form-group"><label class="form-label" for="signup-role">Account Type</label><select class="form-select" id="signup-role"><option value="commuter">Commuter</option><option value="rider">Habal-Habal Rider</option></select></div>
@@ -1695,8 +1725,8 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div>
-        <div class="logo">Geo<span>Fare</span></div>
+      <div class="brand-lockup">
+        <img class="geofare-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal.svg" data-light-logo="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-logo-horizontal.svg" data-dark-logo="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/ChatGPT%20Image%20Sep%2019,%202026,%2009_16_42%20AM.png" alt="GeoFare logo"><img class="geofare-mark-logo" src="https://ydizkrfjxkzxfxtelncb.supabase.co/storage/v1/object/public/Geofare%20logo/geofare-mark.svg" alt="GeoFare">
         <div class="logo-sub">Manolo Fortich • Habal-Habal</div>
       </div>
       <button class="collapse-toggle" id="sidebar-collapse-btn" title="Collapse sidebar" type="button">⟨</button>
@@ -1720,8 +1750,8 @@ input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus,.fo
   </div>
   <div class="topbar-actions">
     <span class="dev-badge" id="mode-badge">DEVELOPMENT MODE</span>
-    <button class="icon-btn" id="theme-toggle" title="Toggle dark / light mode" type="button">🌙</button>
-    <button class="icon-btn" id="profile-btn" title="Open profile">◯</button>
+    <button class="icon-btn theme-icon-btn" id="theme-toggle" title="Toggle dark / light mode" type="button" aria-label="Switch to dark mode"><svg class="theme-svg theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.6 8.6 0 1 0 20.4 15.2Z"/></svg><svg class="theme-svg theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
+    <button class="icon-btn profile-icon-btn" id="profile-btn" title="Open profile" aria-label="Open profile"><svg class="profile-person-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/></svg></button>
     <button class="btn btn-secondary btn-sm" id="logout-btn">Log out</button>
   </div>
 </div>
@@ -3418,6 +3448,199 @@ async function submitReport(r){
 function printReport(){const p=$('report-preview'),w=window.open('','_blank','width=700,height=900');if(!w)return;w.document.write(`<html><head><title>GeoFare Incident Report</title><style>body{font-family:Arial;padding:40px;max-width:680px;margin:auto}.rp-field{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid #ddd}.rp-key{width:150px;font-weight:bold;font-size:12px}.rp-val{font-size:13px}.rp-header{text-align:center;margin-bottom:20px}.rp-footer{margin-top:20px;font-size:11px;color:#666}</style></head><body>${p.innerHTML}
 
 
+
+<style id="geofare-palette-final">
+:root{
+  --bg:#FBF8F3!important;
+  --surface:#F2F4F6!important;
+  --surface2:#AFC9DC!important;
+  --border:#D2DEE6!important;
+  --text:#232323!important;
+  --text2:#38505C!important;
+  --text3:#617783!important;
+  --accent:#064439!important;
+  --accent2:#0B6A5A!important;
+  --accent-dim:rgba(6,68,57,.10)!important;
+  --green:#157A4A!important;
+  --green-dim:rgba(21,122,74,.12)!important;
+  --gold:#6D5A16!important;
+  --gold-dim:#EEE7CE!important;
+  --red:#A83224!important;
+  --red-dim:rgba(168,50,36,.10)!important;
+  --shadow:0 2px 14px rgba(35,35,35,.08)!important;
+  --shadow-lg:0 14px 40px rgba(35,35,35,.14)!important;
+  --blue-soft:#E7EEF3!important;
+  --warm:#7B4A1D!important;
+  --warm-dim:#EEE7CE!important;
+}
+
+:root[data-theme="dark"]{
+  --bg:#232323!important;
+  --surface:#064439!important;
+  --surface2:#123E37!important;
+  --border:#2C6259!important;
+  --text:#FBF8F3!important;
+  --text2:#D8E5E0!important;
+  --text3:#AFC9DC!important;
+  --accent:#AFC9DC!important;
+  --accent2:#F2F4F6!important;
+  --accent-dim:rgba(175,201,220,.16)!important;
+  --green:#8ED6AE!important;
+  --green-dim:rgba(142,214,174,.14)!important;
+  --gold:#EEE7CE!important;
+  --gold-dim:rgba(238,231,206,.14)!important;
+  --red:#FFAAA0!important;
+  --red-dim:rgba(255,170,160,.14)!important;
+  --shadow:0 2px 16px rgba(0,0,0,.30)!important;
+  --shadow-lg:0 16px 44px rgba(0,0,0,.42)!important;
+  --blue-soft:#183B4A!important;
+  --warm:#EEE7CE!important;
+  --warm-dim:rgba(238,231,206,.14)!important;
+}
+
+html,body{background:var(--bg)!important;color:var(--text)!important}
+.sidebar,.topbar,.panel-header,.map-sidebar,.matrix-table,.log-card,.report-preview,.about-card,.form-card,.data-card,.stat-card,.kpi,.hero-stat,.auth-card,.profile-modal-card,.user-edit-card,.scan-card,.qr-box,.rider-mobile-card,.table-wrap,.table-scroll,.empty-state,.fare-result,.live-monitor-card,.sos-card{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.sidebar-header{background:var(--surface)!important;border-color:var(--border)!important}
+.topbar{background:var(--surface)!important}
+.logo{color:var(--accent)!important}
+.logo span{color:var(--text)!important}
+.logo-sub,.panel-sub,.map-ctrl-sub,.form-hint,.muted,.small-note,.kpi .kpi-label,.stat-card .stat-label,.hero-stat .kicker,.report-card-date,.nav-footer{color:var(--text3)!important}
+.nav-link{color:var(--text2)!important}
+.nav-link:hover{background:var(--surface2)!important;color:var(--text)!important}
+.nav-link.active{background:var(--accent-dim)!important;color:var(--accent)!important}
+.nav-badge{background:var(--accent)!important;color:var(--surface)!important}
+.section-divider,.fare-divider,.score-row,.public-rider-field,.rp-field{background:var(--border)!important}
+.section-divider{height:1px}
+.btn-primary,.fare-result-head,.matrix-table th,.rider-source-table th{background:var(--accent)!important;color:var(--surface)!important;border-color:var(--accent)!important}
+.btn-primary:hover{background:var(--accent2)!important;color:var(--text)!important}
+.btn-secondary,.icon-btn,.collapse-toggle,.map-mode-btn,.pin-row,.mff-close{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.btn-secondary:hover,.icon-btn:hover,.collapse-toggle:hover,.map-mode-btn:hover{background:var(--surface2)!important}
+.btn-danger{background:var(--red-dim)!important;color:var(--red)!important;border-color:var(--red)!important}
+.btn-danger:hover{background:var(--red)!important;color:var(--surface)!important}
+.form-input,.form-select,.form-textarea,input,select,textarea{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.form-input::placeholder,.form-textarea::placeholder,input::placeholder,textarea::placeholder{color:var(--text3)!important}
+.form-input:focus,.form-select:focus,.form-textarea:focus,input:focus,select:focus,textarea:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px var(--accent-dim)!important}
+select option{background:var(--surface)!important;color:var(--text)!important}
+.pin-row{background:var(--surface2)!important}
+.pin-row.active-pin,.map-mode-btn.active-mode{background:var(--accent-dim)!important;border-color:var(--accent)!important;color:var(--accent)!important}
+.map-instruction,.info-banner{background:var(--accent-dim)!important;border-color:var(--accent)!important;color:var(--accent)!important}
+.pin-dot.pickup{background:#DCEFE5!important;color:#064439!important}
+.pin-dot.dropoff{background:#F3DED7!important;color:#7A2418!important}
+.fare-row-label,.rp-key,.about-section p,.report-card-reason{color:var(--text2)!important}
+.fare-row-value.regular,.fare-pill.reg,.log-chip.dist,.route-dot,.live-monitor-pill{color:var(--accent)!important}
+.fare-row-value.distance,.rp-ref{color:var(--accent)!important}
+.fare-row-value.discount,.fare-pill.disc,.log-chip.disc{color:var(--green)!important}
+.fare-pill.reg,.log-chip.dist,.live-monitor-pill{background:var(--accent-dim)!important}
+.fare-pill.disc,.log-chip.disc{background:var(--green-dim)!important}
+.matrix-table td,.data-table td,.rider-source-table td{border-color:var(--border)!important;color:var(--text)!important}
+.matrix-table tr:hover td,.data-table tr:hover td,.rider-source-table tr:hover td{background:var(--surface2)!important}
+.data-table th{background:var(--surface2)!important;color:var(--text)!important}
+.log-chip.fare{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important}
+.log-chip.time{background:var(--gold-dim)!important;color:var(--gold)!important}
+.matrix-note,.fare-ref-box{background:var(--gold-dim)!important;border-color:var(--gold)!important;color:var(--text2)!important}
+.matrix-note strong,.fare-ref-box strong{color:var(--gold)!important}
+.about-hero,.hero-card{background:var(--accent)!important;color:var(--surface)!important}
+.about-section-title{color:var(--accent)!important}
+.about-avatar{background:var(--accent)!important;color:var(--surface)!important}
+.role-chip{background:var(--accent-dim)!important;color:var(--accent)!important;border-color:var(--border)!important}
+.status-verified,.status-resolved,.status-active{background:var(--green-dim)!important;color:var(--green)!important}
+.status-pending,.status-review,.status-under-review{background:var(--gold-dim)!important;color:var(--gold)!important}
+.status-rejected,.status-dismissed,.status-suspended{background:var(--red-dim)!important;color:var(--red)!important}
+.status-new{background:var(--gold-dim)!important;color:var(--gold)!important}
+.status-acknowledged{background:var(--accent-dim)!important;color:var(--accent)!important}
+.alert-card,.map-safety-strip{background:var(--gold-dim)!important;border-color:var(--gold)!important;color:var(--text2)!important}
+.alert-card strong,.map-safety-strip strong,.sos-card .sos-title{color:var(--gold)!important}
+.sos-card{background:var(--gold-dim)!important;border-color:var(--gold)!important}
+.sos-btn{background:var(--red)!important;color:var(--surface)!important}
+.sos-btn:hover{background:#7E2118!important}
+.danger-outline{background:var(--red-dim)!important;color:var(--red)!important;border-color:var(--red)!important}
+.dev-badge,.demo-note{background:var(--gold-dim)!important;color:var(--gold)!important;border-color:var(--gold)!important}
+.auth-screen{background:linear-gradient(135deg,var(--bg),var(--surface2))!important}
+.auth-brand{color:var(--accent)!important}
+.auth-brand span{color:var(--text)!important}
+.auth-alert.error{background:var(--red-dim)!important;color:var(--red)!important;border-color:var(--red)!important}
+.auth-alert.success{background:var(--green-dim)!important;color:var(--green)!important;border-color:var(--green)!important}
+.loading-overlay{background:rgba(35,35,35,.38)!important}
+.loading-card{background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)!important}
+.toast.info{background:var(--accent)!important;color:var(--surface)!important}
+.toast.success{background:var(--green)!important;color:#fff!important}
+.toast.error{background:var(--red)!important;color:#fff!important}
+.rider-source-table{background:var(--surface)!important}
+.rider-source-table th{color:var(--surface)!important}
+.rider-mobile-card{background:var(--surface)!important}
+.live-monitor-card{background:linear-gradient(135deg,var(--surface2),var(--surface))!important}
+.live-monitor-card.tracking{border-color:var(--green)!important;box-shadow:0 0 0 3px var(--green-dim)!important}
+.live-monitor-icon{background:var(--accent-dim)!important;color:var(--accent)!important}
+.profile-icon-btn{padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.profile-person-icon{width:18px;height:18px;display:block}
+#theme-toggle{font-size:16px!important}
+#map{background:var(--surface2)!important}
+.leaflet-popup-content-wrapper{background:var(--surface)!important;color:var(--text)!important}
+.leaflet-popup-tip{background:var(--surface)!important}
+.custom-pin-dot{border-color:var(--surface)!important}
+
+:root[data-theme="dark"] .sidebar,:root[data-theme="dark"] .topbar,:root[data-theme="dark"] .panel-header{background:var(--surface)!important}
+:root[data-theme="dark"] .about-hero,:root[data-theme="dark"] .hero-card{background:var(--surface)!important;color:var(--text)!important}
+:root[data-theme="dark"] .hero-stat,:root[data-theme="dark"] .kpi,:root[data-theme="dark"] .data-card,:root[data-theme="dark"] .form-card,:root[data-theme="dark"] .stat-card,:root[data-theme="dark"] .auth-card{background:var(--surface)!important;color:var(--text)!important}
+:root[data-theme="dark"] .data-table th{background:var(--surface2)!important;color:var(--text)!important}
+:root[data-theme="dark"] .admin-desktop-gate{background:linear-gradient(135deg,#232323,#064439)!important;color:#FBF8F3!important}
+:root[data-theme="dark"] .admin-desktop-gate-card{background:rgba(6,68,57,.82)!important;border-color:rgba(175,201,220,.28)!important}
+
+#gf-desktop-gate,.admin-desktop-gate{display:none!important}
+@media(max-width:1024px){
+  html[data-role="admin"] #gf-desktop-gate,
+  html[data-role="admin"] .admin-desktop-gate{display:flex!important;pointer-events:auto!important}
+  html[data-role="admin"] #app{display:none!important;pointer-events:none!important;user-select:none!important;filter:none!important}
+  html[data-role="admin"] .sidebar,
+  html[data-role="admin"] .main,
+  html[data-role="admin"] .panel,
+  html[data-role="admin"] .topbar{pointer-events:none!important}
+}
+@media(min-width:1025px){html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{display:none!important}}
+</style>
+
+
+
+<style id="geofare-round-dashboard-final">
+.dashboard-wrap .kpi,
+.dashboard-wrap .stat-card,
+#admin-stats .stat-card{
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  min-height:132px!important;
+  padding:17px 18px 15px!important;
+  border-radius:24px!important;
+  border:1px solid color-mix(in srgb,var(--accent) 30%,var(--border))!important;
+  background-color:var(--surface)!important;
+  background-image:radial-gradient(ellipse 150px 112px at 100% 0%,color-mix(in srgb,var(--accent) 24%,transparent) 0%,color-mix(in srgb,var(--accent) 14%,transparent) 38%,color-mix(in srgb,var(--accent) 6%,transparent) 62%,transparent 84%),linear-gradient(135deg,color-mix(in srgb,var(--surface) 96%,var(--accent) 4%),var(--surface) 58%)!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%!important;
+  box-shadow:0 10px 26px rgba(8,28,48,.09)!important;
+}
+.dashboard-wrap .kpi::before,
+.dashboard-wrap .kpi::after,
+.dashboard-wrap .stat-card::before,
+.dashboard-wrap .stat-card::after,
+#admin-stats .stat-card::before,
+#admin-stats .stat-card::after{content:none!important;display:none!important}
+.dashboard-wrap .kpi .kpi-icon,
+#admin-stats .stat-card .stat-icon{position:relative!important;z-index:2!important;width:48px!important;height:48px!important;min-width:48px!important;margin:0 0 12px!important;border-radius:14px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;background:var(--surface2)!important;border:1px solid var(--border)!important;color:var(--accent)!important;font-size:23px!important;line-height:1!important;box-shadow:none!important;filter:none!important;text-shadow:none!important}
+.dashboard-wrap .kpi .kpi-value,
+.dashboard-wrap .kpi .kpi-label,
+#admin-stats .stat-card .stat-value,
+#admin-stats .stat-card .stat-label{position:relative!important;z-index:2!important}
+.dashboard-wrap .kpi .kpi-value,#admin-stats .stat-card .stat-value{margin:0!important;color:var(--text)!important;font-size:30px!important;line-height:1.05!important;letter-spacing:-.35px!important}
+.dashboard-wrap .kpi .kpi-label,#admin-stats .stat-card .stat-label{margin-top:6px!important;color:var(--text3)!important;font-size:12px!important;line-height:1.3!important;font-weight:700!important}
+.dashboard-wrap .kpi:hover,.dashboard-wrap .stat-card:hover,#admin-stats .stat-card:hover{transform:translateY(-2px)!important;border-color:color-mix(in srgb,var(--accent) 52%,var(--border))!important;box-shadow:0 16px 34px rgba(8,28,48,.14)!important}
+:root[data-theme="dark"] .dashboard-wrap .kpi,:root[data-theme="dark"] .dashboard-wrap .stat-card,:root[data-theme="dark"] #admin-stats .stat-card{background-color:var(--surface)!important;background-image:radial-gradient(ellipse 150px 112px at 100% 0%,color-mix(in srgb,var(--accent) 28%,transparent) 0%,color-mix(in srgb,var(--accent) 16%,transparent) 38%,color-mix(in srgb,var(--accent) 8%,transparent) 62%,transparent 84%),linear-gradient(135deg,color-mix(in srgb,var(--surface) 93%,var(--accent) 7%),var(--surface) 58%)!important;border-color:color-mix(in srgb,var(--accent) 38%,var(--border))!important;box-shadow:0 12px 30px rgba(0,0,0,.22)!important}
+:root[data-theme="dark"] .dashboard-wrap .kpi:hover,:root[data-theme="dark"] .dashboard-wrap .stat-card:hover,:root[data-theme="dark"] #admin-stats .stat-card:hover{border-color:color-mix(in srgb,var(--accent) 60%,var(--border))!important;box-shadow:0 18px 38px rgba(0,0,0,.30)!important}
+@media(max-width:768px){.dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card{min-height:128px!important;padding:15px 16px 14px!important;border-radius:22px!important;background-image:radial-gradient(ellipse 125px 96px at 100% 0%,color-mix(in srgb,var(--accent) 22%,transparent) 0%,color-mix(in srgb,var(--accent) 12%,transparent) 42%,transparent 82%),linear-gradient(135deg,color-mix(in srgb,var(--surface) 96%,var(--accent) 4%),var(--surface) 60%)!important}.dashboard-wrap .kpi .kpi-icon,#admin-stats .stat-card .stat-icon{width:46px!important;height:46px!important;min-width:46px!important;font-size:22px!important;margin-bottom:10px!important}}
+@media(prefers-reduced-motion:reduce){.dashboard-wrap .kpi:hover,.dashboard-wrap .stat-card:hover,#admin-stats .stat-card:hover{transform:none!important}}
+</style>
+
+
+
 </body>`);w.document.close();w.print();}
 function clearReport(){['rpt-plate','rpt-datetime','rpt-route','rpt-fare','rpt-desc','rpt-name'].forEach(id=>{if($(id))$(id).value=''});$('rpt-type').value='';if($('report-rider-id'))$('report-rider-id').value='';if($('report-rider-search'))$('report-rider-search').value='';$('report-preview').classList.remove('visible');$('report-actions').style.display='none';window._currentReport=null;renderReportRiderDirectory();}
 $('save-report-btn')?.addEventListener('click',saveReportLog);
@@ -3559,8 +3782,8 @@ function renderAdmin(){
   renderAdminLiveMonitoring();
   renderRegisteredRiders();
   const reports=state.reports, pending=state.riders.filter(r=>(r.verification_status||r.status)==='Pending'),verified=state.riders.filter(r=>(r.verification_status||r.status)==='Verified');
-  const stats=[['Total Users',state.users.length],['Commuter Accounts',state.users.filter(u=>u.role==='commuter').length],['Rider Accounts',state.users.filter(u=>u.role==='rider').length],['Registered Riders',state.riders.length],['Verified Riders',verified.length],['Pending Verification',pending.length],['Active Fare Rows',activeFareRows().length],['Total Reports',reports.length],['Pending Reports',reports.filter(r=>r.status==='New'||r.status==='Under Review').length],['Resolved Reports',reports.filter(r=>r.status==='Resolved').length],['Active SOS Alerts',state.safetyAlerts.filter(a=>!['Resolved','Dismissed'].includes(a.status)).length]];
-  $('admin-stats').innerHTML=stats.map(([l,v])=>`<div class="stat-card"><div class="stat-value">${Number(v||0)}</div><div class="stat-label">${l}</div></div>`).join('');
+  const stats=[['👥','Total Users',state.users.length],['🧑‍💼','Commuter Accounts',state.users.filter(u=>u.role==='commuter').length],['🛵','Rider Accounts',state.users.filter(u=>u.role==='rider').length],['🛺','Registered Riders',state.riders.length],['✓','Verified Riders',verified.length],['⏳','Pending Verification',pending.length],['💵','Active Fare Rows',activeFareRows().length],['⚠️','Total Reports',reports.length],['🔎','Pending Reports',reports.filter(r=>r.status==='New'||r.status==='Under Review').length],['✓','Resolved Reports',reports.filter(r=>r.status==='Resolved').length],['🆘','Active SOS Alerts',state.safetyAlerts.filter(a=>!['Resolved','Dismissed'].includes(a.status)).length]];
+  $('admin-stats').innerHTML=stats.map(([i,l,v])=>`<div class="stat-card"><div class="stat-icon" aria-hidden="true">${i}</div><div class="stat-value">${Number(v||0)}</div><div class="stat-label">${l}</div></div>`).join('');
   $('pending-riders').innerHTML=pending.length?pending.map(r=>`<div class="data-card" style="margin-bottom:10px"><div class="card-title">${esc(r.profile?.full_name||r.full_name||r.id)}</div><div class="muted">${esc(r.business_permit_reference||'No permit reference')}</div><div class="toolbar-row" style="margin-top:10px"><button class="btn btn-primary btn-sm verify-rider" data-id="${esc(r.id)}">Verify</button><button class="btn btn-danger btn-sm reject-rider" data-id="${esc(r.id)}">Reject</button></div></div>`).join(''):'<div class="muted">No pending rider verifications.</div>';
   $('audit-preview').innerHTML=state.audit.slice(-6).reverse().map(a=>`<div class="score-row"><span>${esc(a.action)}</span><strong>${esc(new Date(a.created_at||a.timestamp||Date.now()).toLocaleString('en-PH'))}</strong></div>`).join('')||'<div class="muted">No administrative activity recorded.</div>';
   document.querySelectorAll('.verify-rider').forEach(b=>b.onclick=()=>setRiderVerification(b.dataset.id,'Verified'));
@@ -3726,7 +3949,16 @@ function bindMisc(){
 function applyTheme(theme){
   document.documentElement.setAttribute('data-theme',theme);
   localStorage.setItem('geofare.theme',theme);
-  const btn=$('theme-toggle'); if(btn){btn.textContent=theme==='dark'?'☀️':'🌙';btn.title=theme==='dark'?'Switch to light mode':'Switch to dark mode';}
+  const sidebarLogo=document.querySelector('.geofare-logo[data-light-logo]');
+  if(sidebarLogo) sidebarLogo.src=theme==='dark'?sidebarLogo.dataset.darkLogo:sidebarLogo.dataset.lightLogo;
+  const authLogo=document.querySelector('.auth-geofare-logo[data-logo-dark]');
+  if(authLogo) authLogo.src=authLogo.dataset.logoDark;
+  const btn=$('theme-toggle');
+  if(btn){
+    btn.classList.toggle('theme-is-dark',theme==='dark');
+    btn.setAttribute('aria-label',theme==='dark'?'Switch to light mode':'Switch to dark mode');
+    btn.title=theme==='dark'?'Switch to light mode':'Switch to dark mode';
+  }
 }
 function initTheme(){
   applyTheme(localStorage.getItem('geofare.theme')||'light');
@@ -4239,7 +4471,10 @@ button:disabled,.btn:disabled { cursor:not-allowed; opacity:.55; transform:none!
   .panel:not(#panel-map).active > .report-content,
   .panel:not(#panel-map).active > .about-content{overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto;}
 }
-</style></head><body><h1>GeoFare — Registered Rider QR Directory</h1><p>Registered rider QR directory · Generated ${esc(nowPH())}</p><div class="grid">${cards.map(({r,src})=>`<article class="card"><div class="id">${esc(r.public_id)}</div><div class="name">${esc(mergedRiderName(r))}</div><div class="meta">Plate: ${esc(r.plate_number||'Not provided')}<br>${esc(r.ally_group||'')}</div>${src?`<img src="${src}" alt="QR for ${esc(r.public_id)}">`:'<div style="padding:65px 0;color:#999;font-size:11px">QR unavailable</div>'}</article>`).join('')}</div></body>`;
+</style></head><body><h1>GeoFare — Registered Rider QR Directory</h1><p>Registered rider QR directory · Generated ${esc(nowPH())}</p><div class="grid">${cards.map(({r,src})=>`<article class="card"><div class="id">${esc(r.public_id)}</div><div class="name">${esc(mergedRiderName(r))}</div><div class="meta">Plate: ${esc(r.plate_number||'Not provided')}<br>${esc(r.ally_group||'')}</div>${src?`<img src="${src}" alt="QR for ${esc(r.public_id)}">`:'<div style="padding:65px 0;color:#999;font-size:11px">QR unavailable</div>'}</article>`).join('')}</div>
+
+
+</body>`;
   w.document.open();w.document.write(html);w.document.close();
   setTimeout(()=>{try{w.focus();w.print();}catch(_){}},500);
 }
@@ -4589,7 +4824,20 @@ function gfRecordsForPrint(){const types=gfSelectedTypes(),fromVal=$('gf-record-
 function gfRecordLabel(type){return ({reports:'Rider Report',safety:'SOS Safety Alert',calculations:'Fare Calculation',audit:'Audit Log',users:'Account Activity'})[type]||type;}
 function gfRecordDetails(x){return String(x.description||x.message||x.action||x.target||x.route||x.notes||'').replace(/Location:\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?/i,'').trim();}
 function gfUpdatePrintCount(){const r=gfRecordsForPrint(),el=$('gf-record-count');if(el)el.textContent=r.rows.length+' record'+(r.rows.length===1?'':'s')+' match the selected filters.';}
-function gfPrintRecords(){const r=gfRecordsForPrint();if(!r.types.length)return toast('Select at least one record or log type to print.','error');if(!r.rows.length)return toast('No records match the selected type and time range.','info');const w=window.open('','_blank','width=1100,height=800');if(!w)return toast('The print window was blocked. Please allow pop-ups for GeoFare.','error');const range=(r.from?r.from.toLocaleString('en-PH'):'All time')+' to '+(r.to?r.to.toLocaleString('en-PH'):'Present');const body=r.rows.sort((a,b)=>gfRecordDate(b)-gfRecordDate(a)).map(x=>'<tr><td>'+esc(gfRecordLabel(x._type))+'</td><td>'+esc(x.reference_no||x.title||x.action||x.id||'Record')+'</td><td>'+esc(gfRecordDate(x).toLocaleString('en-PH'))+'</td><td>'+esc(x.status||x.severity||'Recorded')+'</td><td>'+esc(gfRecordDetails(x))+'</td></tr>').join('');w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>GeoFare Administrative Records</title><style>body{font-family:Arial,sans-serif;color:#111;padding:28px}h1{font-size:22px;margin:0 0 6px}.meta{font-size:11px;color:#555;margin-bottom:18px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid #bbb;padding:7px;text-align:left;vertical-align:top}th{background:#edf2f7}@media print{body{padding:0}}</style></head><body><h1>GeoFare Administrative Records</h1><div class="meta">Record types: '+esc(r.types.map(gfRecordLabel).join(', '))+'<br>Time range: '+esc(range)+'<br>Generated: '+esc(new Date().toLocaleString('en-PH'))+'</div><table><thead><tr><th>Type</th><th>Reference / Record</th><th>Date & Time</th><th>Status</th><th>Details</th></tr></thead><tbody>'+body+'</tbody></table><scr'+'ipt>window.onload=function(){window.print();}</scr'+'ipt></body></html>');w.document.close();}
+function gfPrintRecords(){
+  const r=gfRecordsForPrint();
+  if(!r.types.length)return toast('Select at least one record or log type to print.','error');
+  if(!r.rows.length)return toast('No records match the selected type and time range.','info');
+  const w=window.open('','_blank','width=1100,height=800');
+  if(!w)return toast('The print window was blocked. Please allow pop-ups for GeoFare.','error');
+  const range=(r.from?r.from.toLocaleString('en-PH'):'All time')+' to '+(r.to?r.to.toLocaleString('en-PH'):'Present');
+  const body=r.rows.sort((a,b)=>gfRecordDate(b)-gfRecordDate(a)).map(x=>'<tr><td>'+esc(gfRecordLabel(x._type))+'</td><td>'+esc(x.reference_no||x.title||x.action||x.id||'Record')+'</td><td>'+esc(gfRecordDate(x).toLocaleString('en-PH'))+'</td><td>'+esc(x.status||x.severity||'Recorded')+'</td><td>'+esc(gfRecordDetails(x))+'</td></tr>').join('');
+  const printHtml='<!doctype html><html><head><meta charset="utf-8"><title>GeoFare Administrative Records</title><style>body{font-family:Arial,sans-serif;color:#111;padding:28px}h1{font-size:22px;margin:0 0 6px}.meta{font-size:11px;color:#555;margin-bottom:18px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid #bbb;padding:7px;text-align:left;vertical-align:top}th{background:#edf2f7}@media print{body{padding:0}}</style></head><body><h1>GeoFare Administrative Records</h1><div class="meta">Record types: '+esc(r.types.map(gfRecordLabel).join(', '))+'<br>Time range: '+esc(range)+'<br>Generated: '+esc(new Date().toLocaleString('en-PH'))+'</div><table><thead><tr><th>Type</th><th>Reference / Record</th><th>Date & Time</th><th>Status</th><th>Details</th></tr></thead><tbody>'+body+'</tbody></table></body></html>';
+  w.document.open();
+  w.document.write(printHtml);
+  w.document.close();
+  setTimeout(()=>w.print(),120);
+}
 function gfBuildTools(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('admin-record-tools'))return;const box=document.createElement('section');box.id='admin-record-tools';box.className='form-card admin-record-tools';box.innerHTML='<div class="report-record-head"><div><span class="section-label">Administrative records</span><h3>Reports & Logs Print Center</h3><p class="small-note">Choose exactly which records the administrator wants to keep or print, with an editable date and time range.</p></div><span class="role-chip">PRINTABLE RECORDS</span></div><div class="admin-record-checks"><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="reports" checked> Rider reports</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="safety" checked> SOS alerts</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="calculations"> Fare calculations</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="audit"> Audit logs</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="users"> Account activity</label></div><div class="admin-record-range"><div class="form-group"><label class="form-label" for="gf-record-from">From</label><input class="form-input" id="gf-record-from" type="datetime-local"></div><div class="form-group"><label class="form-label" for="gf-record-to">To</label><input class="form-input" id="gf-record-to" type="datetime-local"></div></div><div class="admin-record-actions"><button type="button" class="btn btn-primary" id="gf-print-records">🖨 Print selected records</button><button type="button" class="btn btn-secondary btn-sm" id="gf-clear-record-filters">Reset filters</button></div><div class="admin-record-count" id="gf-record-count"></div>';host.insertBefore(box,host.querySelector('#reports-content'));box.querySelectorAll('.gf-record-type').forEach(x=>x.addEventListener('change',gfUpdatePrintCount));$('gf-record-from').addEventListener('change',gfUpdatePrintCount);$('gf-record-to').addEventListener('change',gfUpdatePrintCount);$('gf-print-records').addEventListener('click',gfPrintRecords);$('gf-clear-record-filters').addEventListener('click',()=>{box.querySelectorAll('.gf-record-type').forEach(x=>x.checked=['reports','safety'].includes(x.value));$('gf-record-from').value='';$('gf-record-to').value='';gfUpdatePrintCount()});gfUpdatePrintCount();}
 function gfBuildSafetySection(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('integrated-safety-section'))return;const sec=document.createElement('section');sec.id='integrated-safety-section';sec.className='form-card integrated-safety-wrap';sec.innerHTML='<div class="report-record-head"><div><span class="section-label">Unified safety management</span><h3>Safety Alerts & Emergency Evidence</h3><p class="small-note">SOS alerts are managed here together with rider reports. Each alert shows the sender’s current location directly on a map and its submitted photo evidence.</p></div><div class="safety-queue-tools"><input class="form-input" id="safety-search" placeholder="Search SOS alerts"><select class="form-select" id="safety-filter"><option value="all">All statuses</option><option value="New">New</option><option value="Acknowledged">Acknowledged</option><option value="Responded">Responded</option><option value="Resolved">Resolved</option><option value="Dismissed">Dismissed</option></select></div></div><div id="integrated-safety-content"></div>';host.appendChild(sec);$('safety-search').addEventListener('input',gfRenderIntegratedSafety);$('safety-filter').addEventListener('change',gfRenderIntegratedSafety);}
 function gfEnhanceReports(){if(state.role!=='admin')return;gfBuildTools();gfBuildSafetySection();gfRenderIntegratedSafety();}
@@ -4603,4 +4851,674 @@ const originalLoadData=window.loadData;if(typeof originalLoadData==='function'){
 setTimeout(gfAfterPanel,300);
 })();
 </script>
+
+<style id="geofare-final-fix-styles">
+.password-input-wrap{position:relative;width:100%}
+.password-input-wrap .form-input{padding-right:48px!important}
+.password-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:9px;background:transparent;color:var(--text3);cursor:pointer;padding:0;z-index:3}
+.password-toggle:hover{background:var(--surface2);color:var(--accent)}
+.password-toggle:focus-visible{outline:3px solid var(--accent-dim);outline-offset:1px;color:var(--accent)}
+.password-toggle svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.password-toggle.is-visible{color:var(--accent);background:var(--accent-dim)}
+.nav-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;color:currentColor!important;font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif!important}
+#admin-stats .stat-icon{display:flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important}
+#gf-desktop-gate,.admin-desktop-gate{display:none!important}
+@media(max-width:1024px){
+ html[data-role="admin"],html[data-role="admin"] body{width:100%!important;height:100%!important;min-width:0!important;overflow:hidden!important;background:#081a2b!important}
+ html[data-role="admin"] .app,html[data-role="admin"] #app{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;user-select:none!important}
+ html[data-role="admin"] .admin-desktop-gate{display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2147483647!important;box-sizing:border-box!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;text-align:center!important;padding:28px!important;background:linear-gradient(135deg,#081a2b 0%,#155b94 100%)!important;color:#fff!important}
+ html[data-role="admin"] .admin-desktop-gate-card{width:min(520px,calc(100vw - 40px))!important;max-width:520px!important;background:rgba(255,255,255,.10)!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:24px!important;padding:34px!important;box-shadow:0 24px 80px rgba(0,0,0,.35)!important}
+ html[data-role="admin"] .admin-desktop-gate h2{color:#fff!important;margin:0 0 10px!important}
+ html[data-role="admin"] .admin-desktop-gate p{color:#dcecff!important;line-height:1.6!important}
+}
+@media(min-width:1025px){html[data-role="admin"] .admin-desktop-gate{display:none!important}}
+</style>
+<script id="geofare-final-fix-runtime">
+(function(){
+'use strict';
+function initPasswordToggles(){
+ document.querySelectorAll('.password-toggle[data-password-target]').forEach(function(btn){
+  if(btn.dataset.bound==='1')return;
+  btn.dataset.bound='1';
+  btn.addEventListener('click',function(){
+   var input=document.getElementById(btn.dataset.passwordTarget); if(!input)return;
+   var visible=input.type==='text'; input.type=visible?'password':'text';
+   btn.classList.toggle('is-visible',!visible);
+   btn.setAttribute('aria-label',visible?'Show password':'Hide password');
+   btn.title=visible?'Show password':'Hide password';
+  });
+ });
+}
+function ensureAdminStatsIcons(){
+ if(window.state&&state.role==='admin'){
+  var icons=['👥','🧑‍💼','🛵','🛺','✓','⏳','💵','⚠️','🔎','✓','🆘'];
+  document.querySelectorAll('#admin-stats .stat-card').forEach(function(card,i){
+   var icon=card.querySelector('.stat-icon');
+   if(!icon){icon=document.createElement('div');icon.className='stat-icon';card.insertBefore(icon,card.firstChild)}
+   if(!icon.textContent.trim())icon.textContent=icons[i]||'📊';
+   icon.style.display='flex'; icon.style.visibility='visible'; icon.style.opacity='1';
+  });
+ }
+}
+function enforceAdminDesktop(){try{document.documentElement.dataset.role=window.state&&window.state.role?window.state.role:''}catch(e){}}
+initPasswordToggles(); enforceAdminDesktop();
+setInterval(function(){initPasswordToggles();enforceAdminDesktop();ensureAdminStatsIcons()},500);
+window.addEventListener('load',function(){initPasswordToggles();ensureAdminStatsIcons()});
+})();
+</script>
+
+<style id="geofare-final-visual-admin-rules">
+:root:not([data-theme="dark"]){
+  --bg:#eef4fa!important;
+  --surface:#ffffff!important;
+  --surface2:#e4eef8!important;
+  --border:#a9bfd3!important;
+  --text:#071a2d!important;
+  --text2:#294965!important;
+  --text3:#58718a!important;
+  --accent:#075a9b!important;
+  --accent2:#1b82c4!important;
+  --accent-dim:rgba(7,90,155,.13)!important;
+  --shadow:0 7px 22px rgba(7,45,78,.10)!important;
+  --shadow-lg:0 18px 44px rgba(7,45,78,.16)!important;
+}
+:root[data-theme="dark"]{
+  --bg:#06111d!important;
+  --surface:#0c1d2d!important;
+  --surface2:#132b41!important;
+  --border:#31516d!important;
+  --text:#f5f9fd!important;
+  --text2:#c9d9e8!important;
+  --text3:#9ab0c4!important;
+  --accent:#69b9f2!important;
+  --accent2:#36a0e2!important;
+  --accent-dim:rgba(105,185,242,.18)!important;
+  --shadow:0 9px 28px rgba(0,0,0,.34)!important;
+  --shadow-lg:0 20px 54px rgba(0,0,0,.48)!important;
+}
+html,body{background:var(--bg)!important;color:var(--text)!important}
+.topbar,.sidebar,.panel-header{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.data-card,.form-card,.stat-card,.kpi,.hero-stat,.log-card,.report-card,.about-card,.matrix-table,.table-wrap,.table-scroll{background:var(--surface)!important;border-color:var(--border)!important;color:var(--text)!important;box-shadow:var(--shadow)!important}
+.data-card:hover,.form-card:hover,.stat-card:hover,.kpi:hover,.hero-stat:hover,.log-card:hover,.report-card:hover{border-color:var(--accent2)!important;box-shadow:var(--shadow-lg)!important}
+.nav-link{color:var(--text2)!important}
+.nav-link:hover{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important}
+.nav-link.active{background:linear-gradient(90deg,var(--accent-dim),rgba(255,255,255,0))!important;color:var(--accent)!important;border-color:color-mix(in srgb,var(--accent) 34%,var(--border))!important;box-shadow:inset 4px 0 var(--accent),0 5px 16px var(--accent-dim)!important}
+.nav-icon{width:32px!important;height:32px!important;min-width:32px!important;border-radius:10px!important;background:var(--surface2)!important;border:1px solid var(--border)!important;color:var(--accent)!important;text-shadow:0 0 10px var(--accent-dim)!important;filter:none!important;box-shadow:0 2px 8px rgba(7,45,78,.10)!important;transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease,filter .18s ease!important}
+.nav-link:hover .nav-icon,.nav-link.active .nav-icon{background:var(--accent)!important;border-color:var(--accent2)!important;color:#fff!important;box-shadow:0 0 0 3px var(--accent-dim),0 6px 16px rgba(7,90,155,.24)!important;transform:translateY(-1px) scale(1.04)!important}
+.nav-badge{box-shadow:0 0 0 3px var(--accent-dim),0 5px 12px rgba(7,90,155,.20)!important}
+.icon-btn{width:40px!important;height:40px!important;min-width:40px!important;border-radius:12px!important;border:1px solid var(--border)!important;background:var(--surface2)!important;color:var(--accent)!important;box-shadow:0 3px 10px rgba(7,45,78,.10)!important;transition:transform .18s ease,background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease!important}
+.icon-btn:hover{background:var(--accent)!important;color:#fff!important;border-color:var(--accent2)!important;box-shadow:0 0 0 4px var(--accent-dim),0 8px 18px rgba(7,90,155,.22)!important;transform:translateY(-2px) scale(1.03)!important}
+.icon-btn:focus-visible{outline:3px solid var(--accent2)!important;outline-offset:3px!important;box-shadow:0 0 0 6px var(--accent-dim)!important}
+.theme-svg{width:21px!important;height:21px!important;display:none!important;fill:none!important;stroke:currentColor!important;stroke-width:1.9!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+.theme-icon-btn:not(.theme-is-dark) .theme-moon{display:block!important}
+.theme-icon-btn.theme-is-dark .theme-sun{display:block!important}
+.profile-icon-btn{background:var(--surface2)!important;color:var(--accent)!important}
+.profile-person-icon{width:21px!important;height:21px!important;filter:drop-shadow(0 0 5px var(--accent-dim))!important}
+.profile-icon-btn:hover .profile-person-icon{filter:drop-shadow(0 0 8px rgba(255,255,255,.42))!important}
+#admin-stats .stat-card{position:relative!important;overflow:hidden!important}
+#admin-stats .stat-icon{width:48px!important;height:48px!important;border-radius:14px!important;background:linear-gradient(145deg,var(--accent),var(--accent2))!important;border:1px solid color-mix(in srgb,var(--accent2) 70%,white)!important;color:#fff!important;font-size:23px!important;line-height:1!important;box-shadow:0 0 0 4px var(--accent-dim),0 8px 20px rgba(7,90,155,.25)!important;text-shadow:0 1px 2px rgba(0,0,0,.28)!important;margin-bottom:12px!important;transition:transform .18s ease,box-shadow .18s ease,filter .18s ease!important}
+#admin-stats .stat-card:hover .stat-icon{transform:translateY(-2px) scale(1.06)!important;filter:brightness(1.08)!important;box-shadow:0 0 0 5px var(--accent-dim),0 10px 26px rgba(7,90,155,.32)!important}
+.kpi .kpi-icon,.live-monitor-icon,.monitor-avatar,.about-avatar{background:var(--accent-dim)!important;color:var(--accent)!important;border-color:color-mix(in srgb,var(--accent) 25%,var(--border))!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 8%,transparent)!important}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2))!important;color:#fff!important;border-color:var(--accent)!important;box-shadow:0 8px 20px rgba(7,90,155,.24)!important}
+.btn-primary:hover{filter:brightness(1.10)!important;box-shadow:0 0 0 4px var(--accent-dim),0 10px 24px rgba(7,90,155,.28)!important}
+.btn-secondary{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.btn-secondary:hover{background:var(--surface2)!important;color:var(--accent)!important;border-color:var(--accent2)!important}
+.form-input,.form-select,.form-textarea{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)!important;box-shadow:0 0 0 4px var(--accent-dim)!important}
+.data-table th{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important}
+.data-table td{border-color:var(--border)!important;color:var(--text)!important}
+.panel-header:after{background:linear-gradient(90deg,var(--accent2),var(--accent),transparent)!important;opacity:.9!important}
+.dev-badge{box-shadow:0 0 0 3px var(--accent-dim)!important}
+#gf-desktop-gate{display:none!important}
+@media(max-width:1024px){
+  html[data-role="admin"],html[data-role="admin"] body{width:100%!important;height:100%!important;min-width:100%!important;overflow:hidden!important;background:#06111d!important}
+  html[data-role="admin"] #app{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;user-select:none!important;filter:none!important;transform:none!important}
+  html[data-role="admin"] .admin-desktop-gate,html[data-role="admin"] #gf-desktop-gate{display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-width:100vw!important;z-index:2147483647!important;box-sizing:border-box!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;text-align:center!important;padding:24px!important;background:linear-gradient(145deg,#04101b 0%,#075a9b 100%)!important;color:#fff!important;pointer-events:auto!important}
+  html[data-role="admin"] .admin-desktop-gate-card{width:min(520px,calc(100vw - 40px))!important;max-width:520px!important;background:rgba(5,24,41,.90)!important;border:1px solid rgba(105,185,242,.38)!important;border-radius:24px!important;padding:34px!important;box-shadow:0 24px 80px rgba(0,0,0,.45),0 0 0 5px rgba(105,185,242,.10)!important}
+  html[data-role="admin"] #gf-desktop-gate>div:not(.gf-gate-card){max-width:520px!important}
+  html[data-role="admin"] #gf-desktop-gate{gap:14px!important}
+  html[data-role="admin"] #gf-desktop-gate h2,html[data-role="admin"] .admin-desktop-gate h2{color:#fff!important;margin:0 0 10px!important}
+  html[data-role="admin"] #gf-desktop-gate p,html[data-role="admin"] .admin-desktop-gate p{color:#dcecff!important;line-height:1.65!important;max-width:460px!important}
+  html[data-role="admin"] .admin-desktop-gate .admin-desktop-icon,html[data-role="admin"] #gf-desktop-gate>div:first-child{filter:drop-shadow(0 0 12px rgba(105,185,242,.42))!important}
+}
+@media(min-width:1025px){
+  html[data-role="admin"] #app{min-width:1100px!important}
+  html[data-role="admin"] .main{min-width:0!important}
+  html[data-role="admin"] .admin-desktop-gate,html[data-role="admin"] #gf-desktop-gate{display:none!important}
+}
+</style>
+<script id="geofare-final-visual-admin-runtime">
+(function(){
+'use strict';
+function syncAdminViewport(){
+ var admin=window.state&&window.state.role==='admin';
+ document.documentElement.dataset.role=admin?'admin':(window.state&&window.state.role?window.state.role:'');
+ if(admin){
+  var mobile=window.innerWidth<=1024;
+  document.documentElement.classList.toggle('admin-mobile-blocked',mobile);
+ }
+}
+function syncThemeIcon(){
+ var b=document.getElementById('theme-toggle');
+ if(!b)return;
+ var dark=document.documentElement.getAttribute('data-theme')==='dark';
+ b.classList.toggle('theme-is-dark',dark);
+ b.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');
+ b.title=dark?'Switch to light mode':'Switch to dark mode';
+}
+function boostIcons(){
+ document.querySelectorAll('.nav-icon').forEach(function(x){x.style.visibility='visible';x.style.opacity='1';});
+ document.querySelectorAll('#admin-stats .stat-icon').forEach(function(x){x.style.visibility='visible';x.style.opacity='1';});
+}
+syncAdminViewport();syncThemeIcon();boostIcons();
+window.addEventListener('resize',syncAdminViewport);
+setInterval(function(){syncAdminViewport();syncThemeIcon();boostIcons();},500);
+})();
+</script>
+
+<style id="geofare-clean-final-ui">
+:root:not([data-theme="dark"]){
+  --bg:#f3f7fb!important;
+  --surface:#ffffff!important;
+  --surface2:#e7f0f8!important;
+  --border:#c7d7e5!important;
+  --text:#102235!important;
+  --text2:#3d5870!important;
+  --text3:#71879a!important;
+  --accent:#075a9b!important;
+  --accent2:#1b82c4!important;
+  --accent-dim:rgba(7,90,155,.10)!important;
+  --shadow:0 3px 14px rgba(20,55,85,.08)!important;
+  --shadow-lg:0 12px 32px rgba(20,55,85,.13)!important;
+}
+:root[data-theme="dark"]{
+  --bg:#071522!important;
+  --surface:#0d2132!important;
+  --surface2:#15334b!important;
+  --border:#35556d!important;
+  --text:#f3f8fc!important;
+  --text2:#c5d6e5!important;
+  --text3:#91a9bc!important;
+  --accent:#62b3ee!important;
+  --accent2:#2f91d0!important;
+  --accent-dim:rgba(98,179,238,.14)!important;
+  --shadow:0 5px 18px rgba(0,0,0,.24)!important;
+  --shadow-lg:0 16px 40px rgba(0,0,0,.38)!important;
+}
+html,body{background:var(--bg)!important;color:var(--text)!important}
+body{transition:background-color .22s ease,color .22s ease}
+.sidebar,.topbar,.panel-header,.data-card,.form-card,.stat-card,.kpi,.hero-stat,.log-card,.report-card,.about-card,.matrix-table,.table-wrap,.table-scroll,.auth-card{transition:background-color .22s ease,border-color .22s ease,color .22s ease,box-shadow .18s ease,transform .18s ease}
+.sidebar{background:var(--surface)!important;border-color:var(--border)!important}
+.sidebar-header{background:var(--surface)!important;border-color:var(--border)!important}
+.topbar,.panel-header{background:var(--surface)!important;border-color:var(--border)!important}
+.logo{color:var(--accent)!important}.logo span{color:var(--text)!important}.logo-sub{color:var(--text3)!important}
+.nav-links{gap:5px}
+.nav-link{min-height:44px!important;padding:10px 12px!important;border:1px solid transparent!important;border-radius:11px!important;color:var(--text2)!important;transition:background-color .16s ease,color .16s ease,border-color .16s ease,transform .16s ease!important}
+.nav-link:hover{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important;transform:translateX(2px)!important}
+.nav-link.active{background:var(--accent-dim)!important;color:var(--accent)!important;border-color:color-mix(in srgb,var(--accent) 22%,var(--border))!important;box-shadow:inset 3px 0 0 var(--accent)!important}
+.nav-icon{width:30px!important;height:30px!important;min-width:30px!important;border-radius:8px!important;background:transparent!important;border:0!important;color:currentColor!important;box-shadow:none!important;text-shadow:none!important;filter:none!important;transform:none!important;transition:color .16s ease,background-color .16s ease!important}
+.nav-link:hover .nav-icon{background:rgba(7,90,155,.08)!important;color:var(--accent)!important;box-shadow:none!important;transform:none!important}
+.nav-link.active .nav-icon{background:var(--accent)!important;color:#fff!important;box-shadow:none!important;transform:none!important}
+:root[data-theme="dark"] .nav-link:hover .nav-icon{background:rgba(98,179,238,.10)!important}
+.nav-badge{box-shadow:none!important}
+.icon-btn{width:38px!important;height:38px!important;min-width:38px!important;border-radius:10px!important;background:var(--surface2)!important;border:1px solid var(--border)!important;color:var(--text)!important;box-shadow:none!important;transition:background-color .16s ease,color .16s ease,border-color .16s ease,transform .16s ease!important}
+.icon-btn:hover{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;box-shadow:none!important;transform:translateY(-1px)!important}
+.icon-btn:active{transform:scale(.97)!important}
+.icon-btn:focus-visible{outline:2px solid var(--accent2)!important;outline-offset:2px!important;box-shadow:none!important}
+.theme-icon-btn,.profile-icon-btn{background:var(--surface2)!important;color:var(--text)!important}
+.theme-icon-btn:hover,.profile-icon-btn:hover{background:var(--accent)!important;color:#fff!important}
+.theme-svg{filter:none!important;stroke:currentColor!important}
+.profile-person-icon{width:21px!important;height:21px!important;filter:none!important}
+.profile-icon-btn:hover .profile-person-icon{filter:none!important}
+.collapse-toggle{background:var(--surface2)!important;color:var(--text2)!important;border-color:var(--border)!important;box-shadow:none!important}
+.collapse-toggle:hover{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+.card-grid,.stats-grid,.kpi-grid,.hero-grid,.dashboard-grid,.admin-grid{align-items:stretch}
+.data-card,.form-card,.stat-card,.kpi,.hero-stat,.log-card,.report-card,.about-card,.table-wrap,.table-scroll{border-color:var(--border)!important;background:var(--surface)!important;box-shadow:var(--shadow)!important}
+.data-card:hover,.form-card:hover,.stat-card:hover,.kpi:hover,.hero-stat:hover,.log-card:hover,.report-card:hover{border-color:var(--border)!important;box-shadow:var(--shadow-lg)!important;transform:translateY(-1px)!important}
+.kpi .kpi-icon,.live-monitor-icon,.monitor-avatar,.about-avatar{background:var(--surface2)!important;color:var(--accent)!important;border-color:var(--border)!important;box-shadow:none!important}
+#admin-stats .stat-icon{background:var(--surface2)!important;border:1px solid var(--border)!important;color:var(--accent)!important;box-shadow:none!important;text-shadow:none!important;transition:background-color .16s ease,color .16s ease,border-color .16s ease!important}
+#admin-stats .stat-card:hover .stat-icon{transform:none!important;filter:none!important;box-shadow:none!important;background:var(--accent-dim)!important;color:var(--accent)!important}
+.btn{transition:background-color .16s ease,color .16s ease,border-color .16s ease,transform .14s ease,box-shadow .16s ease!important}
+.btn-primary{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;box-shadow:0 4px 12px rgba(7,90,155,.16)!important}
+.btn-primary:hover{background:var(--accent2)!important;filter:none!important;box-shadow:0 6px 16px rgba(7,90,155,.20)!important;transform:translateY(-1px)!important}
+.btn-secondary{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important;box-shadow:none!important}
+.btn-secondary:hover{background:var(--surface)!important;color:var(--accent)!important;border-color:var(--accent2)!important;box-shadow:none!important;transform:translateY(-1px)!important}
+.btn-danger:hover{box-shadow:none!important}
+.form-input,.form-select,.form-textarea{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3)!important}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px var(--accent-dim)!important}
+.data-table th{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important}
+.data-table td{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.data-table tbody tr:hover td{background:var(--surface2)!important}
+.matrix-table th,.fare-result-head{background:var(--accent)!important;color:#fff!important}
+.matrix-table td{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+.matrix-table tr:hover td{background:var(--surface2)!important}
+.map-mode-btn{background:var(--surface)!important;color:var(--text2)!important;border-color:var(--border)!important}
+.map-mode-btn:hover{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--accent2)!important}
+.map-mode-btn.active-mode{background:var(--accent-dim)!important;color:var(--accent)!important;border-color:var(--accent)!important}
+.pin-row{background:var(--surface2)!important;border-color:transparent!important}.pin-row:hover{border-color:var(--border)!important}.pin-row.active-pin{background:var(--accent-dim)!important;border-color:var(--accent)!important}
+.panel-header:after{opacity:.45!important}
+.loading-line{background:linear-gradient(90deg,transparent,var(--accent),transparent)!important}
+.auth-screen{background:linear-gradient(135deg,var(--bg),var(--surface2))!important}
+.auth-card{background:var(--surface)!important;border-color:var(--border)!important;box-shadow:var(--shadow-lg)!important;color:var(--text)!important}
+.auth-brand{color:var(--accent)!important}.auth-brand span{color:var(--text)!important}.auth-sub,.auth-switch{color:var(--text2)!important}
+.dev-badge{background:var(--surface2)!important;color:var(--accent)!important;border-color:var(--border)!important;box-shadow:none!important}
+.toast{box-shadow:var(--shadow-lg)!important}
+.status-badge{box-shadow:none!important}
+@media(max-width:1024px){
+ html[data-role="admin"] #app,html[data-role="admin"] .app{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;user-select:none!important}
+ html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-width:100vw!important;z-index:2147483647!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;background:#06111d!important;color:#fff!important;pointer-events:auto!important}
+ html[data-role="admin"] #gf-desktop-gate h2,html[data-role="admin"] .admin-desktop-gate h2{color:#fff!important}
+ html[data-role="admin"] #gf-desktop-gate p,html[data-role="admin"] .admin-desktop-gate p{color:#d9e8f5!important}
+}
+@media(min-width:1025px){html[data-role="admin"] #app{min-width:1100px!important;width:max(100%,1100px)!important}html[data-role="admin"] .main{min-width:0!important}html[data-role="admin"] #gf-desktop-gate,html[data-role="admin"] .admin-desktop-gate{display:none!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+
+
+
+<style id="geofare-dashboard-reference-design">
+:root[data-theme="dark"]{
+  --bg:#07131f!important;
+  --surface:#0d2132!important;
+  --surface2:#15344c!important;
+  --border:#31546c!important;
+  --text:#f4f8fc!important;
+  --text2:#bfd0df!important;
+  --text3:#8ea5b8!important;
+  --accent:#55aef0!important;
+  --accent2:#2f8fce!important;
+  --accent-dim:rgba(85,174,240,.13)!important;
+  --shadow:0 8px 24px rgba(0,0,0,.22)!important;
+  --shadow-lg:0 16px 36px rgba(0,0,0,.30)!important;
+}
+:root:not([data-theme="dark"]){
+  --bg:#eef4f9!important;
+  --surface:#ffffff!important;
+  --surface2:#e4eef6!important;
+  --border:#b9cede!important;
+  --text:#10263a!important;
+  --text2:#405b70!important;
+  --text3:#6d8294!important;
+  --accent:#176fae!important;
+  --accent2:#2b8cc7!important;
+  --accent-dim:rgba(23,111,174,.10)!important;
+  --shadow:0 8px 24px rgba(24,61,91,.10)!important;
+  --shadow-lg:0 16px 36px rgba(24,61,91,.15)!important;
+}
+html,body{background:var(--bg)!important;color:var(--text)!important}
+.dashboard-wrap,.management-content,.matrix-content,.logs-content,.report-content,.about-content{background:var(--bg)!important}
+
+/* Shared modern dashboard cards. The corner treatment is a background only. */
+.dashboard-wrap .kpi,
+.dashboard-wrap .stat-card,
+#admin-stats .stat-card{
+  position:relative!important;
+  overflow:hidden!important;
+  min-width:0!important;
+  border:1px solid var(--border)!important;
+  border-radius:24px!important;
+  background-color:var(--surface)!important;
+  background-image:
+    radial-gradient(ellipse 170px 125px at 100% 0%,
+      color-mix(in srgb,var(--accent) 25%,transparent) 0%,
+      color-mix(in srgb,var(--accent) 16%,transparent) 34%,
+      color-mix(in srgb,var(--accent) 8%,transparent) 58%,
+      transparent 84%),
+    linear-gradient(145deg,
+      color-mix(in srgb,var(--surface) 95%,var(--accent) 5%) 0%,
+      var(--surface) 58%);
+  box-shadow:var(--shadow)!important;
+  isolation:isolate!important;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background-color .2s ease!important;
+}
+.dashboard-wrap .kpi:hover,
+.dashboard-wrap .stat-card:hover,
+#admin-stats .stat-card:hover{
+  transform:translateY(-2px)!important;
+  border-color:color-mix(in srgb,var(--accent) 48%,var(--border))!important;
+  box-shadow:var(--shadow-lg)!important;
+}
+.dashboard-wrap .kpi .kpi-icon,
+.dashboard-wrap .stat-card .stat-icon,
+#admin-stats .stat-card .stat-icon{
+  position:relative!important;
+  z-index:2!important;
+}
+.dashboard-wrap .kpi .kpi-value,
+.dashboard-wrap .kpi .kpi-label,
+.dashboard-wrap .stat-card .stat-value,
+.dashboard-wrap .stat-card .stat-label,
+#admin-stats .stat-card .stat-value,
+#admin-stats .stat-card .stat-label{
+  position:relative!important;
+  z-index:2!important;
+}
+
+/* Larger, cleaner corner gradient on the admin reference layout. */
+#admin-stats{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+#admin-stats .stat-card{
+  min-height:165px!important;
+  padding:18px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-end!important;
+}
+#admin-stats .stat-card .stat-icon{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  margin:0 0 13px!important;
+  border-radius:15px!important;
+  background:var(--surface2)!important;
+  border:1px solid var(--border)!important;
+  color:var(--accent)!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  font-size:23px!important;
+}
+#admin-stats .stat-card .stat-value{
+  font-size:30px!important;
+  line-height:1!important;
+  letter-spacing:-.4px!important;
+  color:var(--text)!important;
+}
+#admin-stats .stat-card .stat-label{
+  margin-top:7px!important;
+  color:var(--text3)!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+}
+
+/* Match commuter and rider KPI cards to the same reference design. */
+.dashboard-wrap .kpi-grid{
+  gap:14px!important;
+}
+.dashboard-wrap .kpi{
+  min-height:150px!important;
+  padding:18px!important;
+  border-radius:24px!important;
+}
+.dashboard-wrap .kpi .kpi-icon{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  border-radius:15px!important;
+  background:var(--surface2)!important;
+  border:1px solid var(--border)!important;
+  color:var(--accent)!important;
+  box-shadow:none!important;
+}
+.dashboard-wrap .kpi .kpi-value{
+  font-size:30px!important;
+  line-height:1!important;
+  letter-spacing:-.4px!important;
+  color:var(--text)!important;
+}
+.dashboard-wrap .kpi .kpi-label{
+  margin-top:7px!important;
+  color:var(--text3)!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+}
+
+/* Keep the page background visible around the cards like the reference. */
+.dashboard-wrap .stats-grid,
+.dashboard-wrap .kpi-grid,
+#admin-stats{
+  background:transparent!important;
+}
+
+/* Light-mode version of the same round corner treatment. */
+:root:not([data-theme="dark"]) .dashboard-wrap .kpi,
+:root:not([data-theme="dark"]) .dashboard-wrap .stat-card,
+:root:not([data-theme="dark"]) #admin-stats .stat-card{
+  background-image:
+    radial-gradient(ellipse 170px 125px at 100% 0%,
+      color-mix(in srgb,var(--accent) 20%,transparent) 0%,
+      color-mix(in srgb,var(--accent) 12%,transparent) 34%,
+      color-mix(in srgb,var(--accent) 5%,transparent) 58%,
+      transparent 84%),
+    linear-gradient(145deg,
+      color-mix(in srgb,var(--surface) 96%,var(--accent) 4%) 0%,
+      var(--surface) 58%);
+}
+
+@media(max-width:1024px){
+  #admin-stats{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media(max-width:768px){
+  .dashboard-wrap .kpi{min-height:145px!important;border-radius:22px!important}
+  #admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:520px){
+  #admin-stats{grid-template-columns:1fr 1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card{transition:none!important}
+  .dashboard-wrap .kpi:hover,.dashboard-wrap .stat-card:hover,#admin-stats .stat-card:hover{transform:none!important}
+}
+</style>
+
+<style id="geofare-dashboard-reference-design">
+:root[data-theme="dark"]{
+  --bg:#07131f!important;
+  --surface:#0d2132!important;
+  --surface2:#15344c!important;
+  --border:#31546c!important;
+  --text:#f4f8fc!important;
+  --text2:#bfd0df!important;
+  --text3:#8ea5b8!important;
+  --accent:#55aef0!important;
+  --accent2:#2f8fce!important;
+  --accent-dim:rgba(85,174,240,.13)!important;
+  --shadow:0 8px 24px rgba(0,0,0,.22)!important;
+  --shadow-lg:0 16px 36px rgba(0,0,0,.30)!important;
+}
+:root:not([data-theme="dark"]){
+  --bg:#eef4f9!important;
+  --surface:#ffffff!important;
+  --surface2:#e4eef6!important;
+  --border:#b9cede!important;
+  --text:#10263a!important;
+  --text2:#405b70!important;
+  --text3:#6d8294!important;
+  --accent:#176fae!important;
+  --accent2:#2b8cc7!important;
+  --accent-dim:rgba(23,111,174,.10)!important;
+  --shadow:0 8px 24px rgba(24,61,91,.10)!important;
+  --shadow-lg:0 16px 36px rgba(24,61,91,.15)!important;
+}
+html,body{background:var(--bg)!important;color:var(--text)!important}
+.dashboard-wrap,.management-content,.matrix-content,.logs-content,.report-content,.about-content{background:var(--bg)!important}
+
+/* Shared modern dashboard cards. The corner treatment is a background only. */
+.dashboard-wrap .kpi,
+.dashboard-wrap .stat-card,
+#admin-stats .stat-card{
+  position:relative!important;
+  overflow:hidden!important;
+  min-width:0!important;
+  border:1px solid var(--border)!important;
+  border-radius:24px!important;
+  background-color:var(--surface)!important;
+  background-image:
+    radial-gradient(ellipse 170px 125px at 100% 0%,
+      color-mix(in srgb,var(--accent) 25%,transparent) 0%,
+      color-mix(in srgb,var(--accent) 16%,transparent) 34%,
+      color-mix(in srgb,var(--accent) 8%,transparent) 58%,
+      transparent 84%),
+    linear-gradient(145deg,
+      color-mix(in srgb,var(--surface) 95%,var(--accent) 5%) 0%,
+      var(--surface) 58%);
+  box-shadow:var(--shadow)!important;
+  isolation:isolate!important;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background-color .2s ease!important;
+}
+.dashboard-wrap .kpi:hover,
+.dashboard-wrap .stat-card:hover,
+#admin-stats .stat-card:hover{
+  transform:translateY(-2px)!important;
+  border-color:color-mix(in srgb,var(--accent) 48%,var(--border))!important;
+  box-shadow:var(--shadow-lg)!important;
+}
+.dashboard-wrap .kpi .kpi-icon,
+.dashboard-wrap .stat-card .stat-icon,
+#admin-stats .stat-card .stat-icon{
+  position:relative!important;
+  z-index:2!important;
+}
+.dashboard-wrap .kpi .kpi-value,
+.dashboard-wrap .kpi .kpi-label,
+.dashboard-wrap .stat-card .stat-value,
+.dashboard-wrap .stat-card .stat-label,
+#admin-stats .stat-card .stat-value,
+#admin-stats .stat-card .stat-label{
+  position:relative!important;
+  z-index:2!important;
+}
+
+/* Larger, cleaner corner gradient on the admin reference layout. */
+#admin-stats{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+#admin-stats .stat-card{
+  min-height:165px!important;
+  padding:18px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-end!important;
+}
+#admin-stats .stat-card .stat-icon{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  margin:0 0 13px!important;
+  border-radius:15px!important;
+  background:var(--surface2)!important;
+  border:1px solid var(--border)!important;
+  color:var(--accent)!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  font-size:23px!important;
+}
+#admin-stats .stat-card .stat-value{
+  font-size:30px!important;
+  line-height:1!important;
+  letter-spacing:-.4px!important;
+  color:var(--text)!important;
+}
+#admin-stats .stat-card .stat-label{
+  margin-top:7px!important;
+  color:var(--text3)!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+}
+
+/* Match commuter and rider KPI cards to the same reference design. */
+.dashboard-wrap .kpi-grid{
+  gap:14px!important;
+}
+.dashboard-wrap .kpi{
+  min-height:150px!important;
+  padding:18px!important;
+  border-radius:24px!important;
+}
+.dashboard-wrap .kpi .kpi-icon{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  border-radius:15px!important;
+  background:var(--surface2)!important;
+  border:1px solid var(--border)!important;
+  color:var(--accent)!important;
+  box-shadow:none!important;
+}
+.dashboard-wrap .kpi .kpi-value{
+  font-size:30px!important;
+  line-height:1!important;
+  letter-spacing:-.4px!important;
+  color:var(--text)!important;
+}
+.dashboard-wrap .kpi .kpi-label{
+  margin-top:7px!important;
+  color:var(--text3)!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+}
+
+/* Keep the page background visible around the cards like the reference. */
+.dashboard-wrap .stats-grid,
+.dashboard-wrap .kpi-grid,
+#admin-stats{
+  background:transparent!important;
+}
+
+/* Light-mode version of the same round corner treatment. */
+:root:not([data-theme="dark"]) .dashboard-wrap .kpi,
+:root:not([data-theme="dark"]) .dashboard-wrap .stat-card,
+:root:not([data-theme="dark"]) #admin-stats .stat-card{
+  background-image:
+    radial-gradient(ellipse 170px 125px at 100% 0%,
+      color-mix(in srgb,var(--accent) 20%,transparent) 0%,
+      color-mix(in srgb,var(--accent) 12%,transparent) 34%,
+      color-mix(in srgb,var(--accent) 5%,transparent) 58%,
+      transparent 84%),
+    linear-gradient(145deg,
+      color-mix(in srgb,var(--surface) 96%,var(--accent) 4%) 0%,
+      var(--surface) 58%);
+}
+
+@media(max-width:1024px){
+  #admin-stats{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media(max-width:768px){
+  .dashboard-wrap .kpi{min-height:145px!important;border-radius:22px!important}
+  #admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:520px){
+  #admin-stats{grid-template-columns:1fr 1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card{transition:none!important}
+  .dashboard-wrap .kpi:hover,.dashboard-wrap .stat-card:hover,#admin-stats .stat-card:hover{transform:none!important}
+}
+</style>
+
+
+
+
+<style id="geofare-unified-dashboard-design">
+:root{
+--dash-card:#0d2233;--dash-border:#315b78;--dash-text:#f5f9fd;--dash-muted:#9bb0c2
+}
+.dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card,.safety-kpi,.hero-stat{
+position:relative!important;isolation:isolate!important;overflow:hidden!important;min-width:0!important;min-height:164px!important;padding:18px!important;border-radius:24px!important;border:1px solid var(--dash-border)!important;background-color:var(--dash-card)!important;background-image:radial-gradient(ellipse 155px 120px at 100% 0%,rgba(76,159,214,.38) 0%,rgba(58,127,175,.23) 38%,rgba(20,55,78,.08) 62%,transparent 84%),linear-gradient(145deg,#102b40 0%,#0d2233 54%,#0a1d2c 100%)!important;box-shadow:0 10px 26px rgba(1,12,22,.2)!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important
+}
+.dashboard-wrap .kpi:hover,.dashboard-wrap .stat-card:hover,#admin-stats .stat-card:hover,.safety-kpi:hover,.hero-stat:hover{transform:translateY(-2px)!important;border-color:#477b9e!important;box-shadow:0 14px 32px rgba(1,12,22,.28)!important}
+.dashboard-wrap .kpi::before,.dashboard-wrap .kpi::after,.dashboard-wrap .stat-card::before,.dashboard-wrap .stat-card::after,#admin-stats .stat-card::before,#admin-stats .stat-card::after,.safety-kpi::before,.safety-kpi::after,.hero-stat::before,.hero-stat::after{content:none!important;display:none!important}
+.dashboard-wrap .kpi>*,.dashboard-wrap .stat-card>*,#admin-stats .stat-card>*,.safety-kpi>*,.hero-stat>*{position:relative!important;z-index:1!important}
+.dashboard-wrap .kpi .kpi-icon,.dashboard-wrap .stat-card .stat-icon,#admin-stats .stat-card .stat-icon,.safety-kpi .kpi-icon,.safety-kpi .stat-icon,.hero-stat .kpi-icon,.hero-stat .stat-icon{
+width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;margin:0 0 14px!important;border-radius:14px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;background:#16364d!important;border:1px solid #38627f!important;color:#f3f8fc!important;font-size:22px!important;line-height:1!important;box-shadow:none!important;filter:none!important;text-shadow:none!important;transform:none!important
+}
+.dashboard-wrap .kpi .kpi-value,.dashboard-wrap .stat-card .stat-value,#admin-stats .stat-card .stat-value,.safety-kpi .num,.hero-stat .stat-value{position:relative!important;z-index:1!important;color:var(--dash-text)!important;font-family:'Syne',sans-serif!important;font-weight:800!important;letter-spacing:-.5px!important}
+.dashboard-wrap .kpi .kpi-label,.dashboard-wrap .stat-card .stat-label,#admin-stats .stat-card .stat-label,.safety-kpi .label,.hero-stat .stat-label{position:relative!important;z-index:1!important;color:var(--dash-muted)!important}
+.dashboard-wrap .kpi-grid,.dashboard-wrap .stats-grid,#admin-stats.stats-grid,.safety-kpi-grid{gap:14px!important;align-items:stretch!important}
+:root:not([data-theme="dark"]) .dashboard-wrap .kpi,:root:not([data-theme="dark"]) .dashboard-wrap .stat-card,:root:not([data-theme="dark"]) #admin-stats .stat-card,:root:not([data-theme="dark"]) .safety-kpi,:root:not([data-theme="dark"]) .hero-stat{background-color:#f7fbff!important;background-image:radial-gradient(ellipse 155px 120px at 100% 0%,rgba(57,143,203,.25) 0%,rgba(82,157,208,.14) 40%,rgba(235,244,250,.1) 64%,transparent 84%),linear-gradient(145deg,#fff 0%,#f4f8fc 58%,#edf4f9 100%)!important;border-color:#9ab8cf!important;box-shadow:0 10px 26px rgba(31,78,121,.1)!important}
+:root:not([data-theme="dark"]) .dashboard-wrap .kpi .kpi-icon,:root:not([data-theme="dark"]) .dashboard-wrap .stat-card .stat-icon,:root:not([data-theme="dark"]) #admin-stats .stat-card .stat-icon,:root:not([data-theme="dark"]) .safety-kpi .kpi-icon,:root:not([data-theme="dark"]) .hero-stat .kpi-icon{background:#e5f1fa!important;border-color:#9fc1da!important;color:#075a9b!important}
+:root:not([data-theme="dark"]) .dashboard-wrap .kpi .kpi-value,:root:not([data-theme="dark"]) .dashboard-wrap .stat-card .stat-value,:root:not([data-theme="dark"]) #admin-stats .stat-card .stat-value,:root:not([data-theme="dark"]) .safety-kpi .num,:root:not([data-theme="dark"]) .hero-stat .stat-value{color:#0b2740!important}
+:root:not([data-theme="dark"]) .dashboard-wrap .kpi .kpi-label,:root:not([data-theme="dark"]) .dashboard-wrap .stat-card .stat-label,:root:not([data-theme="dark"]) #admin-stats .stat-card .stat-label,:root:not([data-theme="dark"]) .safety-kpi .label,:root:not([data-theme="dark"]) .hero-stat .stat-label{color:#58718a!important}
+:root[data-theme="dark"] .dashboard-wrap .kpi,:root[data-theme="dark"] .dashboard-wrap .stat-card,:root[data-theme="dark"] #admin-stats .stat-card,:root[data-theme="dark"] .safety-kpi,:root[data-theme="dark"] .hero-stat{background-color:#0d2233!important;background-image:radial-gradient(ellipse 155px 120px at 100% 0%,rgba(76,159,214,.38) 0%,rgba(58,127,175,.23) 38%,rgba(20,55,78,.08) 62%,transparent 84%),linear-gradient(145deg,#102b40 0%,#0d2233 54%,#0a1d2c 100%)!important}
+@media(max-width:768px){.dashboard-wrap .kpi,.dashboard-wrap .stat-card,#admin-stats .stat-card,.safety-kpi,.hero-stat{min-height:150px!important;padding:16px!important;border-radius:22px!important}.dashboard-wrap .kpi .kpi-icon,.dashboard-wrap .stat-card .stat-icon,#admin-stats .stat-card .stat-icon,.safety-kpi .kpi-icon,.hero-stat .kpi-icon{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;font-size:22px!important}}
+</style>
 </body></html>

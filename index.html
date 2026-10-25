@@ -4093,6 +4093,7 @@ function safetyDisplayClass(alert){ return statusClass(safetyDisplayStatus(alert
 function renderSafety(){
   const isManager=state.role==='admin';
   const own=isManager?(state.safetyAlerts||[]):(state.safetyAlerts||[]).filter(a=>String(a.user_id||'')===String(state.user?.id||''));
+  const safetyHero=document.querySelector('#panel-safety .safety-hero'); if(safetyHero)safetyHero.style.display=isManager?'flex':'none';
   const sosForm=$('sos-form-card'); if(sosForm)sosForm.style.display=['commuter','rider'].includes(state.role)?'block':'none';
   const adminBlock=$('admin-safety-block'); if(adminBlock)adminBlock.style.display=isManager?'block':'none';
   const title=$('safety-list-title'); if(title)title.textContent=isManager?'Safety alert queue':'My recent alerts';
@@ -6779,7 +6780,46 @@ if(typeof originalDownloadReportFile==='function')window.downloadReportFile=func
 const oldInput=$('sos-photo');
 if(oldInput){oldInput.setAttribute('accept','image/*');oldInput.removeAttribute('multiple');}
 const form=$('rating-form');
-if(form)form.onsubmit=async e=>{e.preventDefault();if(state.role!=='commuter')return toast('Only commuter accounts can submit rider feedback.','error');const riderId=$('rating-rider')?.value;const vals={professionalism:Number($('rate-prof')?.value),safety:Number($('rate-safe')?.value),punctuality:Number($('rate-punct')?.value),service_quality:Number($('rate-service')?.value),comment:($('rate-comment')?.value||'').trim()};const scores=[vals.professionalism,vals.safety,vals.punctuality,vals.service_quality];if(!riderId||scores.some(v=>!Number.isInteger(v)||v<1||v>5))return toast('Please provide valid 1–5 ratings for every criterion.','error');const rider=findRider(riderId);if(!rider||!isRiderVisible(rider)||(rider.verification_status||rider.status)!=='Verified')return toast('Only verified riders can be rated.','error');const now=Date.now(),cooldown=12*60*60*1000;const previous=(state.ratings||[]).filter(x=>String(x.rider_id)===String(rider.id)&&String(x.commuter_id)===String(state.user.id)).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0))[0];if(previous&&now-new Date(previous.created_at||0).getTime()<cooldown){const remaining=cooldown-(now-new Date(previous.created_at||0).getTime());return toast('You can rate this rider again in '+Math.ceil(remaining/3600000)+' hour(s). The cooldown is 12 hours.','info');}setBusy(true,'Submitting rating…');try{const payload={...vals,rider_id:rider.id,rider_name:safeName(rider),commuter_id:state.user.id,created_at:new Date().toISOString()};if(usingSupabase()){const {data,error}=await supabaseClient.from('ratings').insert(payload).select('*').single();if(error)throw error;await loadData();await addAudit('Rider rating submitted',data.id,{rider_id:rider.id,rider_name:safeName(rider)});}else{const a=read(STORAGE.ratings,[]);a.unshift({...payload,id:globalThis.crypto?.randomUUID?.()||`rating-${Date.now()}`});write(STORAGE.ratings,a);state.ratings=a;}form.reset();refreshRiderViews();renderRatings();renderAdmin();toast('Rating submitted successfully. You may rate this rider again after 12 hours.','success');}catch(error){console.error('Rating submission failed:',error);toast(error.message||'The rating could not be completed.','error');}finally{setBusy(false);}};
+if(form)form.onsubmit=async e=>{
+  e.preventDefault();
+  if(state.role!=='commuter')return toast('Only commuter accounts can submit rider feedback.','error');
+  const riderId=$('rating-rider')?.value;
+  const vals={professionalism:Number($('rate-prof')?.value),safety:Number($('rate-safe')?.value),punctuality:Number($('rate-punct')?.value),service_quality:Number($('rate-service')?.value),comment:($('rate-comment')?.value||'').trim()};
+  const scores=[vals.professionalism,vals.safety,vals.punctuality,vals.service_quality];
+  if(!riderId||scores.some(v=>!Number.isInteger(v)||v<1||v>5))return toast('Please provide valid 1–5 ratings for every criterion.','error');
+  const rider=findRider(riderId);
+  if(!rider||!isRiderVisible(rider)||(rider.verification_status||rider.status)!=='Verified')return toast('Only verified riders can be rated.','error');
+  const now=Date.now(),cooldown=12*60*60*1000,commuterId=state.user.id;
+  const cachedPrevious=(state.ratings||[]).filter(x=>String(x.rider_id)===String(rider.id)&&String(x.commuter_id)===String(commuterId)).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0))[0];
+  if(cachedPrevious&&now-new Date(cachedPrevious.created_at||0).getTime()<cooldown){const remaining=cooldown-(now-new Date(cachedPrevious.created_at||0).getTime());return toast('You can rate this rider again in '+Math.ceil(remaining/3600000)+' hour(s). The cooldown is 12 hours.','info');}
+  setBusy(true,'Submitting rating…');
+  try{
+    const payload={...vals,rider_id:rider.id,commuter_id:commuterId,created_at:new Date().toISOString()};
+    const localPayload={...payload,rider_name:safeName(rider)};
+    if(usingSupabase()){
+      const {data:existing,error:lookupError}=await supabaseClient.from('ratings').select('*').eq('commuter_id',commuterId).eq('rider_id',rider.id).maybeSingle();
+      if(lookupError)throw lookupError;
+      let data,error;
+      if(existing){
+        const existingTime=new Date(existing.created_at||0).getTime();
+        if(Number.isFinite(existingTime)&&now-existingTime<cooldown){const remaining=cooldown-(now-existingTime);return toast('You can rate this rider again in '+Math.ceil(remaining/3600000)+' hour(s). The cooldown is 12 hours.','info');}
+        ({data,error}=await supabaseClient.from('ratings').update(payload).eq('id',existing.id).select('*').single());
+      }else{
+        ({data,error}=await supabaseClient.from('ratings').insert(payload).select('*').single());
+      }
+      if(error)throw error;
+      await loadData();
+      await addAudit(existing?'Rider rating updated':'Rider rating submitted',data.id,{rider_id:rider.id,rider_name:safeName(rider)});
+    }else{
+      const a=read(STORAGE.ratings,[]),idx=a.findIndex(x=>String(x.rider_id)===String(rider.id)&&String(x.commuter_id)===String(commuterId));
+      if(idx>=0){const oldTime=new Date(a[idx].created_at||0).getTime();if(Number.isFinite(oldTime)&&now-oldTime<cooldown){const remaining=cooldown-(now-oldTime);return toast('You can rate this rider again in '+Math.ceil(remaining/3600000)+' hour(s). The cooldown is 12 hours.','info');}a[idx]={...a[idx],...localPayload};}
+      else a.unshift({...localPayload,id:globalThis.crypto?.randomUUID?.()||`rating-${Date.now()}`});
+      write(STORAGE.ratings,a);state.ratings=a;
+    }
+    form.reset();refreshRiderViews();renderRatings();renderAdmin();toast('Rating submitted successfully. You may rate this rider again after 12 hours.','success');
+  }catch(error){console.error('Rating submission failed:',error);toast(error.message||'The rating could not be completed.','error');}
+  finally{setBusy(false);}
+};
 const originalRenderRatings=renderRatings;
 window.renderRatings=function(){originalRenderRatings();document.querySelectorAll('#ratings-content .rating-record-card .card-title').forEach((el,i)=>{const rows=state.role==='rider'?state.ratings.filter(r=>String(r.rider_id)===String(getCurrentRider()?.id)||String(r.rider_id)===String(state.profile?.rider_id)||String(r.rider_id)===String(state.user?.id)):state.ratings;const row=rows[i];if(row){const rider=state.riders.find(x=>String(x.id)===String(row.rider_id));el.textContent=row.rider_name|| (rider?safeName(rider):'Rider');}});if(state.role==='commuter'){const sel=$('rating-rider');if(sel){Array.from(sel.options).forEach(opt=>{if(!opt.value)return;const rider=findRider(opt.value);const prev=(state.ratings||[]).filter(x=>String(x.rider_id)===String(opt.value)&&String(x.commuter_id)===String(state.user.id)).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0))[0];if(prev&&Date.now()-new Date(prev.created_at||0).getTime()<12*3600000){const remain=Math.ceil((12*3600000-(Date.now()-new Date(prev.created_at||0).getTime()))/3600000);opt.textContent=safeName(rider)+' · available in '+remain+'h';}});}}};
 const originalRenderNav=renderNav;
@@ -6992,23 +7032,39 @@ window.renderNav=function(){originalRenderNav();if(isPending()){document.querySe
   };
   const printReportOriginal=window.printReport;
   if(typeof printReportOriginal==='function'){
-    window.printReport=function(){if(state?.role!=='admin'){if(typeof toast==='function')toast('Only the MFRTA administrator can print reports and records.','error');return;}return printReportOriginal.apply(this,arguments);};
+    window.printReport=function(){
+      const role=typeof resolveGeoFareRoleForAction==='function'?resolveGeoFareRoleForAction():(state?.role||'');
+      if(role==='commuter'&&window._currentReport)return printReportOriginal.apply(this,arguments);
+      if(role!=='admin'){if(typeof toast==='function')toast('You can print a slip for your own generated incident report. Official reports and records are restricted to the MFRTA administrator.','error');return;}
+      return printReportOriginal.apply(this,arguments);
+    };
   }
   const originalDownload=window.downloadReportFile;
   if(typeof originalDownload==='function'){
-    window.downloadReportFile=function(){if(state?.role!=='admin'){if(typeof toast==='function')toast('Only the MFRTA administrator can download official report files.','error');return;}return originalDownload.apply(this,arguments);};
+    window.downloadReportFile=function(report){
+      const role=(typeof window.resolveGeoFareRoleForAction==='function'?window.resolveGeoFareRoleForAction():'')||state?.profile?.role||state?.role||'';
+      const ownComplaintSlip=role==='commuter'&&!!state?.user&&!!report&&!!report.reference_no;
+      if(role!=='admin'&&!ownComplaintSlip){if(typeof toast==='function')toast('Official reports and records are restricted to the MFRTA administrator. You may download your own generated incident report slip.','error');return;}
+      return originalDownload.apply(this,arguments);
+    };
   }
   const originalShare=window.submitReportToMfrtaGmail;
   if(typeof originalShare==='function'){
-    window.submitReportToMfrtaGmail=function(){if(state?.role!=='admin'){if(typeof toast==='function')toast('Only the MFRTA administrator can export official reports.','error');return;}return originalShare.apply(this,arguments);};
+    window.submitReportToMfrtaGmail=function(report){
+      const role=(typeof window.resolveGeoFareRoleForAction==='function'?window.resolveGeoFareRoleForAction():'')||state?.profile?.role||state?.role||'';
+      const ownComplaintSlip=role==='commuter'&&!!state?.user&&!!report&&!!report.reference_no;
+      if(role!=='admin'&&!ownComplaintSlip){if(typeof toast==='function')toast('Only the MFRTA administrator can export official reports. Commuters can submit their own generated incident complaint slips.','error');return;}
+      return originalShare.apply(this,arguments);
+    };
   }
   document.addEventListener('click',e=>{
     const el=e.target.closest('button,a');
     if(!el)return;
     const label=safeText(el.innerText||el.title||el.getAttribute('aria-label'));
-    if(state?.role!=='admin'&&/print|download report|export records|print records|print report/i.test(label)){
+    const ownSlipPrint=!!(state?.user&&window._currentReport&&el.id==='print-report-btn'&&resolveGeoFareRoleForAction()==='commuter');
+    if(state?.role!=='admin'&&!ownSlipPrint&&/print|download report|export records|print records|print report/i.test(label)){
       e.preventDefault();e.stopImmediatePropagation();
-      if(typeof toast==='function')toast('Only the MFRTA administrator can print reports and records.','error');
+      if(typeof toast==='function')toast('Official reports and records are restricted to the MFRTA administrator. You may print your own generated incident report slip.','error');
     }
   },true);
 
@@ -7071,11 +7127,13 @@ window.renderNav=function(){originalRenderNav();if(isPending()){document.querySe
     };
   }
   function rejectNonCommuterReport(){
-    if(!window.state||state.role!=='commuter'){
+    const resolvedRole=(typeof window.resolveGeoFareRoleForAction==='function' ? window.resolveGeoFareRoleForAction() : '') || state.profile?.role || state.role || state.user?.app_metadata?.role || state.user?.user_metadata?.role || '';
+    if(resolvedRole && String(resolvedRole).trim().toLowerCase()==='commuter') state.role='commuter';
+    if(!state.user){if(typeof window.toast==='function')toast('Please sign in with a commuter account before submitting a report.','error');return true;}
+    if(state.role!=='commuter'){
       if(typeof window.toast==='function')toast('Only commuter accounts can submit incident reports. Sign in with a commuter account to submit a report.','error');
       return true;
     }
-    if(!state.user){if(typeof window.toast==='function')toast('Please sign in with a commuter account before submitting a report.','error');return true;}
     return false;
   }
   const priorGenerateReport=window.generateReport;
@@ -7109,64 +7167,208 @@ window.renderNav=function(){originalRenderNav();if(isPending()){document.querySe
   document.head.appendChild(style);
 })();
 </script>
-</body></html>\n<script id="geofare-commuter-report-role-fix">
+
+<script id="geofare-role-and-submission-repair">
 (function(){
   'use strict';
-  function normalizedRole(value){
-    const role=String(value==null?'':value).trim().toLowerCase();
-    if(['commuter','rider','admin','responder'].includes(role))return role;
-    if(role.includes('commuter')||role==='passenger')return 'commuter';
-    if(role.includes('rider')||role.includes('driver'))return 'rider';
-    if(role.includes('admin')||role.includes('mfrta'))return 'admin';
-    if(role.includes('responder'))return 'responder';
+  const byId=id=>document.getElementById(id);
+  const norm=value=>{
+    const v=String(value==null?'':value).trim().toLowerCase().replace(/[_\s]+/g,'-');
+    if(['commuter','passenger'].includes(v)||v.includes('commuter'))return 'commuter';
+    if(['rider','driver'].includes(v)||v.includes('rider')||v.includes('driver'))return 'rider';
+    if(['admin','administrator','mfrta'].includes(v)||v.includes('admin')||v.includes('mfrta'))return 'admin';
+    if(v.includes('responder'))return 'responder';
+    return '';
+  };
+  function getAppState(){
+    if(typeof state!=='undefined' && state && typeof state==='object')return state;
+    return window.state && typeof window.state==='object' ? window.state : null;
+  }
+  function resolveRole(){
+    const st=getAppState();
+    if(!st)return '';
+    const uid=String(st.user?.id||'');
+    const profileLists=[st.profiles,st.users,st.accounts,st.userProfiles];
+    let matching=null;
+    for(const list of profileLists){
+      if(Array.isArray(list)){
+        matching=list.find(p=>String(p?.id||p?.user_id||p?.auth_user_id||'')===uid);
+        if(matching)break;
+      }
+    }
+    const candidates=[
+      matching?.role,
+      st.profile?.role,
+      st.user?.app_metadata?.role,
+      st.user?.user_metadata?.role,
+      st.role
+    ];
+    for(const candidate of candidates){const role=norm(candidate);if(role)return role;}
     return '';
   }
-  function actualRole(){
-    if(!window.state)return '';
-    const candidates=[state.profile?.role,state.user?.user_metadata?.role,state.user?.role,state.role];
-    for(const candidate of candidates){const role=normalizedRole(candidate);if(role)return role;}
-    const profile=(state.users||[]).find(user=>String(user.id)===String(state.user?.id));
-    return normalizedRole(profile?.role);
+  window.resolveGeoFareRoleForAction=resolveRole;
+  function syncRole(){
+    const st=getAppState();
+    if(!st?.user)return '';
+    const role=resolveRole();
+    if(role)st.role=role;
+    return role;
   }
-  function deny(){
-    if(typeof window.toast==='function')window.toast('Only commuter accounts can submit incident reports. Please sign in with a commuter account to report a rider.','error');
+  function deny(message){
+    if(typeof window.toast==='function')window.toast(message,'error');
   }
-  function bindReportButton(button){
-    if(!button||button.dataset.gfRoleGuard==='true')return;
-    const previous=button.onclick;
-    button.onclick=function(event){
-      const role=actualRole();
-      if(!state?.user||role!=='commuter'){if(event){event.preventDefault();event.stopImmediatePropagation();}deny();return false;}
-      state.role='commuter';
-      if(typeof previous==='function')return previous.call(this,event);
-      if(typeof window.generateReport==='function')return window.generateReport.call(this,event);
-    };
-    button.dataset.gfRoleGuard='true';
+  function requireCommuter(){
+    const st=getAppState();
+    const role=syncRole();
+    if(!st?.user){deny('Your GeoFare session could not be detected. Please refresh the page, sign in again, and retry.');return false;}
+    if(role!=='commuter'){deny('This action is available to commuter accounts. Please sign in with the commuter account you intend to use.');return false;}
+    return true;
   }
-  function bind(){
-    document.querySelectorAll('#panel-report button.report-generate, #panel-report button[onclick*="generateReport"]').forEach(bindReportButton);
-  }
-  const existingGenerate=window.generateReport;
-  if(typeof existingGenerate==='function'){
+  const oldGenerate=window.generateReport;
+  if(typeof oldGenerate==='function'){
     window.generateReport=function(){
-      const role=actualRole();
-      if(!state?.user||role!=='commuter'){deny();return false;}
-      state.role='commuter';
-      return existingGenerate.apply(this,arguments);
+      if(!requireCommuter())return false;
+      return oldGenerate.apply(this,arguments);
     };
   }
-  const existingSubmit=window.submitReport;
-  if(typeof existingSubmit==='function'){
+  const oldSubmit=window.submitReport;
+  if(typeof oldSubmit==='function'){
     window.submitReport=async function(report){
-      const role=actualRole();
-      if(!state?.user||role!=='commuter'){deny();return false;}
-      state.role='commuter';
-      return existingSubmit.apply(this,arguments);
+      if(!requireCommuter())return false;
+      return oldSubmit.apply(this,arguments);
     };
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
-  const panel=document.getElementById('panel-report');
-  if(panel&&typeof MutationObserver!=='undefined')new MutationObserver(bind).observe(panel,{childList:true,subtree:true});
+  const ratingForm=byId('rating-form');
+  if(ratingForm){
+    ratingForm.addEventListener('submit',function(e){
+      if(!requireCommuter()){e.preventDefault();e.stopImmediatePropagation();}
+    },true);
+  }
+  document.addEventListener('click',function(e){
+    const target=e.target?.closest?.('#panel-report button.report-generate, #panel-report button[onclick*="generateReport"]');
+    if(!target)return;
+    if(!requireCommuter()){e.preventDefault();e.stopImmediatePropagation();}
+  },true);
+  function refreshRole(){
+    const role=syncRole();
+    if(role==='commuter'){
+      if(typeof window.renderNav==='function')window.renderNav();
+      if(typeof window.renderRatings==='function')window.renderRatings();
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshRole);
+  else refreshRole();
+  const authClient=(typeof supabaseClient!=='undefined' && supabaseClient) ? supabaseClient : window.supabaseClient;
+  if(authClient?.auth?.onAuthStateChange){
+    authClient.auth.onAuthStateChange(()=>setTimeout(refreshRole,0));
+  }
+  if(typeof window.loadData==='function'){
+    const oldLoad=window.loadData;
+    window.loadData=async function(){const result=await oldLoad.apply(this,arguments);refreshRole();return result;};
+  }
 })();
 </script>
 
+<script id="geofare-final-rating-reliability-fix">
+(()=>{
+  const $gf=id=>document.getElementById(id);
+  const gfName=r=>(typeof mergedRiderName==='function'?(mergedRiderName(r)||r?.full_name||r?.name):'')||r?.public_name||r?.full_name||r?.name||'Rider';
+  const gfVerified=r=>String(r?.verification_status??r?.verificationStatus??'').trim().toLowerCase()==='verified';
+  const gfRatingRiders=()=>{
+    const rows=Array.isArray(state?.riders)?state.riders:[];
+    return rows.filter(r=>r&&!r.source_record&&!r.account_only&&r.id&&typeof isRiderVisible==='function'&&isRiderVisible(r)&&gfVerified(r));
+  };
+  function gfFillRatingRiders(){
+    const sel=$gf('rating-rider');
+    if(!sel)return;
+    const prior=String(sel.value||'');
+    const rows=gfRatingRiders().sort((a,b)=>gfName(a).localeCompare(gfName(b)));
+    sel.innerHTML='<option value="">'+(rows.length?'Select a verified rider':'No verified riders available')+'</option>'+rows.map(r=>'<option value="'+String(r.id).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')+'">'+String(gfName(r)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+(r.plate_number?' · '+String(r.plate_number).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'')+'</option>').join('');
+    if(rows.some(r=>String(r.id)===prior))sel.value=prior;
+    sel.disabled=!rows.length||state?.role!=='commuter';
+  }
+  const gfPreviousRenderRatings=window.renderRatings;
+  window.renderRatings=function(){
+    if(typeof gfPreviousRenderRatings==='function')gfPreviousRenderRatings.apply(this,arguments);
+    gfFillRatingRiders();
+    const host=$gf('ratings-content');
+    if(host){
+      host.querySelectorAll('.rating-record-card .card-title').forEach((el,i)=>{
+        const rows=state?.role==='rider'?(state.ratings||[]).filter(r=>String(r.rider_id)===String((typeof getCurrentRider==='function'?getCurrentRider()?.id:null)||state.profile?.rider_id||state.user?.id)):(state.ratings||[]);
+        const row=rows[i];
+        if(row){const rider=(state.riders||[]).find(r=>String(r.id)===String(row.rider_id));el.textContent=row.rider_name||(rider?gfName(rider):'Rider');}
+      });
+    }
+  };
+  const form=$gf('rating-form');
+  if(form)form.onsubmit=async function(e){
+    e.preventDefault();
+    if(state?.role!=='commuter'||!state?.user?.id){toast('Please sign in with a commuter account to rate a rider.','error');return;}
+    gfFillRatingRiders();
+    const riderId=$gf('rating-rider')?.value;
+    const rider=gfRatingRiders().find(r=>String(r.id)===String(riderId));
+    if(!rider){toast('Choose a verified rider linked to the GeoFare database. If the list is empty, refresh the page or ask the MFRTA administrator to verify and link rider records.','error');return;}
+    const vals={professionalism:Number($gf('rate-prof')?.value),safety:Number($gf('rate-safe')?.value),punctuality:Number($gf('rate-punct')?.value),service_quality:Number($gf('rate-service')?.value),comment:($gf('rate-comment')?.value||'').trim()};
+    if([vals.professionalism,vals.safety,vals.punctuality,vals.service_quality].some(v=>!Number.isInteger(v)||v<1||v>5)){toast('Please provide a 1–5 star rating for every criterion.','error');return;}
+    const commuterId=String(state.user.id),now=Date.now(),cooldown=12*60*60*1000;
+    const cached=(state.ratings||[]).filter(x=>String(x.rider_id)===String(rider.id)&&String(x.commuter_id)===commuterId).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0))[0];
+    if(cached){const t=new Date(cached.created_at||0).getTime();if(Number.isFinite(t)&&now-t<cooldown){toast('You can rate this rider again in '+Math.max(1,Math.ceil((cooldown-(now-t))/3600000))+' hour(s).','info');return;}}
+    const timestamp=new Date().toISOString();
+    const payload={...vals,rider_id:rider.id,commuter_id:state.user.id,created_at:timestamp};
+    const localPayload={...payload,rider_name:gfName(rider)};
+    setBusy(true,'Submitting rating…');
+    try{
+      if(typeof usingSupabase==='function'&&usingSupabase()){
+        let {data:existing,error:lookupError}=await supabaseClient.from('ratings').select('id,commuter_id,rider_id,created_at').eq('commuter_id',state.user.id).eq('rider_id',rider.id).maybeSingle();
+        if(lookupError)throw lookupError;
+        if(existing){
+          const oldTime=new Date(existing.created_at||0).getTime();
+          if(Number.isFinite(oldTime)&&now-oldTime<cooldown){toast('You can rate this rider again in '+Math.max(1,Math.ceil((cooldown-(now-oldTime))/3600000))+' hour(s).','info');return;}
+          const result=await supabaseClient.from('ratings').update(payload).eq('commuter_id',state.user.id).eq('rider_id',rider.id);
+          if(result.error)throw result.error;
+        }else{
+          const result=await supabaseClient.from('ratings').insert(payload);
+          if(result.error){
+            if(result.error.code==='23505'||String(result.error.message||'').includes('ratings_one_per_commuter_rider')){
+              const retry=await supabaseClient.from('ratings').select('id,created_at').eq('commuter_id',state.user.id).eq('rider_id',rider.id).maybeSingle();
+              if(retry.error)throw retry.error;
+              if(!retry.data)throw result.error;
+              const oldTime=new Date(retry.data.created_at||0).getTime();
+              if(Number.isFinite(oldTime)&&now-oldTime<cooldown){toast('You can rate this rider again in '+Math.max(1,Math.ceil((cooldown-(now-oldTime))/3600000))+' hour(s).','info');return;}
+              const update=await supabaseClient.from('ratings').update(payload).eq('commuter_id',state.user.id).eq('rider_id',rider.id);
+              if(update.error)throw update.error;
+            }else throw result.error;
+          }
+        }
+        await loadData();
+        if(typeof addAudit==='function')try{await addAudit(existing?'Rider rating updated':'Rider rating submitted',existing?.id||rider.id,{rider_id:rider.id,rider_name:gfName(rider)});}catch(auditError){console.warn('Rating saved; audit entry unavailable:',auditError);}
+      }else{
+        const all=typeof read==='function'?read(STORAGE.ratings,[]):[];
+        const idx=all.findIndex(x=>String(x.rider_id)===String(rider.id)&&String(x.commuter_id)===commuterId);
+        if(idx>=0)all[idx]={...all[idx],...localPayload};else all.unshift({...localPayload,id:globalThis.crypto?.randomUUID?.()||'rating-'+Date.now()});
+        write(STORAGE.ratings,all);state.ratings=all;
+      }
+      form.reset();
+      if(typeof refreshRiderViews==='function')refreshRiderViews();
+      window.renderRatings();
+      if(typeof renderAdmin==='function')renderAdmin();
+      toast('Rating submitted successfully. You may rate this rider again after 12 hours.','success');
+    }catch(error){
+      console.error('Rating submission failed:',error);
+      const msg=String(error?.message||'');
+      if(error?.code==='42501'||/row-level security|permission denied/i.test(msg))toast('Supabase blocked this rating update. Apply the ratings UPDATE policy provided with this fix, then try again.','error');
+      else if(error?.code==='PGRST116'||/coerce.*single json object/i.test(msg))toast('The rating response was empty or ambiguous. Refresh the page and try again; no success was assumed.','error');
+      else toast(msg||'The rating could not be completed.','error');
+    }finally{setBusy(false);}
+  };
+  const gfOldShowPanel=window.showPanel;
+  if(typeof gfOldShowPanel==='function')window.showPanel=function(panel){const result=gfOldShowPanel.apply(this,arguments);if(panel==='ratings')setTimeout(()=>{gfFillRatingRiders();window.renderRatings();},0);return result;};
+  if(typeof window.loadData==='function'){
+    const gfOldLoadData=window.loadData;
+    window.loadData=async function(){const result=await gfOldLoadData.apply(this,arguments);gfFillRatingRiders();return result;};
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(gfFillRatingRiders,0));else setTimeout(gfFillRatingRiders,0);
+})();
+</script>
+
+</body></html>

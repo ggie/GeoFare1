@@ -7371,4 +7371,64 @@ window.renderNav=function(){originalRenderNav();if(isPending()){document.querySe
 })();
 </script>
 
+
+<script>
+(function(){
+  function gfNormReportKey(value){return String(value||'').trim().toLowerCase().replace(/[^a-z0-9]/g,'');}
+  function gfReportParsed(report){return typeof parseReportDetails==='function'?parseReportDetails(report?.description):{data:{},body:String(report?.description||'')};}
+  function gfReportMatchesRider(report,rider){
+    if(!report||!rider)return false;
+    const parsed=gfReportParsed(report),d=parsed.data||{};
+    const references=[report.rider_reference,d.rider_public_id,report.rider_id,report.rider_public_id].map(gfNormReportKey).filter(Boolean);
+    const riderKeys=[rider.public_id,rider.id,rider.rider_id,rider.plate_number].map(gfNormReportKey).filter(Boolean);
+    if(references.some(x=>riderKeys.includes(x)))return true;
+    const reportedPlate=gfNormReportKey(d.plate_number||report.plate_number||'');
+    const riderPlate=gfNormReportKey(rider.plate_number||'');
+    return !!reportedPlate&&!!riderPlate&&reportedPlate===riderPlate;
+  }
+  function gfVisibleReportsForCurrentUser(){
+    const all=Array.isArray(state?.reports)?state.reports:[];
+    if(state?.role==='admin')return all;
+    if(state?.role==='rider'){
+      const rider=typeof getCurrentRider==='function'?getCurrentRider():null;
+      return all.filter(r=>gfReportMatchesRider(r,rider));
+    }
+    const uid=String(state?.user?.id||'');
+    return all.filter(r=>String(r.complainant_id||r.user_id||'')===uid);
+  }
+  window.gfVisibleReportsForCurrentUser=gfVisibleReportsForCurrentUser;
+  window.renderReports=function(){
+    const target=document.getElementById('reports-content');
+    if(!target)return;
+    const own=gfVisibleReportsForCurrentUser();
+    const filter=document.getElementById('report-filter')?.value||'all';
+    const rows=own.filter(r=>filter==='all'||String(r.status||'New')===filter);
+    if(!rows.length){
+      const message=state?.role==='rider'?'No reports or concerns linked to your rider account were found. Reports submitted about your registered public ID or plate will appear here.':state?.role==='commuter'?'You have not submitted any incident reports yet.':'No incidents or complaints have been submitted.';
+      target.innerHTML=`<div class="log-empty"><div class="log-empty-icon">⚠</div>${message}</div>`;
+      return;
+    }
+    target.innerHTML=rows.map(r=>{
+      const parsed=gfReportParsed(r),d=parsed.data||{};
+      const status=r.status||'New';
+      const ref=r.reference_no||'Report';
+      const rider=state?.role==='rider'&&typeof getCurrentRider==='function'?getCurrentRider():null;
+      const riderLabel=state?.role==='rider'?(rider?.public_id||rider?.plate_number||'Your rider profile'):(r.rider_reference||d.rider_public_id||'—');
+      const description=parsed.body||r.description||'No description provided.';
+      const route=r.location_text||'—';
+      const plate=d.plate_number||r.plate_number||rider?.plate_number||'—';
+      const incidentTime=r.incident_datetime?new Date(r.incident_datetime).toLocaleString('en-PH'):'—';
+      const adminActions=state?.role==='admin'?`<div class="toolbar-row report-admin-actions"><select class="form-select report-status" data-id="${esc(r.id)}"><option ${status==='New'?'selected':''}>New</option><option ${status==='Under Review'?'selected':''}>Under Review</option><option ${status==='Resolved'?'selected':''}>Resolved</option><option ${status==='Dismissed'?'selected':''}>Dismissed</option></select><button class="btn btn-primary btn-sm update-report" data-id="${esc(r.id)}">Update status</button></div>`:'';
+      return `<article class="data-card report-record-card"><div class="report-record-head"><div><div class="card-title">${esc(ref)}</div><div class="muted">${esc(reportTypeLabel(r.category||'other'))} · ${esc(new Date(r.created_at||Date.now()).toLocaleString('en-PH'))}</div></div><span class="status-badge ${statusClass(status)}">${esc(status)}</span></div><div class="report-meta-grid"><div><small>${state?.role==='rider'?'Your rider reference':'Rider reference'}</small><strong>${esc(riderLabel)}</strong></div><div><small>Plate</small><strong>${esc(plate)}</strong></div><div><small>Route</small><strong>${esc(route)}</strong></div><div><small>Incident time</small><strong>${esc(incidentTime)}</strong></div></div><p class="report-description">${esc(description)}</p>${adminActions}</article>`;
+    }).join('');
+    document.querySelectorAll('.update-report').forEach(btn=>btn.onclick=()=>updateReport(btn.dataset.id));
+  };
+  const oldDashboard=window.renderRiderDashboard||renderRiderDashboard;
+  if(typeof oldDashboard==='function')window.renderRiderDashboard=function(){oldDashboard.apply(this,arguments);const rider=typeof getCurrentRider==='function'?getCurrentRider():null;const rows=gfVisibleReportsForCurrentUser();const kpi=document.querySelectorAll('#rider-kpis .kpi');if(kpi.length>2){const value=kpi[2].querySelector('.kpi-value');if(value)value.textContent=String(rows.length);}};
+  const oldShowPanel=window.showPanel;
+  if(typeof oldShowPanel==='function')window.showPanel=function(panel){const result=oldShowPanel.apply(this,arguments);if(panel==='reports')setTimeout(()=>window.renderReports(),0);return result;};
+  const oldLoad=window.loadData;
+  if(typeof oldLoad==='function')window.loadData=async function(){const result=await oldLoad.apply(this,arguments);if(state?.currentPanel==='reports')window.renderReports();return result;};
+})();
+</script>
 </body></html>

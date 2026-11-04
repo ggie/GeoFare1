@@ -3864,6 +3864,15 @@ function saveReportSlip(r){if(!r)return false;const rows=getSavedReportSlips().f
 function removeSavedReportSlip(ref){const rows=getSavedReportSlips().filter(x=>x.reference_no!==ref);localStorage.setItem(reportStorageKey(),JSON.stringify(rows));renderSavedReportSlips();}
 function reportDocumentHtml(r){const safe=v=>esc(String(v??''));return `<!doctype html><html><head><meta charset="utf-8"><title>${safe(r.reference_no)} - Citizen Complaint Report</title><style>body{font-family:Arial,Helvetica,sans-serif;color:#20252b;background:#fff;margin:0;padding:36px}.doc{max-width:760px;margin:auto;border:1px solid #d9e0e6;border-radius:16px;padding:30px}.head{text-align:center;border-bottom:2px solid #064439;padding-bottom:18px;margin-bottom:18px}.badge{display:inline-block;background:#e8f0ed;color:#064439;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase}.title{font-size:24px;font-weight:800;margin-top:10px}.sub{font-size:12px;color:#66737d;margin-top:5px}.row{display:grid;grid-template-columns:180px 1fr;gap:14px;padding:10px 0;border-bottom:1px solid #e5e9ed}.key{font-size:11px;font-weight:800;color:#64717b;text-transform:uppercase}.val{font-size:13px;white-space:pre-wrap;line-height:1.55}.foot{margin-top:22px;font-size:11px;color:#68757e;line-height:1.6}@media(max-width:600px){body{padding:12px}.doc{padding:18px}.row{grid-template-columns:1fr;gap:4px}}</style></head><body><div class="doc"><div class="head"><div class="badge">Citizen Complaint Report</div><div class="title">Habal-Habal Driver Complaint</div><div class="sub">Manolo Fortich, Bukidnon • MFRTA-CADO</div></div>${[['Reference No.',r.reference_no],['Report Status',r.status||'New'],['Submitted On',new Date(r.created_at||Date.now()).toLocaleString('en-PH')],['Rider',r.rider_name],['Rider Status',r.rider_registered?'Registered rider matched':'Unregistered rider reported by plate'],['Rider ID',r.rider_public_id||'Plate-based report'],['Plate',r.plate],['Incident Date/Time',new Date(r.incident_datetime).toLocaleString('en-PH')],['Route',r.route],['Fare Demanded',money(r.fare)],['Category',reportTypeLabel(r.category)],['Description',r.description],['Complainant',r.complainant]].map(([k,v])=>`<div class="row"><div class="key">${safe(k)}</div><div class="val">${safe(v)}</div></div>`).join('')}<div class="foot">Reference No: ${safe(r.reference_no)}<br>Generated via GeoFare Fare Calculator · manolofortich.gov.ph<br>Submit to: mfrta@manolofortich.gov.ph or call 0917-159-5855<br>This document is a citizen-submitted complaint record for administrative review.</div></div>
 
+
+<style id="geofare-final-reliability-patch">
+.gf-receipt-frame{display:block;min-height:0;min-width:0;overflow:auto;-webkit-overflow-scrolling:touch}
+.gf-receipt-dialog{min-width:0}
+.safety-alert-photo{display:block;max-width:100%;width:auto;height:auto;max-height:520px;object-fit:contain;border-radius:12px;background:var(--surface2);border:1px solid var(--border)}
+.safety-alert-detail{min-width:0;overflow-wrap:anywhere}
+.report-record-card,.safety-record{min-width:0;overflow-wrap:anywhere}
+@media(max-width:768px){.gf-receipt-frame{width:100%;height:100%;min-height:0}.gf-receipt-dialog{width:100%;max-width:100%;height:96dvh;max-height:96dvh}.safety-alert-photo{max-height:65vh}}
+</style>
 </body></html>`}
 function reportFileName(r){return `${String(r.reference_no||'GeoFare-Citizen-Complaint').replace(/[^a-z0-9_-]/gi,'_')}.html`}
 function downloadReportFile(r){if(!r)return toast('Generate a report first.','error');const blob=new Blob([reportDocumentHtml(r)],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=reportFileName(r);document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Complaint report file downloaded successfully.','success');}
@@ -4190,7 +4199,7 @@ async function updateUserStatus(id,status){
   }catch(e){toast('User status could not be updated.','error');}
 }
 async function addAudit(action,target,meta={}){
-  const record={user_id:state.user?.id,actor_id:state.user?.id||null,action:String(action||'Activity'),target_type:meta.target_type||'system',target_id:target==null?null:String(target),new_value:meta,created_at:new Date().toISOString()};
+  const record={user_id:state.user?.id,actor_id:state.user?.id||null,action:String(action||'Activity'),target_type:meta.target_type||'system',target_id:target==null?null:String(target),new_value:{...meta,actor_name:meta.actor_name||state.profile?.full_name||state.user?.user_metadata?.full_name||state.user?.email||'Registered user'},created_at:new Date().toISOString()};
   if(usingSupabase()){
     try{
       const {data,error}=await supabaseClient.from('audit_logs').insert(record).select('*').single();
@@ -4207,7 +4216,7 @@ function renderAudit(){
   const profiles=new Map((state.users||[]).map(u=>[String(u.id),u]));
   const rows=[...(state.audit||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
   if(!rows.length){target.innerHTML='<div class="log-empty"><div class="log-empty-icon">⌁</div>No activity has been recorded.</div>';return;}
-  target.innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Actor</th><th>Action</th><th>Target</th><th>Timestamp</th><th>Details</th></tr></thead><tbody>${rows.map(a=>{const actor=profiles.get(String(a.actor_id||a.user_id));const details=a.new_value&&Object.keys(a.new_value).length?Object.entries(a.new_value).filter(([k])=>k!=='target_type').map(([k,v])=>`${k.replace(/_/g,' ')}: ${typeof v==='object'?JSON.stringify(v):v}`).join(' · '):'—';return `<tr><td>${esc(actor?.full_name||actor?.email||a.user_id||'System')}</td><td>${esc(a.action||'Activity')}</td><td>${esc(a.target_type||'system')} · ${esc(a.target_id||'—')}</td><td>${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))}</td><td>${esc(details)}</td></tr>`;}).join('')}</tbody></table></div>`;
+  target.innerHTML=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Actor</th><th>Action</th><th>Target</th><th>Timestamp</th><th>Details</th></tr></thead><tbody>${rows.map(a=>{const actor=profiles.get(String(a.actor_id||a.user_id));const details=a.new_value&&Object.keys(a.new_value).length?Object.entries(a.new_value).filter(([k])=>k!=='target_type').map(([k,v])=>`${k.replace(/_/g,' ')}: ${typeof v==='object'?JSON.stringify(v):v}`).join(' · '):'—';return `<tr><td>${esc(actor?.full_name||actor?.email||a.new_value?.actor_name||a.user_id||'System')}</td><td>${esc(a.action||'Activity')}</td><td>${esc(a.target_type||'system')} · ${esc(a.target_id||'—')}</td><td>${esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))}</td><td>${esc(details)}</td></tr>`;}).join('')}</tbody></table></div>`;
 }
 function renderProfile(){
   const p=state.profile||state.user||{};
@@ -5054,17 +5063,61 @@ html,body{height:100%;overflow:hidden}.app,.main,.panel{min-height:0}.panel.acti
 
 'use strict';
 const gfPhotoKey=id=>'geofare.sos.photo.'+String(id);
-const gfGetPhoto=id=>{try{return localStorage.getItem(gfPhotoKey(id))||''}catch(_){return ''}};
+const gfGetPhoto=id=>{try{const cached=localStorage.getItem(gfPhotoKey(id));if(cached)return cached;const alert=(state.safetyAlerts||[]).find(x=>String(x.id)===String(id));const match=String(alert?.message||'').match(/Photo URL:\s*(https?:\/\/[^\s]+)/i);return match?match[1]:''}catch(_){return ''}};
 const gfSetPhoto=(id,value)=>{try{localStorage.setItem(gfPhotoKey(id),value);return true}catch(_){return false}};
 function gfCoords(message){const m=String(message||'').match(/Location:\s*(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/i);return m?{lat:Number(m[1]),lng:Number(m[2])}:null;}
-function gfMessage(message){return String(message||'').replace(/\n?Location:\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?/i,'').trim();}
+function gfMessage(message){return String(message||'').replace(/\n?Location:\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?/i,'').replace(/\n?Photo URL:\s*https?:\/\/[^\s]+/i,'').trim();}
 function gfStars(){document.querySelectorAll('.star-field').forEach(field=>{const box=field.querySelector('.star-input'),input=field.querySelector('input[type="hidden"]');if(!box||!input||box.dataset.ready==='1')return;box.dataset.ready='1';box.innerHTML='';for(let i=1;i<=5;i++){const b=document.createElement('button');b.type='button';b.className='star';b.textContent='★';b.setAttribute('aria-label',i+' star'+(i===1?'':'s'));b.addEventListener('click',()=>{input.value=String(i);Array.from(box.children).forEach((x,n)=>x.classList.toggle('active',n<i));box.setAttribute('aria-valuenow',String(i));});b.addEventListener('mouseenter',()=>Array.from(box.children).forEach((x,n)=>x.classList.toggle('active',n<i)));b.addEventListener('mouseleave',()=>{const v=Number(input.value||0);Array.from(box.children).forEach((x,n)=>x.classList.toggle('active',n<v));});box.appendChild(b);}box.setAttribute('role','radiogroup');box.setAttribute('aria-valuemin','1');box.setAttribute('aria-valuemax','5');});}
 function gfPhotoPreview(){const input=$('sos-photo');if(!input||input.dataset.previewReady==='1')return;input.dataset.previewReady='1';const img=document.createElement('img');img.className='sos-photo-preview';img.alt='Selected emergency photo preview';input.insertAdjacentElement('afterend',img);input.addEventListener('change',()=>{const file=input.files&&input.files[0];if(!file){img.style.display='none';img.removeAttribute('src');return}if(!file.type.startsWith('image/')){input.value='';img.style.display='none';toast('Please select an image file.','error');return}const reader=new FileReader();reader.onload=()=>{img.src=reader.result;img.style.display='block'};reader.readAsDataURL(file);});}
-async function gfSendSOS(){const message=($('sos-message')?.value||'').trim(),file=$('sos-photo')?.files?.[0];if(!message)return toast('Please describe the safety concern before sending an SOS alert.','error');if(!file)return toast('Please attach an emergency photo before sending the SOS alert.','error');if(!state.user)return toast('You must be signed in to send an SOS alert.','error');if(!file.type.startsWith('image/'))return toast('The SOS attachment must be an image.','error');if(file.size>8*1024*1024)return toast('Please keep the emergency photo below 8 MB.','error');if(!confirm('Send an SOS safety alert now?'))return;setBusy(true,'Sending SOS alert…');try{let coords={latitude:null,longitude:null};if(navigator.geolocation){try{const pos=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:true,timeout:10000,maximumAge:15000}));coords={latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude)};}catch(_){} }const dataUrl=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=reject;r.readAsDataURL(file)});const now=new Date().toISOString(),random=(globalThis.crypto?.randomUUID?.()||Math.random().toString(36)).replace(/-/g,'').slice(0,10).toUpperCase(),ref='SOS-'+new Date().getFullYear()+'-'+random,locationText=coords.latitude!=null?'Location: '+coords.latitude.toFixed(6)+', '+coords.longitude.toFixed(6):'Location unavailable',payload={user_id:state.user.id,title:'SOS Alert '+ref,message:message+'\n'+locationText,severity:'critical',is_read:false,created_at:now};let saved;if(usingSupabase()){const result=await supabaseClient.from('safety_alerts').insert(payload).select('*').single();if(result.error)throw result.error;saved=result.data;gfSetPhoto(saved.id,dataUrl);try{const path='sos/'+String(saved.id)+'-'+Date.now()+'.jpg';const blob=await (await fetch(dataUrl)).blob();const up=await supabaseClient.storage.from('safety-alerts').upload(path,blob,{contentType:file.type,upsert:true});if(!up.error){const pub=supabaseClient.storage.from('safety-alerts').getPublicUrl(path);if(pub?.data?.publicUrl)gfSetPhoto(saved.id,pub.data.publicUrl);}}catch(_){ }await loadData();}else{const a=read(STORAGE.safety,[]);saved={id:globalThis.crypto?.randomUUID?.()||'sos-'+Date.now(),...payload,local_only:true};a.unshift(saved);write(STORAGE.safety,a);state.safetyAlerts=a;gfSetPhoto(saved.id,dataUrl);}$('sos-message').value='';$('sos-photo').value='';const preview=document.querySelector('.sos-photo-preview');if(preview){preview.style.display='none';preview.removeAttribute('src')}renderSafety();renderCommuterDashboard();renderRiderDashboard();toast('SOS '+ref+' recorded successfully.','success');}catch(error){console.error('SOS submission failed:',error);toast('SOS was not recorded: '+(error.message||'database rejected the submission')+'. Your message and photo remain on this form.','error')}finally{setBusy(false);}}
+async function gfSendSOS(){
+const message=($('sos-message')?.value||'').trim(),file=$('sos-photo')?.files?.[0];
+if(!message)return toast('Please describe the safety concern before sending an SOS alert.','error');
+if(!file)return toast('Please attach an emergency photo before sending the SOS alert.','error');
+if(!state.user?.id)return toast('You must be signed in to send an SOS alert.','error');
+if(!file.type.startsWith('image/'))return toast('The SOS attachment must be an image.','error');
+if(file.size>8*1024*1024)return toast('Please keep the emergency photo below 8 MB.','error');
+if(!confirm('Send an SOS safety alert now?'))return;
+setBusy(true,'Sending SOS alert…');
+try{
+let coords={latitude:null,longitude:null};
+if(navigator.geolocation){try{const pos=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:true,timeout:10000,maximumAge:15000}));coords={latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude)};}catch(_){}}
+const now=new Date().toISOString(),random=(globalThis.crypto?.randomUUID?.()||Math.random().toString(36)).replace(/-/g,'').slice(0,10).toUpperCase(),ref='SOS-'+new Date().getFullYear()+'-'+random,locationText=coords.latitude!=null?'Location: '+coords.latitude.toFixed(6)+', '+coords.longitude.toFixed(6):'Location unavailable';
+let photoUrl='';
+if(usingSupabase()){
+const extension=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+const path='sos/'+String(state.user.id)+'/'+ref+'.'+extension;
+const upload=await supabaseClient.storage.from('safety-alerts').upload(path,file,{contentType:file.type,upsert:true});
+if(upload.error)throw new Error('Emergency photo upload failed: '+upload.error.message);
+const publicResult=supabaseClient.storage.from('safety-alerts').getPublicUrl(path);
+photoUrl=publicResult?.data?.publicUrl||'';
+if(!photoUrl)throw new Error('The uploaded emergency photo URL could not be generated.');
+}
+const actorName=String(state.profile?.full_name||state.user.user_metadata?.full_name||state.user.email||'Registered user');
+const payload={user_id:state.user.id,title:'SOS Alert '+ref,message:message+'\n'+locationText+(photoUrl?'\nPhoto URL: '+photoUrl:''),severity:'critical',is_read:false,created_at:now};
+let saved;
+if(usingSupabase()){
+const result=await supabaseClient.from('safety_alerts').insert(payload).select('*').single();
+if(result.error)throw result.error;
+saved=result.data;
+if(photoUrl)gfSetPhoto(saved.id,photoUrl);
+await loadData();
+}else{
+const a=read(STORAGE.safety,[]);
+saved={id:globalThis.crypto?.randomUUID?.()||'sos-'+Date.now(),...payload,local_only:true,actor_name:actorName};
+a.unshift(saved);write(STORAGE.safety,a);state.safetyAlerts=a;gfSetPhoto(saved.id,dataUrl);
+}
+$('sos-message').value='';$('sos-photo').value='';
+const preview=document.querySelector('.sos-photo-preview');if(preview){preview.style.display='none';preview.removeAttribute('src');}
+renderSafety();renderCommuterDashboard();renderRiderDashboard();
+if(typeof addAudit==='function')await addAudit('SOS alert submitted',saved.id,{target_type:'safety_alert',reference_no:ref,actor_name:actorName});
+toast('SOS '+ref+' recorded successfully.','success');
+}catch(error){console.error('SOS submission failed:',error);toast('SOS was not recorded: '+(error?.message||'database rejected the submission')+'. Your message and photo remain on this form.','error');}
+finally{setBusy(false);}
+}
 function gfReplaceSOSButton(){const old=$('sos-submit');if(!old||old.dataset.gfReady==='1')return;const btn=old.cloneNode(true);btn.dataset.gfReady='1';old.replaceWith(btn);btn.addEventListener('click',gfSendSOS);gfPhotoPreview();}
 function gfSafetyRows(){const rows=state.safetyAlerts||[];return rows;}
 function gfRenderSafetyMaps(){document.querySelectorAll('.gf-safety-map[data-map-ready="0"]').forEach(el=>{el.dataset.mapReady='1';const c=el.dataset.coords;if(!c||typeof L==='undefined')return;const [lat,lng]=c.split(',').map(Number);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;setTimeout(()=>{try{const mapInstance=L.map(el,{zoomControl:true,attributionControl:false}).setView([lat,lng],16);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(mapInstance);L.marker([lat,lng]).addTo(mapInstance).bindPopup('SOS emergency location').openPopup();setTimeout(()=>mapInstance.invalidateSize(),120);}catch(e){console.warn('Safety map failed',e)}},0);});}
-function gfSafetyMarkup(a){const coords=gfCoords(a.message),photo=gfGetPhoto(a.id),photoIsUrl=/^(https?:|data:)/i.test(photo);return '<article class="data-card safety-record integrated-safety-card"><div class="report-record-head"><div><div class="card-title">'+esc(a.title||'SOS Safety Alert')+'</div><div class="muted">'+esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))+'</div></div><span class="status-badge '+esc(safetyDisplayClass(a))+'">'+esc(safetyDisplayStatus(a))+'</span></div><div class="small-note">Severity: '+esc(a.severity||'critical')+' · '+(a.is_read?'Read':'Unread')+'</div><p class="report-description">'+esc(gfMessage(a.message))+'</p>'+(coords?'<div class="safety-alert-detail"><strong>Current emergency location</strong><div class="safety-alert-map gf-safety-map" data-map-ready="0" data-coords="'+esc(coords.lat+','+coords.lng)+'"></div></div>':'<div class="safety-alert-detail"><strong>Current emergency location</strong><p class="small-note">Location was not available when this SOS was submitted.</p></div>')+(photo?'<div class="safety-alert-detail"><strong>Emergency photo</strong><img class="safety-alert-photo" src="'+esc(photo)+'" alt="SOS emergency evidence"></div>':'<div class="safety-alert-detail"><strong>Emergency photo</strong><p class="small-note">No photo evidence is attached to this alert record.</p></div>')+'<div class="table-actions"><button type="button" class="btn btn-secondary btn-sm gf-safety-read" data-id="'+esc(a.id)+'" data-read="'+(a.is_read?'false':'true')+'">'+(a.is_read?'Mark unread':'Mark read')+'</button></div></article>';}
+function gfSafetyMarkup(a){const coords=gfCoords(a.message),photo=gfGetPhoto(a.id),photoIsUrl=/^(https?:|data:)/i.test(photo),actor=(state.users||[]).find(u=>String(u.id)===String(a.user_id)),actorName=a.actor_name||actor?.full_name||actor?.email||((String(state.user?.id||'')===String(a.user_id||''))?(state.profile?.full_name||state.user?.email):'Registered user');return '<article class="data-card safety-record integrated-safety-card"><div class="report-record-head"><div><div class="card-title">'+esc(a.title||'SOS Safety Alert')+'</div><div class="muted">'+esc(new Date(a.created_at||Date.now()).toLocaleString('en-PH'))+'</div></div><span class="status-badge '+esc(safetyDisplayClass(a))+'">'+esc(safetyDisplayStatus(a))+'</span></div><div class="small-note">Submitted by: '+esc(actorName)+' · Severity: '+esc(a.severity||'critical')+' · '+(a.is_read?'Read':'Unread')+'</div><p class="report-description">'+esc(gfMessage(a.message))+'</p>'+(coords?'<div class="safety-alert-detail"><strong>Current emergency location</strong><div class="safety-alert-map gf-safety-map" data-map-ready="0" data-coords="'+esc(coords.lat+','+coords.lng)+'"></div></div>':'<div class="safety-alert-detail"><strong>Current emergency location</strong><p class="small-note">Location was not available when this SOS was submitted.</p></div>')+(photo?'<div class="safety-alert-detail"><strong>Emergency photo</strong><img class="safety-alert-photo" src="'+esc(photo)+'" alt="SOS emergency evidence"></div>':'<div class="safety-alert-detail"><strong>Emergency photo</strong><p class="small-note">No photo evidence is attached to this alert record.</p></div>')+'<div class="table-actions"><button type="button" class="btn btn-secondary btn-sm gf-safety-read" data-id="'+esc(a.id)+'" data-read="'+(a.is_read?'false':'true')+'">'+(a.is_read?'Mark unread':'Mark read')+'</button></div></article>';}
 function gfRenderIntegratedSafety(){if(state.role!=='admin')return;const target=$('integrated-safety-content');if(!target)return;const filter=$('admin-safety-filter')?.value||'all',q=($('admin-safety-search')?.value||'').trim().toLowerCase(),rows=gfSafetyRows().filter(a=>(filter==='all'||safetyDisplayStatus(a)===filter)&&(!q||String(a.title||'').toLowerCase().includes(q)||String(a.message||'').toLowerCase().includes(q)||String(a.id||'').toLowerCase().includes(q)));target.innerHTML=rows.length?rows.map(gfSafetyMarkup).join(''):'<div class="empty-state">No SOS safety alerts match the current filter.</div>';document.querySelectorAll('.gf-safety-read').forEach(b=>b.addEventListener('click',async()=>{await updateSafetyReadState(b.dataset.id,b.dataset.read==='true');gfEnhanceReports();}));gfRenderSafetyMaps();}
 function gfRecordDate(x){return new Date(x.created_at||x.updated_at||x.calculated_at||x.timestamp||x.date||0);}
 function gfRecordSets(){return {reports:state.reports||[],safety:state.safetyAlerts||[],calculations:state.calculations||[],audit:state.audit||[],users:state.users||[]};}
@@ -7365,7 +7418,7 @@ body{background:var(--bg)!important;color:var(--text)!important;letter-spacing:.
   if(typeof reportDocumentHtml!=='function')return toast('The report receipt template is unavailable.','error');
   let modal=byId('gf-receipt-modal');
   if(!modal){modal=document.createElement('div');modal.id='gf-receipt-modal';modal.className='gf-receipt-modal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.innerHTML='<section class="gf-receipt-dialog"><div class="gf-receipt-toolbar"><strong id="gf-receipt-title">Report receipt</strong><div class="gf-receipt-toolbar-actions"><button type="button" class="btn btn-primary btn-sm" id="gf-receipt-download">Download PDF</button><button type="button" class="btn btn-secondary btn-sm" id="gf-receipt-close">Close</button></div></div><iframe class="gf-receipt-frame" id="gf-receipt-frame" title="Incident report receipt"></iframe></section>';document.body.appendChild(modal);modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('active')});byId('gf-receipt-close').addEventListener('click',()=>modal.classList.remove('active'));document.addEventListener('keydown',e=>{if(e.key==='Escape')modal.classList.remove('active')});}
-  modal.dataset.reportId=String(r.id||'');modal.dataset.reference=String(r.reference_no||'');byId('gf-receipt-title').textContent='Receipt · '+model.reference_no;byId('gf-receipt-frame').srcdoc=reportDocumentHtml(model);byId('gf-receipt-download').onclick=()=>downloadReceiptPdf(model);modal.classList.add('active');
+  modal.dataset.reportId=String(r.id||'');modal.dataset.reference=String(r.reference_no||'');byId('gf-receipt-title').textContent='Receipt · '+model.reference_no;try{byId('gf-receipt-frame').srcdoc=reportDocumentHtml(model);}catch(error){const message=String(error?.message||'The report could not be displayed.');byId('gf-receipt-frame').srcdoc='<!doctype html><html><body style="font-family:Arial;padding:24px"><h3>Report details unavailable</h3><p>'+message.replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]))+'</p></body></html>';}byId('gf-receipt-download').onclick=()=>downloadReceiptPdf(model);modal.classList.add('active');
  }
  function downloadReceiptPdf(r){
   if(!r)return toast('The report receipt is unavailable.','error');
@@ -7384,7 +7437,7 @@ body{background:var(--bg)!important;color:var(--text)!important;letter-spacing:.
    const riderLabel=state?.role==='rider'?(rider?.public_id||rider?.plate_number||'Your rider profile'):(rider?(typeof mergedRiderName==='function'?mergedRiderName(rider):(rider.public_name||rider.full_name||rider.public_id)):r.rider_reference||d.rider_public_id||'—');
    const adminActions=state?.role==='admin'?'<div class="toolbar-row report-admin-actions"><select class="form-select report-status" data-id="'+esc(r.id)+'"><option '+(status==='New'?'selected':'')+'>New</option><option '+(status==='Under Review'?'selected':'')+'>Under Review</option><option '+(status==='Resolved'?'selected':'')+'>Resolved</option><option '+(status==='Dismissed'?'selected':'')+'>Dismissed</option></select><button type="button" class="btn btn-primary btn-sm update-report" data-id="'+esc(r.id)+'">Update status</button></div>':'';
    const receiptButtons=state?.role==='commuter'||state?.role==='admin'?'<div class="receipt-actions"><button type="button" class="btn btn-secondary btn-sm gf-open-receipt" data-id="'+esc(r.id)+'">View receipt</button><button type="button" class="btn btn-primary btn-sm gf-download-receipt" data-id="'+esc(r.id)+'">Download PDF slip</button></div>':state?.role==='rider'?'<div class="receipt-actions"><button type="button" class="btn btn-secondary btn-sm gf-open-receipt" data-id="'+esc(r.id)+'">View report details</button></div>':'';
-   const submitter=state?.role==='admin'?'<div><small>Submitted by</small><strong>'+esc(d.complainant_name||d.complainant||r.complainant_name||'Commuter account')+'</strong></div>':'';
+   const submitter=state?.role==='admin'?'<div><small>Submitted by</small><strong>'+esc(d.complainant_name||d.complainant||r.complainant_name||(state.users||[]).find(u=>String(u.id)===String(r.complainant_id||r.user_id))?.full_name||'Commuter account')+'</strong></div>':'';
    return '<article class="data-card report-record-card" data-report-id="'+esc(r.id)+'"><div class="report-record-head"><div><div class="card-title">'+esc(r.reference_no||'Report')+'</div><div class="muted">'+esc(typeof reportTypeLabel==='function'?reportTypeLabel(r.category||'other'):r.category||'Incident report')+' · '+esc(new Date(r.created_at||Date.now()).toLocaleString('en-PH'))+'</div></div><span class="status-badge '+esc(statusClass(status))+'">'+esc(status)+'</span></div><div class="report-meta-grid"><div><small>Rider reference</small><strong>'+esc(riderLabel)+'</strong></div><div><small>Plate</small><strong>'+esc(plate)+'</strong></div><div><small>Route</small><strong>'+esc(model.route)+'</strong></div><div><small>Incident time</small><strong>'+esc(new Date(model.incident_datetime).toLocaleString('en-PH'))+'</strong></div>'+submitter+'</div><p class="report-description">'+esc(description)+'</p>'+receiptButtons+adminActions+'</article>';
   }).join('');
   target.querySelectorAll('.gf-open-receipt').forEach(b=>b.addEventListener('click',()=>{const r=rows.find(x=>String(x.id)===String(b.dataset.id));openReceipt(r)}));
@@ -7481,6 +7534,86 @@ body #panel-map .route-sheet-open:active{transform:translateX(-50%) scale(.92)}
 @keyframes gfNudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
+<style id="geofare-refined-system">
+html:root:not([data-theme="dark"]){color-scheme:light;--bg:#e3ded1!important;--surface:#f6f3eb!important;--surface2:#ebe6da!important;--border:#b4ae9d!important;--text:#0f1e2c!important;--text2:#2c4156!important;--text3:#536576!important;--accent:#0b5a9e!important;--accent2:#1676c4!important;--accent-dim:rgba(11,90,158,.13)!important;--warm:#cc5d18;--green:#13703f!important;--red:#b3261e!important;--gold:#9a6b0e!important;--shadow:0 6px 20px rgba(48,40,22,.13)!important;--shadow-lg:0 18px 44px rgba(48,40,22,.22)!important;--nav-grad:linear-gradient(185deg,#14436f 0%,#0a2038 100%);--r-card:18px;--r-ctrl:12px;--paper:#f6f3eb;--paper-2:#ebe6da}
+html:root[data-theme="dark"]{color-scheme:dark;--bg:#050d17!important;--surface:#0f2134!important;--surface2:#18324b!important;--border:#3a5c7b!important;--text:#f2f7fc!important;--text2:#d0deec!important;--text3:#a2b9ce!important;--accent:#66b8f4!important;--accent2:#3fa8ee!important;--accent-dim:rgba(102,184,244,.2)!important;--warm:#ffa855;--shadow:0 10px 28px rgba(0,0,0,.5)!important;--shadow-lg:0 22px 54px rgba(0,0,0,.66)!important;--paper:#e9eef3;--paper-2:#c9d6e2}
+:root{--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);--t-fast:.18s;--t-med:.3s}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scrollbar-color:color-mix(in srgb,var(--accent) 45%,var(--surface2)) transparent}
+html body{font-feature-settings:"kern","liga";background-color:var(--bg)!important;background-image:radial-gradient(900px 520px at 105% -8%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%),radial-gradient(760px 460px at -8% 108%,color-mix(in srgb,var(--warm) 11%,transparent),transparent 70%)!important}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent) 40%,var(--surface2));border-radius:99px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:var(--accent);background-clip:padding-box;border:2px solid transparent}
+body .app{animation:gfRise .6s var(--ease) both}
+@keyframes gfRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+body :is(.topbar,.panel-header):not(#_){background:linear-gradient(90deg,var(--surface),color-mix(in srgb,var(--accent) 9%,var(--surface)))!important;border-bottom:1px solid var(--border)!important;box-shadow:0 6px 20px rgba(48,40,22,.09),inset 0 -2px 0 var(--accent-dim)!important}
+:root[data-theme="dark"] body :is(.topbar,.panel-header):not(#_){box-shadow:0 8px 22px rgba(0,0,0,.4),inset 0 -2px 0 var(--accent-dim)!important}
+body :is(.data-card,.form-card,.stat-card,.kpi,.hero-stat,.log-card,.report-card,.about-card,.auth-card,.report-record-card,.safety-record):not(#_){background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 5%,var(--surface)),var(--surface))!important;border:1px solid var(--border)!important;border-radius:var(--r-card)!important;box-shadow:var(--shadow)!important;transition:transform var(--t-med) var(--spring),box-shadow var(--t-med) var(--ease),border-color var(--t-fast)}
+body :is(.data-card,.stat-card,.kpi,.hero-stat,.log-card,.report-card,.report-record-card,.safety-record):not(#_):hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)!important;border-color:color-mix(in srgb,var(--accent) 70%,var(--border))!important}
+body :is(.stat-card,.kpi,.hero-stat):not(#_){border-top:4px solid var(--accent)!important}
+body .kpi-icon,body .stat-icon,body .live-monitor-icon{border-radius:var(--r-ctrl)!important;transition:transform var(--t-med) var(--spring)}
+body :is(.kpi,.stat-card,.hero-stat):hover :is(.kpi-icon,.stat-icon){transform:scale(1.1) rotate(-5deg)}
+body #sidebar{background:var(--nav-grad)!important}
+:root[data-theme="dark"] body #sidebar{background:linear-gradient(185deg,#f2f7fc 0%,#c9d9ea 100%)!important}
+body #sidebar .nav-link{transition:background var(--t-fast),transform var(--t-med) var(--spring),box-shadow var(--t-med) var(--ease),border-color var(--t-fast)}
+body #sidebar .nav-link.active{box-shadow:0 10px 22px rgba(5,20,40,.34),inset 0 1px 0 rgba(255,255,255,.18)!important}
+body #sidebar .nav-badge{font-weight:800;letter-spacing:.2px}
+body .btn{border-radius:var(--r-ctrl)!important;font-weight:700!important;letter-spacing:.01em;transition:transform var(--t-med) var(--spring),box-shadow var(--t-med) var(--ease),background-position .5s var(--ease),filter var(--t-fast),border-color var(--t-fast),color var(--t-fast)}
+body .btn:hover{transform:translateY(-2px);filter:saturate(1.08)}
+body .btn:active{transform:translateY(0) scale(.96);transition-duration:.08s}
+body .btn:disabled,body .btn[disabled]{opacity:.55;filter:grayscale(.35);transform:none;cursor:not-allowed}
+body .btn-primary{box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 34%,transparent),inset 0 1px 0 rgba(255,255,255,.22)}
+body .btn-secondary{background:var(--surface2)!important;border:1.5px solid var(--border)!important}
+body .btn-secondary:hover{background:var(--accent-dim)!important;border-color:var(--accent)!important;color:var(--accent)!important}
+body :is(.form-input,.form-select,.form-textarea):not(#_){background:color-mix(in srgb,var(--surface2) 55%,var(--surface))!important;border:1.5px solid var(--border)!important;border-radius:var(--r-ctrl)!important;transition:border-color var(--t-fast),box-shadow var(--t-med) var(--ease),background var(--t-fast),transform var(--t-fast)}
+body :is(.form-input,.form-select,.form-textarea):not(#_):hover{border-color:color-mix(in srgb,var(--accent) 55%,var(--border))!important}
+body :is(.form-input,.form-select,.form-textarea):not(#_):focus{border-color:var(--accent)!important;box-shadow:0 0 0 4px var(--accent-dim)!important;background:var(--surface)!important}
+body :is(.form-input,.form-textarea)::placeholder{color:var(--text3);opacity:1}
+body :focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 70%,transparent);outline-offset:2px;transition:outline-offset .15s}
+body :is(.data-table,.matrix-table){border-radius:var(--r-ctrl)}
+body :is(.data-table,.matrix-table) th:not(#_){letter-spacing:.02em;font-weight:800}
+body .data-table td{transition:background var(--t-fast)}
+body .data-table tbody tr:nth-child(even) td:not(#_){background:color-mix(in srgb,var(--accent) 5%,transparent)!important}
+body .data-table tbody tr:hover td:not(#_){background:var(--accent-dim)!important}
+body .status-badge,body .role-chip,body .log-chip,body .fare-pill,body .badge{border-radius:99px;font-weight:700;letter-spacing:.01em;transition:transform var(--t-fast) var(--spring),box-shadow var(--t-fast)}
+body .status-badge:hover,body .role-chip:hover,body .log-chip:hover,body .fare-pill:hover{transform:translateY(-1px)}
+body .map-mode-btns{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:4px;gap:4px}
+body .map-mode-btn{border-radius:12px!important;font-weight:700;transition:background var(--t-med) var(--ease),color var(--t-fast),transform var(--t-med) var(--spring),box-shadow var(--t-med)}
+body .map-mode-btn:active{transform:scale(.95)}
+body .pin-row{border-radius:14px!important;transition:border-color var(--t-fast),transform var(--t-med) var(--spring),box-shadow var(--t-med) var(--ease),background var(--t-fast)}
+body .pin-row:hover{transform:translateX(3px)}
+body :is(.icon-btn,.password-toggle,.collapse-toggle,.menu-toggle){transition:transform var(--t-med) var(--spring),background var(--t-fast),border-color var(--t-fast),box-shadow var(--t-med) var(--ease),color var(--t-fast)}
+body :is(.icon-btn,.password-toggle,.menu-toggle):hover{transform:translateY(-1px) scale(1.06)}
+body :is(.icon-btn,.password-toggle,.menu-toggle):active{transform:scale(.93)}
+body .menu-toggle{background:var(--surface)!important;color:var(--text)!important;border:1.5px solid var(--border)!important;border-radius:var(--r-ctrl)!important}
+body .menu-toggle:hover{background:var(--accent)!important;color:var(--on-accent,#fff)!important;border-color:var(--accent)!important}
+body .auth-switch{transition:color var(--t-fast),letter-spacing var(--t-med) var(--ease)}
+body #theme-toggle:not(#_){width:68px!important;min-width:68px!important;height:36px!important;border:1.5px solid var(--border)!important;background:linear-gradient(135deg,#d6e6f3,#9cc3e0)!important;box-shadow:inset 0 2px 6px rgba(8,40,72,.28),0 1px 0 rgba(255,255,255,.4)!important;transition:background .5s var(--ease),border-color var(--t-fast),box-shadow var(--t-med)}
+body #theme-toggle.theme-is-dark:not(#_){background:linear-gradient(135deg,#071a2d,#1d4770)!important;box-shadow:inset 0 2px 8px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.08)!important}
+body #theme-toggle:hover{border-color:var(--accent)!important;box-shadow:inset 0 2px 6px rgba(8,40,72,.28),0 0 0 4px var(--accent-dim)!important}
+body #theme-toggle::after{top:3px;left:3px;width:26px;height:26px;background:var(--paper,#f6f3eb);box-shadow:0 3px 9px rgba(0,0,0,.38),inset 0 -2px 3px rgba(0,0,0,.08);transition:transform .55s var(--spring),background .3s,width .2s var(--ease)}
+body #theme-toggle:active::after{width:32px}
+body #theme-toggle.theme-is-dark::after{transform:translateX(33px);background:#dbe6f0}
+body #theme-toggle.theme-is-dark:active::after{transform:translateX(27px)}
+body #theme-toggle .theme-sun{left:9px;color:#b8500f}
+body #theme-toggle .theme-moon{right:9px;color:#30587d}
+body #theme-toggle.theme-is-dark .theme-sun{color:#a9cbe8}
+body #theme-toggle.theme-is-dark .theme-moon{color:#0b2540}
+body #theme-toggle .theme-svg{transition:transform .5s var(--spring),opacity .3s,color .3s}
+body #theme-toggle:not(.theme-is-dark) .theme-sun{transform:rotate(25deg)}
+body #theme-toggle.theme-is-dark .theme-moon{transform:rotate(-18deg)}
+body .leaflet-popup-content-wrapper{border-radius:14px;box-shadow:var(--shadow-lg)}
+body .leaflet-popup-content-wrapper,body .leaflet-popup-tip{background:var(--surface);color:var(--text)}
+body .leaflet-control-zoom a{transition:background var(--t-fast),color var(--t-fast)}
+body .gf-receipt-dialog{border-radius:20px;animation:gfPop .4s var(--spring)}
+body .gf-receipt-modal{animation:gfFade .25s var(--ease)}
+@keyframes gfPop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes gfFade{from{opacity:0}to{opacity:1}}
+body ::selection{background:var(--accent);color:var(--on-accent,#fff)}
+@media(max-width:768px){body :is(.data-card,.form-card,.stat-card,.kpi,.hero-stat,.log-card,.report-card,.report-record-card,.safety-record):not(#_){border-radius:15px!important}body :is(.data-card,.stat-card,.kpi,.hero-stat,.report-record-card,.safety-record):not(#_):hover{transform:none}}
+@media(prefers-reduced-motion:reduce){body .app,body .gf-receipt-dialog,body .gf-receipt-modal{animation:none!important}body *{scroll-behavior:auto!important}}
+</style>
+
 <script id="geofare-route-sheet-runtime">
 (function(){
   var mq=window.matchMedia('(max-width:768px)');

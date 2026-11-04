@@ -5086,7 +5086,7 @@ let photoUrl='';
 if(usingSupabase()){
 const extension=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
 const path='sos/'+String(state.user.id)+'/'+ref+'.'+extension;
-const upload=await supabaseClient.storage.from('safety-alerts').upload(path,file,{contentType:file.type,upsert:true});
+const upload=await supabaseClient.storage.from('safety-alerts').upload(path,file,{contentType:file.type,upsert:false});
 if(upload.error)throw new Error('Emergency photo upload failed: '+upload.error.message);
 const publicResult=supabaseClient.storage.from('safety-alerts').getPublicUrl(path);
 photoUrl=publicResult?.data?.publicUrl||'';

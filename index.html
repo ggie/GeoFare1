@@ -7544,7 +7544,7 @@ html body{font-feature-settings:"kern","liga";background-color:var(--bg)!importa
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent) 40%,var(--surface2));border-radius:99px;border:2px solid transparent;background-clip:padding-box}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);background-clip:padding-box;border:2px solid transparent}
-body .app{animation:gfRise .6s var(--ease) both}
+body .app{animation:gfRise .6s var(--ease)}
 @keyframes gfRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 body :is(.topbar,.panel-header):not(#_){background:linear-gradient(90deg,var(--surface),color-mix(in srgb,var(--accent) 9%,var(--surface)))!important;border-bottom:1px solid var(--border)!important;box-shadow:0 6px 20px rgba(48,40,22,.09),inset 0 -2px 0 var(--accent-dim)!important}
 :root[data-theme="dark"] body :is(.topbar,.panel-header):not(#_){box-shadow:0 8px 22px rgba(0,0,0,.4),inset 0 -2px 0 var(--accent-dim)!important}
@@ -7693,6 +7693,110 @@ body ::selection{background:var(--accent);color:var(--on-accent,#fff)}
     });
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+<div class="gf-admin-desktop-only" id="gf-admin-desktop-only" role="alert">
+  <div class="gf-admin-desktop-only-card">
+    <div class="gf-admin-desktop-only-icon">
+      <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4" width="19" height="12.5" rx="2"/><path d="M8 20.5h8M12 16.5v4"/></svg>
+    </div>
+    <div class="gf-admin-desktop-only-kicker">GeoFare · MFRTA Admin</div>
+    <h2 class="gf-admin-desktop-only-title">Desktop Only</h2>
+    <p class="gf-admin-desktop-only-text">The Admin Dashboard is only available on a desktop or laptop computer. Please sign in from a desktop to continue.</p>
+    <button class="btn btn-primary gf-admin-desktop-only-btn" id="gf-admin-desktop-only-logout" type="button">Log out</button>
+  </div>
+</div>
+<style id="geofare-admin-desktop-only-style">
+.gf-admin-desktop-only{display:none}
+@media(max-width:1024px){
+  html.gf-admin-desktop-guard #app,
+  html.gf-admin-desktop-guard .app,
+  html.gf-admin-desktop-guard #menu-toggle,
+  html.gf-admin-desktop-guard #overlay{display:none!important}
+  html.gf-admin-desktop-guard .gf-admin-desktop-only{
+    display:flex;
+    position:fixed;
+    inset:0;
+    z-index:2700;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:max(20px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+    background:var(--bg);
+    color:var(--text);
+    font-family:'DM Sans',sans-serif;
+  }
+  html.gf-admin-desktop-guard .gf-admin-desktop-only-card{
+    margin:auto;
+    width:min(440px,100%);
+    text-align:center;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-lg);
+    padding:34px 26px 28px;
+  }
+  html.gf-admin-desktop-guard .gf-admin-desktop-only-icon{
+    width:76px;
+    height:76px;
+    margin:0 auto 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:22px;
+    background:var(--accent-dim);
+    color:var(--accent);
+  }
+  html.gf-admin-desktop-guard .gf-admin-desktop-only-kicker{
+    font-size:10.5px;
+    font-weight:800;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+    color:var(--text3);
+    margin-bottom:8px;
+  }
+  html.gf-admin-desktop-guard .gf-admin-desktop-only-title{
+    font:800 24px 'Syne',sans-serif;
+    color:var(--text);
+    margin:0 0 12px;
+  }
+  html.gf-admin-desktop-guard .gf-admin-desktop-only-text{
+    font-size:14px;
+    line-height:1.6;
+    color:var(--text2);
+    margin:0 0 24px;
+  }
+  html.gf-admin-desktop-guard .gf-admin-desktop-only-btn{
+    width:100%;
+    min-height:46px;
+    justify-content:center;
+  }
+}
+</style>
+<script id="geofare-admin-desktop-only-runtime">
+(function(){
+  'use strict';
+  var root=document.documentElement;
+  var mq=window.matchMedia('(max-width:1024px)');
+  function isAdmin(){
+    try{return typeof state!=='undefined'&&!!state&&state.role==='admin';}catch(e){return false;}
+  }
+  function sync(){
+    var admin=isAdmin();
+    if(root.classList.contains('gf-admin-desktop-guard')!==admin)root.classList.toggle('gf-admin-desktop-guard',admin);
+    if(admin&&mq.matches&&typeof closeSidebar==='function'){
+      var sb=document.getElementById('sidebar');
+      if(sb&&sb.classList.contains('active')){try{closeSidebar();}catch(e){}}
+    }
+  }
+  var btn=document.getElementById('gf-admin-desktop-only-logout');
+  if(btn)btn.addEventListener('click',function(){if(typeof logout==='function')logout();});
+  var appEl=document.getElementById('app');
+  if(appEl&&window.MutationObserver)new MutationObserver(sync).observe(appEl,{attributes:true,attributeFilter:['style','class']});
+  if(mq.addEventListener)mq.addEventListener('change',sync);else if(mq.addListener)mq.addListener(sync);
+  window.addEventListener('resize',sync,{passive:true});
+  window.addEventListener('orientationchange',sync);
+  setInterval(sync,300);
+  sync();
 })();
 </script>
 </body></html>

@@ -2535,7 +2535,7 @@ if(gfRatingFinalPanel)new MutationObserver(()=>setTimeout(gfRefreshRatingUIFinal
             </section>
           </div>
           <aside class="report-side-column">
-            <section class="report-section reporter-card"><div class="report-section-head"><div><span class="report-section-kicker">OPTIONAL</span><h3>Your Information</h3><p>You may remain anonymous.</p></div></div><div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="rpt-name" placeholder="Anonymous by default"></div><div class="report-privacy">🔒 Your identity is treated as confidential information.</div></section>
+            <section class="report-section reporter-card"><div class="report-section-head"><div><span class="report-section-kicker">ACCOUNT INFORMATION</span><h3>Your Information</h3><p>Your account name is filled in automatically.</p></div></div><div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="rpt-name" placeholder="Your account name"></div><div class="report-privacy">🔒 Your identity is treated as confidential information.</div></section>
             <section class="report-summary-card"><span class="report-section-kicker">BEFORE YOU CONTINUE</span><h3>Review Your Report</h3><ul><li>Confirm the plate number</li><li>Check the incident date and route</li><li>Select the correct violation</li><li>Describe the incident clearly</li></ul><button class="btn btn-primary report-generate" onclick="generateReport()">Generate Report Slip</button><button class="btn btn-secondary report-reset" onclick="clearReport()">Reset Form</button></section>
           </aside>
         </div>
@@ -3357,6 +3357,8 @@ async function restoreSession(){
 }
 async function enterApplication(){
   $('auth-screen').classList.add('hidden'); $('app').style.display='flex'; updateRoleHeader(); renderNav();
+  const reportName=state.profile?.full_name||state.user?.user_metadata?.full_name||state.user?.user_metadata?.username||state.user?.email?.split('@')[0]||'';
+  if($('rpt-name')&&state.role==='commuter')$('rpt-name').value=reportName;
   await loadData(); startSafetyRealtime(); startDataRealtime(); startAdminRefresh(); showPanel(state.role==='admin'?'admin':state.role==='rider'?'rider-dashboard':'map');
 }
 async function logout(){
@@ -3881,6 +3883,7 @@ function openSavedReport(ref){const r=getSavedReportSlips().find(x=>x.reference_
 function saveCurrentReport(){const r=window._currentReport;if(!r)return toast('Generate a report first.','error');saveReportSlip(r);toast(`Report ${r.reference_no} was saved on this device.`,'success');}
 function gmailComposeUrl(r){const subject=encodeURIComponent(`Citizen Complaint Report ${r.reference_no} - ${r.plate}`);const body=encodeURIComponent(`Good day MFRTA-CADO,\n\nPlease review the attached Citizen Complaint Report.\n\nReference No.: ${r.reference_no}\nRider: ${r.rider_name}\nPlate: ${r.plate}\nIncident Date/Time: ${new Date(r.incident_datetime).toLocaleString('en-PH')}\nRoute: ${r.route}\nCategory: ${reportTypeLabel(r.category)}\nFare Demanded: ${money(r.fare)}\nComplainant: ${r.complainant}\n\nThe complete complaint report is prepared by GeoFare.`);return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(MFRTA_ADMIN_EMAIL)}&su=${subject}&body=${body}`;}
 async function submitReportToMfrtaGmail(r){if(!r)return toast('Generate or open a saved report first.','error');saveReportSlip(r);const blob=new Blob([reportDocumentHtml(r)],{type:'text/html'});const file=new File([blob],reportFileName(r),{type:'text/html'});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:`Citizen Complaint Report ${r.reference_no}`,text:`Citizen Complaint Report ${r.reference_no} for MFRTA-CADO`,files:[file]});toast('Report shared with the file attached. Select Gmail and MFRTA-CADO in the share sheet.','success');return;}catch(e){if(e&&e.name==='AbortError')return;}}downloadReportFile(r);window.open(gmailComposeUrl(r),'_blank','noopener');toast('Gmail compose opened and the report file was downloaded for attachment. Web browsers do not allow a mailto/Gmail compose link to programmatically attach a local file.','info');}
+function getCommuterReportName(){return String(state.profile?.full_name||state.user?.user_metadata?.full_name||state.user?.user_metadata?.username||state.user?.email?.split('@')[0]||'Registered commuter').trim();}
 function generateReport(){
   const riderId=$('report-rider-id')?.value||'';
   const selectedRider=riderId?(state.riders||[]).find(r=>String(r.id)===String(riderId)):null;
@@ -3890,7 +3893,8 @@ function generateReport(){
   const fare=Number($('rpt-fare')?.value);
   const type=$('rpt-type')?.value;
   const desc=($('rpt-desc')?.value||'').trim();
-  const name=($('rpt-name')?.value||'').trim()||'Anonymous';
+  const name=($('rpt-name')?.value||'').trim()||getCommuterReportName();
+  if($('rpt-name'))$('rpt-name').value=name;
   if(!state.user) return toast('You must be signed in to submit a report.','error');
   if(!plate||!dt||!route||!Number.isFinite(fare)||fare<0||!type||!desc) return toast('Please complete all required report fields with valid values.','error');
   const plateKey=plate.replace(/\s+/g,'').toUpperCase();
@@ -3929,7 +3933,7 @@ async function submitReport(r){
 function printReport(){const p=$('report-preview'),w=window.open('','_blank','width=700,height=900');if(!w)return;w.document.write(`<html><head><title>GeoFare Incident Report</title><style>body{font-family:Arial;padding:40px;max-width:680px;margin:auto}.rp-field{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid #ddd}.rp-key{width:150px;font-weight:bold;font-size:12px}.rp-val{font-size:13px}.rp-header{text-align:center;margin-bottom:20px}.rp-footer{margin-top:20px;font-size:11px;color:#666}</style></head><body>${p.innerHTML}
 
 </body></html>`);w.document.close();w.print();}
-function clearReport(){['rpt-plate','rpt-datetime','rpt-route','rpt-fare','rpt-desc','rpt-name'].forEach(id=>{if($(id))$(id).value=''});$('rpt-type').value='';if($('report-rider-id'))$('report-rider-id').value='';if($('report-rider-search'))$('report-rider-search').value='';$('report-preview').classList.remove('visible');$('report-actions').style.display='none';window._currentReport=null;renderReportRiderDirectory();}
+function clearReport(){['rpt-plate','rpt-datetime','rpt-route','rpt-fare','rpt-desc'].forEach(id=>{if($(id))$(id).value=''});if($('rpt-name'))$('rpt-name').value=state.role==='commuter'?getCommuterReportName():'';$('rpt-type').value='';if($('report-rider-id'))$('report-rider-id').value='';if($('report-rider-search'))$('report-rider-search').value='';$('report-preview').classList.remove('visible');$('report-actions').style.display='none';window._currentReport=null;renderReportRiderDirectory();}
 function bindReportActionButtons(){const save=$('save-report-local-btn'),gmail=$('mfrta-gmail-btn'),download=$('download-report-btn'),print=$('print-report-btn'),fresh=$('new-report-btn');if(save)save.onclick=saveCurrentReport;if(gmail)gmail.onclick=()=>submitReportToMfrtaGmail(window._currentReport);if(download)download.onclick=()=>downloadReportFile(window._currentReport);if(print)print.onclick=printReport;if(fresh)fresh.onclick=clearReport;}
 bindReportActionButtons();
 renderSavedReportSlips();

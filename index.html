@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#D4621A">
 <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22GeoFare%22%2C%22short_name%22%3A%22GeoFare%22%2C%22description%22%3A%22Road-Distance%20Fare%20and%20Public%20Safety%20Management%20System%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230b1f33%22%2C%22theme_color%22%3A%22%230b4f82%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fydizkrfjxkzxfxtelncb.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2FGeofare%2520logo%2Fgeofare-app-icon.svg%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
    :root {
@@ -2151,6 +2151,12 @@ if(gfRatingFinalPanel)new MutationObserver(()=>setTimeout(gfRefreshRatingUIFinal
 <style>
 .gf-camera-modal{position:fixed;inset:0;z-index:99999;background:rgba(3,12,28,.88);display:none;align-items:center;justify-content:center;padding:18px}.gf-camera-modal.active{display:flex}.gf-camera-box{width:min(620px,100%);background:var(--card,#fff);color:var(--text,#172033);border-radius:20px;padding:18px;box-shadow:0 24px 80px #0006}.gf-camera-video{display:block;width:100%;max-height:65vh;object-fit:contain;background:#080d16;border-radius:14px}.gf-camera-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}.gf-camera-actions button{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}.gf-camera-capture{background:#1769e0;color:#fff}.gf-camera-cancel{background:#e8edf5;color:#1b2a40}.gf-camera-status{font-size:13px;margin:10px 0;color:var(--muted,#64748b)}
 </style>
+
+<style id="geofare-user-status-overlap-fix">
+/* Keep the status dot in normal inline flow so it cannot sit on top of the label. */
+html:root:root:root body #app #users-content .status-badge{position:static;display:inline-flex;align-items:center;justify-content:flex-start;gap:7px;padding:4px 11px;white-space:nowrap;line-height:1.35;vertical-align:middle}
+html:root:root:root body #app #users-content .status-badge::before{position:static;left:auto;top:auto;transform:none;width:6px;height:6px;min-width:6px;flex:0 0 6px;margin:0;opacity:.9}
+</style>
 </head>
 <body>
 <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" title="Open navigation menu" aria-label="Open navigation menu" aria-expanded="false" type="button">☰</button>
@@ -2181,7 +2187,8 @@ if(gfRatingFinalPanel)new MutationObserver(()=>setTimeout(gfRefreshRatingUIFinal
         <div class="form-group"><label class="form-label" for="signup-permit">Registered Business Permit No.</label><input class="form-input" id="signup-permit" maxlength="80"></div>
         <div class="form-group"><label class="form-label" for="signup-plate">Plate Number</label><input class="form-input" id="signup-plate" maxlength="30"></div>
       </div>
-      <button class="btn btn-primary auth-submit" type="submit">Create account</button>
+      <div class="form-group gf-consent"><label class="gf-check"><input type="checkbox" id="signup-privacy" required><span>I have read the <button type="button" class="gf-linkbtn" id="signup-privacy-link">Data Privacy Notice</button> and consent to GeoFare processing my information for fare, verification, reporting and safety services (RA 10173).</span></label></div>
+<button class="btn btn-primary auth-submit" type="submit">Create account</button>
     </form>
     <form id="password-reset-form" style="display:none">
       <div class="form-group"><label class="form-label" for="reset-email">Registered Email Address</label><input class="form-input" id="reset-email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
@@ -2312,6 +2319,7 @@ if(gfRatingFinalPanel)new MutationObserver(()=>setTimeout(gfRefreshRatingUIFinal
                 <span class="fare-row-value discount" id="res-discount">—</span>
               </div>
               <div class="gf-fare-status" id="gf-fare-status" role="status" aria-live="polite">Ready to calculate.</div>
+              <div class="small-note" style="margin-top:6px">Fare bracket is based on completed whole kilometers. A fractional remainder does not move the trip into the next kilometer bracket. Minimum charge follows the 1 km fare row.</div>
             </div>
           </div>
 
@@ -3045,7 +3053,7 @@ function showPanel(panel){
   if(panel==='responder') renderResponder();
   if(panel==='route-records') renderRouteRecords();
   if(panel==='profile') renderProfile();
-  if(panel==='about') renderAbout?.();
+  if(panel==='about') window.renderAbout?.();
   if(panel==='map') setTimeout(()=>map.invalidateSize(),150);
   if(window.innerWidth<=768) closeSidebar();
 }
@@ -3476,11 +3484,11 @@ function getFare(km){
   const distance=Number(km);
   if(!Number.isFinite(distance)||distance<0) throw new Error('Invalid road distance.');
   if(!rows.length) throw new Error('No active fare matrix is available.');
-  const rounded=Math.max(1,Math.ceil(distance));
+  const chargeableKm=Math.max(1,Math.floor(distance+1e-9));
   const range=rows.find(f=>{
     const min=Number(f.minimum_distance??f.km??1);
     const max=Number(f.maximum_distance??f.km??min);
-    return rounded>=min && rounded<=max;
+    return chargeableKm>=min && chargeableKm<=max;
   });
   if(range){
     const regular=Number(range.regular_fare??range.regular);
@@ -3508,7 +3516,7 @@ function getFare(km){
   }
   if(!Number.isFinite(regularStep)||regularStep<=0) regularStep=lastRegular/Math.max(lastMax,1);
   if(!Number.isFinite(discountStep)||discountStep<=0) discountStep=lastDiscount/Math.max(lastMax,1);
-  const extraKm=Math.max(0,rounded-lastMax);
+  const extraKm=Math.max(0,chargeableKm-lastMax);
   const regular=Math.round((lastRegular+(extraKm*regularStep))*100)/100;
   const discounted=Math.round((lastDiscount+(extraKm*discountStep))*100)/100;
   return {regular,discount:discounted,version:last.id||last.version_code||'ACTIVE',extended:true,baseDistance:lastMax};
@@ -5144,8 +5152,8 @@ function gfPrintRecords(){
   w.document.close();
   setTimeout(()=>w.print(),120);
 }
-function gfBuildTools(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('admin-record-tools'))return;const box=document.createElement('section');box.id='admin-record-tools';box.className='form-card admin-record-tools';box.innerHTML='<div class="report-record-head"><div><span class="section-label">Administrative records</span><h3>Reports & Logs Print Center</h3><p class="small-note">Choose exactly which records the administrator wants to keep or print, with an editable date and time range.</p></div><span class="role-chip">PRINTABLE RECORDS</span></div><div class="admin-record-checks"><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="reports" checked> Rider reports</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="safety" checked> SOS alerts</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="calculations"> Fare calculations</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="audit"> Audit logs</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="users"> Account activity</label></div><div class="admin-record-range"><div class="form-group"><label class="form-label" for="gf-record-from">From</label><input class="form-input" id="gf-record-from" type="datetime-local"></div><div class="form-group"><label class="form-label" for="gf-record-to">To</label><input class="form-input" id="gf-record-to" type="datetime-local"></div></div><div class="admin-record-actions"><button type="button" class="btn btn-primary" id="gf-print-records">🖨 Print selected records</button><button type="button" class="btn btn-secondary btn-sm" id="gf-clear-record-filters">Reset filters</button></div><div class="admin-record-count" id="gf-record-count"></div>';host.insertBefore(box,host.querySelector('#reports-content'));box.querySelectorAll('.gf-record-type').forEach(x=>x.addEventListener('change',gfUpdatePrintCount));$('gf-record-from').addEventListener('change',gfUpdatePrintCount);$('gf-record-to').addEventListener('change',gfUpdatePrintCount);$('gf-print-records').addEventListener('click',gfPrintRecords);$('gf-clear-record-filters').addEventListener('click',()=>{box.querySelectorAll('.gf-record-type').forEach(x=>x.checked=['reports','safety'].includes(x.value));$('gf-record-from').value='';$('gf-record-to').value='';gfUpdatePrintCount()});gfUpdatePrintCount();}
-function gfBuildSafetySection(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('integrated-safety-section'))return;const sec=document.createElement('section');sec.id='integrated-safety-section';sec.className='form-card integrated-safety-wrap';sec.innerHTML='<div class="report-record-head"><div><span class="section-label">Unified safety management</span><h3>Safety Alerts & Emergency Evidence</h3><p class="small-note">SOS alerts are managed here together with rider reports. Each alert shows the sender’s current location directly on a map and its submitted photo evidence.</p></div><div class="safety-queue-tools"><input class="form-input" id="safety-search" placeholder="Search SOS alerts"><select class="form-select" id="safety-filter"><option value="all">All statuses</option><option value="New">New</option><option value="Acknowledged">Acknowledged</option><option value="Responded">Responded</option><option value="Resolved">Resolved</option><option value="Dismissed">Dismissed</option></select></div></div><div id="integrated-safety-content"></div>';host.appendChild(sec);$('admin-safety-search').addEventListener('input',gfRenderIntegratedSafety);$('admin-safety-filter').addEventListener('change',gfRenderIntegratedSafety);}
+function gfBuildTools(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('admin-record-tools'))return;const box=document.createElement('section');box.id='admin-record-tools';box.className='form-card admin-record-tools';box.innerHTML='<div class="report-record-head"><div><span class="section-label">Administrative records</span><h3>Reports & Logs Print Center</h3><p class="small-note">Choose exactly which records the administrator wants to keep or print, with an editable date and time range.</p></div><span class="role-chip">PRINTABLE RECORDS</span></div><div class="admin-record-checks"><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="reports" checked> Rider reports</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="safety" checked> SOS alerts</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="calculations"> Fare calculations</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="audit"> Audit logs</label><label class="admin-record-check"><input class="gf-record-type" type="checkbox" value="users"> Account activity</label></div><div class="admin-record-range"><div class="form-group"><label class="form-label" for="gf-record-from">From</label><input class="form-input" id="gf-record-from" type="datetime-local"></div><div class="form-group"><label class="form-label" for="gf-record-to">To</label><input class="form-input" id="gf-record-to" type="datetime-local"></div></div><div class="admin-record-actions"><button type="button" class="btn btn-primary" id="gf-print-records">🖨 Print selected records</button><button type="button" class="btn btn-secondary btn-sm" id="gf-clear-record-filters">Reset filters</button></div><div class="admin-record-count" id="gf-record-count"></div>';host.appendChild(box);box.querySelectorAll('.gf-record-type').forEach(x=>x.addEventListener('change',gfUpdatePrintCount));$('gf-record-from').addEventListener('change',gfUpdatePrintCount);$('gf-record-to').addEventListener('change',gfUpdatePrintCount);$('gf-print-records').addEventListener('click',gfPrintRecords);$('gf-clear-record-filters').addEventListener('click',()=>{box.querySelectorAll('.gf-record-type').forEach(x=>x.checked=['reports','safety'].includes(x.value));$('gf-record-from').value='';$('gf-record-to').value='';gfUpdatePrintCount()});gfUpdatePrintCount();}
+function gfBuildSafetySection(){if(state.role!=='admin')return;const host=document.querySelector('#panel-reports .management-content');if(!host||$('integrated-safety-section'))return;const sec=document.createElement('section');sec.id='integrated-safety-section';sec.className='form-card integrated-safety-wrap';sec.innerHTML='<div class="report-record-head"><div><span class="section-label">Unified safety management</span><h3>Safety Alerts & Emergency Evidence</h3><p class="small-note">SOS alerts are managed here together with rider reports. Each alert shows the sender’s current location directly on a map and its submitted photo evidence.</p></div><div class="safety-queue-tools"><input class="form-input" id="admin-safety-search" placeholder="Search SOS alerts"><select class="form-select" id="admin-safety-filter"><option value="all">All statuses</option><option value="New">New</option><option value="Acknowledged">Acknowledged</option><option value="Responded">Responded</option><option value="Resolved">Resolved</option><option value="Dismissed">Dismissed</option></select></div></div><div id="integrated-safety-content"></div>';host.appendChild(sec);$('admin-safety-search').addEventListener('input',gfRenderIntegratedSafety);$('admin-safety-filter').addEventListener('change',gfRenderIntegratedSafety);}
 function gfEnhanceReports(){if(state.role!=='admin')return;const panel=document.getElementById('panel-reports');if(!panel)return;const title=panel.querySelector('.panel-title');const sub=panel.querySelector('.panel-sub');if(title)title.textContent='Reports & Safety Management';if(sub)sub.textContent='Rider reports, SOS safety alerts, emergency locations, evidence, and printable administrative records.';gfBuildTools();gfBuildSafetySection();gfRenderIntegratedSafety();}
 function gfDecorateStats(){if(state.role!=='admin')return;const icons=['👥','🧑‍💼','🛵','🛺','✓','⏳','💵','⚠️','🔎','✓','🆘'];document.querySelectorAll('#admin-stats .stat-card').forEach((card,i)=>{if(card.querySelector('.stat-icon'))return;const icon=document.createElement('div');icon.className='stat-icon';icon.textContent=icons[i]||'📊';card.insertBefore(icon,card.firstChild);});}
 function gfAfterPanel(){gfStars();gfPhotoPreview();gfReplaceSOSButton();if(state.role==='admin'){gfDecorateStats();if(state.currentPanel==='reports')setTimeout(gfEnhanceReports,0);}}
@@ -6732,7 +6740,7 @@ const originalRenderNav=renderNav;
 window.renderNav=function(){originalRenderNav();if(isPending()){document.querySelectorAll('#role-nav .nav-link').forEach(b=>{if(!pendingAllowed.has(b.id.replace('nav-','')))b.remove();});}};
 })();
 </script>
-
+<script>
 (function(){
   const priorRenderReports=window.renderReports;
   function resolveReportRider(report){
@@ -7684,7 +7692,7 @@ body ::selection{background:var(--accent);color:var(--on-accent,#fff)}
   function syncLogos(){
     var dark=document.documentElement.getAttribute('data-theme')==='dark';
     document.querySelectorAll('#sidebar img[data-light-logo]').forEach(function(img){
-      var want=dark?img.dataset.lightLogo:img.dataset.darkLogo;
+      var want=img.dataset.darkLogo;
       if(want&&img.getAttribute('src')!==want)img.setAttribute('src',want);
     });
   }
@@ -7803,4 +7811,1418 @@ body ::selection{background:var(--accent);color:var(--on-accent,#fff)}
   sync();
 })();
 </script>
+<script id="geofare-post-defense-refinement">
+(()=>{
+'use strict';
+const $=s=>{const q=String(s);return /^[#.\[]|[\s>:]/.test(q)?document.querySelector(q):document.getElementById(q);};
+const esc=v=>typeof window.esc==='function'?window.esc(String(v??'')):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const notify=(m,t='info')=>typeof window.toast==='function'?window.toast(m,t):alert(m);
+const style=document.createElement('style');
+style.textContent=`
+:root{--gf-font-body:'DM Sans',system-ui,sans-serif;--gf-font-display:'DM Sans',system-ui,sans-serif}
+html,body,#app,button,input,select,textarea,.nav-link,.form-label,.small-note,.muted{font-family:var(--gf-font-body)!important}
+h1,h2,h3,h4,.panel-title,.card-title,.hero-card h2,.about-hero-title{font-family:var(--gf-font-display)!important;letter-spacing:-.025em}
+.panel-title{font-weight:800!important;font-size:clamp(19px,2vw,25px)!important}.panel-sub{max-width:850px;line-height:1.55}
+.management-content,.dashboard-wrap,.report-content{overflow:visible!important;max-height:none!important}
+.table-scroll,.table-wrap{max-height:none!important;overflow-x:auto!important;overflow-y:visible!important}
+#panel-map .map-sidebar{overscroll-behavior:contain}
+#panel-map .map-ctrl-head{position:sticky;top:0;z-index:5;background:var(--surface);padding-bottom:10px}
+#panel-map .map-ctrl-title{font-size:20px;font-weight:800}
+#panel-map .map-ctrl-body{gap:11px}
+#panel-map .map-mode-btns{position:sticky;top:60px;z-index:4;background:var(--surface);padding:6px 0}
+#panel-map .pin-row{min-height:66px}
+#panel-map .fare-result{position:sticky;bottom:8px;z-index:6;box-shadow:0 12px 34px rgba(12,36,60,.16);border:1px solid var(--border)}
+#panel-map .gf-route-guide{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:2px 0 8px}
+#panel-map .gf-route-step{padding:9px 8px;border:1px solid var(--border);border-radius:11px;background:var(--surface2);font-size:11px;color:var(--text2);font-weight:700;text-align:center}
+#panel-map .gf-route-step strong{display:block;color:var(--accent);font-size:12px;margin-bottom:3px}
+#panel-map .gf-route-help{padding:10px 12px;background:var(--accent-dim);border-radius:11px;color:var(--text2);font-size:12px;line-height:1.5}
+.gf-resolution-card{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:15px;margin:14px 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.gf-resolution-card h3{margin:0 0 5px;font-size:15px}.gf-resolution-card p{margin:0;color:var(--text2);font-size:12px;line-height:1.5}.gf-resolution-card a{font-weight:700;color:var(--accent);white-space:nowrap}
+.gf-resolution-list{display:grid;gap:10px;margin-top:12px}.gf-resolution-item{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:13px}.gf-resolution-item strong{display:block;font-size:13px}.gf-resolution-item p{margin:5px 0;color:var(--text2);font-size:12px;line-height:1.5}.gf-resolution-item small{color:var(--text3)}
+.gf-privacy-modal{position:fixed;inset:0;z-index:12000;background:rgba(4,18,34,.68);display:none;align-items:center;justify-content:center;padding:16px}.gf-privacy-modal.active{display:flex}.gf-privacy-dialog{width:min(620px,100%);max-height:90dvh;overflow:auto;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.3)}.gf-privacy-dialog h2{font-size:22px;margin:0 0 8px}.gf-privacy-dialog p,.gf-privacy-dialog li{font-size:13px;line-height:1.65;color:var(--text2)}.gf-privacy-dialog ul{padding-left:20px}.gf-privacy-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+.gf-report-mode{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gf-report-mode label{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--surface);cursor:pointer}.gf-report-mode input{margin-top:3px;accent-color:var(--accent)}.gf-report-mode strong{display:block;font-size:12px}.gf-report-mode small{display:block;color:var(--text2);font-size:11px;line-height:1.4;margin-top:3px}
+.gf-kpi-priority{border:1px solid var(--border)!important;box-shadow:var(--shadow)!important}.gf-kpi-priority:first-child{border-color:var(--accent)!important}
+#panel-fare-admin .fare-admin-actions{align-items:center}#panel-fare-admin .gf-resolution-fields{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:12px}#panel-fare-admin .gf-resolution-fields .full{grid-column:1/-1}
+html[data-role="rider"] #panel-riders .public-rider-open{display:none!important}
+@media(max-width:760px){.gf-resolution-card{grid-template-columns:1fr}.gf-resolution-card a{white-space:normal}.gf-report-mode{grid-template-columns:1fr}#panel-fare-admin .gf-resolution-fields{grid-template-columns:1fr}#panel-map .gf-route-guide{gap:5px}#panel-map .gf-route-step{font-size:10px;padding:8px 5px}.gf-privacy-dialog{padding:18px}}
+@media(min-width:769px){.management-content{padding-bottom:28px!important}#panel-map .map-sidebar{max-height:calc(100dvh - 72px);overflow-y:auto!important}}
+`;
+document.head.appendChild(style);
+
+// Rider accounts no longer receive access to the verified-profile directory or profile viewer.
+const oldNavForRole=window.navForRole;
+if(typeof oldNavForRole==='function')window.navForRole=function(role){const nav=oldNavForRole.apply(this,arguments)||[];return role==='rider'?nav.filter(x=>x[0]!=='riders'):nav;};
+const oldRiderCard=window.riderPublicCard;
+if(typeof oldRiderCard==='function')window.riderPublicCard=function(r){const html=oldRiderCard.apply(this,arguments);return state?.role==='rider'?html.replace(/<button[^>]*class="btn btn-primary btn-sm public-rider-open"[\s\S]*?<\/button>/i,''):html;};
+const oldOpenPublic=window.openPublicRiderProfile;
+if(typeof oldOpenPublic==='function')window.openPublicRiderProfile=function(id){if(state?.role==='rider'){notify('Verified rider profiles are not available from rider accounts.','info');return;}return oldOpenPublic.apply(this,arguments);};
+
+// Guided commuter route selection and simpler route instructions.
+const mapBody=$('#panel-map .map-ctrl-body');
+if(mapBody&&!$('#gf-route-guide')){
+ const guide=document.createElement('div');guide.id='gf-route-guide';guide.className='gf-route-guide';guide.innerHTML='<div class="gf-route-step"><strong>1 · Pickup</strong>Choose start</div><div class="gf-route-step"><strong>2 · Destination</strong>Choose end</div><div class="gf-route-step"><strong>3 · Fare</strong>View estimate</div>';
+ const help=document.createElement('div');help.className='gf-route-help';help.id='gf-route-help';help.textContent='Start by selecting your pickup point on the map. Then choose your destination to calculate the road-distance fare.';
+ const modes=mapBody.querySelector('.map-mode-btns');if(modes){modes.after(guide,help);}
+}
+const oldUpdateInstruction=window.updateInstruction;
+if(typeof oldUpdateInstruction==='function')window.updateInstruction=function(){const result=oldUpdateInstruction.apply(this,arguments);const p=!!state?.pickupMarker,d=!!state?.dropoffMarker,help=$('#gf-route-help');if(help)help.textContent=state?.currentMode==='live'?'Live monitoring uses your device GPS. It does not require pickup or destination points.':p&&d?'Both locations are selected. Select Calculate Fare to view your road-distance estimate.':p?'Pickup selected. Now tap the map or choose a destination for your drop-off point.':d?'Destination selected. Now choose your pickup point.':'Step 1: Tap the map to set your pickup point.';return result;};
+
+// Fare resolution evidence fields are required for every new or edited fare rule.
+const fareForm=$('fare-admin-form');
+if(fareForm&&!$('#fare-resolution-file')){
+ const wrap=document.createElement('div');wrap.className='gf-resolution-fields';wrap.innerHTML='<div class="form-group"><label class="form-label" for="fare-resolution-title">Joint Resolution title / number *</label><input class="form-input" id="fare-resolution-title" maxlength="180" required placeholder="e.g. Joint Resolution No. 01, s. 2026"></div><div class="form-group"><label class="form-label" for="fare-resolution-file">Upload signed Joint Resolution (PDF or image) *</label><input class="form-input" id="fare-resolution-file" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" required><small class="small-note">Maximum 10 MB. Upload the official signed resolution or supporting document.</small></div><div class="form-group full"><label class="form-label" for="fare-resolution-description">Description / basis for fare update *</label><textarea class="form-textarea" id="fare-resolution-description" maxlength="1200" rows="3" required placeholder="Explain what this resolution authorizes, its coverage, and the reason for the fare update."></textarea></div>';
+ const actions=fareForm.querySelector('.fare-admin-actions');if(actions)actions.before(wrap);else fareForm.appendChild(wrap);
+}
+const oldFareSubmit=fareForm?.onsubmit;
+if(fareForm){fareForm.onsubmit=async e=>{
+ e.preventDefault();if(state?.role!=='admin')return notify('Only authorized administrators can update the fare matrix.','error');
+ const id=$('fare-edit-id')?.value.trim()||'',min=Number($('#fare-min')?.value),max=Number($('#fare-max')?.value),regular=Number($('#fare-regular')?.value),discount=Number($('#fare-discount')?.value),version=($('#fare-version')?.value||'').trim(),effective=$('#fare-effective-from')?.value;
+ const title=$('#fare-resolution-title')?.value.trim(),description=$('#fare-resolution-description')?.value.trim(),file=$('#fare-resolution-file')?.files?.[0];
+ if(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<min||!Number.isFinite(regular)||regular<0||!Number.isFinite(discount)||discount<0)return notify('Enter valid distance and fare values.','error');
+ if(!title||!description||!file)return notify('A Joint Resolution title, description, and supporting file are required for every fare update.','error');
+ if(file.size>10*1024*1024)return notify('The resolution file must be 10 MB or smaller.','error');
+ if(!/^application\/(pdf|x-pdf)$/.test(file.type)&&!/^image\/(jpeg|png|webp)$/.test(file.type))return notify('Upload a PDF, JPG, PNG, or WEBP file.','error');
+ if(!usingSupabase()||!supabaseClient)return notify('Connect to Supabase before publishing a fare update with official evidence.','error');
+ const overlap=(state.fareMatrix||[]).some(f=>String(f.id)!==String(id)&&String(f.status||'active').toLowerCase()==='active'&&min<=Number(f.maximum_distance)&&max>=Number(f.minimum_distance));if(overlap)return notify('This active distance range overlaps an existing active fare rule.','error');
+ setBusy(true,id?'Publishing fare update and resolution…':'Creating fare rule and resolution…');
+ let uploadedPath=null;
+ try{
+  const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=`${state.user.id}/${new Date().toISOString().replace(/[:.]/g,'-')}-${crypto.randomUUID()}-${safeName}`;
+  const upload=await supabaseClient.storage.from('fare-resolutions').upload(path,file,{contentType:file.type,upsert:false});if(upload.error)throw upload.error;uploadedPath=path;
+  const payload={minimum_distance:min,maximum_distance:max,regular_fare:regular,discounted_fare:discount,status:id?(fareRowById(id)?.status||'active'):'active',effective_from:effective?new Date(effective).toISOString():new Date().toISOString(),version_code:version||`MFRTA-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`};
+  const rpc=await supabaseClient.rpc('geofare_save_fare_matrix_with_resolution',{p_fare_id:id||null,p_payload:payload,p_document_path:path,p_resolution_title:title,p_description:description});if(rpc.error)throw rpc.error;
+  const result=rpc.data||{};await addAudit(id?'Fare matrix updated with Joint Resolution':'Fare matrix created with Joint Resolution',result.fare_id||id||null,{target_type:'fare_matrix',version_code:payload.version_code,resolution_title:title,document_path:path});
+  await loadData();resetFareEditor();$('#fare-resolution-title').value='';$('#fare-resolution-description').value='';$('#fare-resolution-file').value='';renderFareAdmin();renderMatrix();renderAdmin();renderFareResolutions();notify('Fare matrix and supporting Joint Resolution published successfully.','success');
+ }catch(err){console.error('Fare resolution update failed:',err);notify('Fare update could not be completed: '+(err?.message||'database rejected the change')+'. The existing fare matrix was not intentionally overwritten.', 'error');if(uploadedPath){try{await supabaseClient.storage.from('fare-resolutions').remove([uploadedPath]);}catch(cleanupError){console.warn('Unused resolution upload remains in storage:',cleanupError);}}}
+ finally{setBusy(false);}
+};}
+
+// Fetch and display official supporting resolutions to all signed-in users.
+window.renderFareResolutions=function(){const rows=state?.fareResolutions||[];const html=rows.length?'<div class="gf-resolution-list">'+rows.map(r=>{const url=r.public_url||r.file_url||'';return `<article class="gf-resolution-item"><strong>${esc(r.resolution_title||'Joint Resolution')}</strong><small>${esc(r.created_at?new Date(r.created_at).toLocaleDateString('en-PH'):'')} · ${esc(r.version_code||'Fare matrix update')}</small><p>${esc(r.description||'No description provided.')}</p>${url?`<a href="${esc(url)}" target="_blank" rel="noopener">View supporting document ↗</a>`:''}</article>`;}).join('')+'</div>':'<p class="small-note">No fare resolution documents have been published yet.</p>';
+ ['gf-public-resolutions','gf-admin-resolutions'].forEach(id=>{const el=$(id);if(el)el.innerHTML=html;});};
+const matrixPanel=$('#panel-matrix');if(matrixPanel&&!$('#gf-public-resolutions')){const box=document.createElement('section');box.className='gf-resolution-card';box.innerHTML='<div><h3>Official Fare Resolutions & Updates</h3><p>Review the Joint Resolutions and supporting documents associated with published fare matrix versions.</p><div id="gf-public-resolutions"></div></div>';matrixPanel.querySelector('.matrix-content')?.appendChild(box);}
+const fareAdmin=$('#panel-fare-admin');if(fareAdmin&&!$('#gf-admin-resolutions')){const section=document.createElement('section');section.className='form-card';section.innerHTML='<h3>Published Joint Resolutions</h3><p class="small-note">Supporting documents remain available to users as part of the fare matrix history.</p><div id="gf-admin-resolutions"></div>';$('#fare-admin-table')?.after(section);}
+const oldLoadData=window.loadData;if(typeof oldLoadData==='function')window.loadData=async function(){const result=await oldLoadData.apply(this,arguments);if(usingSupabase()){try{const q=await supabaseClient.from('fare_matrix_resolutions').select('id,fare_matrix_id,resolution_title,description,document_path,version_code,created_at').order('created_at',{ascending:false}).limit(100);if(q.error)throw q.error;state.fareResolutions=(q.data||[]).map(r=>({...r,public_url:supabaseClient.storage.from('fare-resolutions').getPublicUrl(r.document_path).data.publicUrl}));}catch(e){console.warn('Fare resolutions could not be loaded:',e);state.fareResolutions=state.fareResolutions||[];}}else state.fareResolutions=state.fareResolutions||[];window.renderFareResolutions?.();return result;};
+
+// Identified / anonymous reporter choice. The anonymous option hides identity in the report; a private account link is retained for ownership and abuse prevention.
+const reporterCard=$('#panel-report .reporter-card');
+if(reporterCard&&!$('#rpt-identity-mode')){const mode=document.createElement('div');mode.className='form-group';mode.innerHTML='<label class="form-label">How would you like to report?</label><div class="gf-report-mode" id="rpt-identity-mode"><label><input type="radio" name="rpt-identity" value="identified" checked><span><strong>Report with my name</strong><small>Your name is included in the complaint record.</small></span></label><label><input type="radio" name="rpt-identity" value="anonymous"><span><strong>Report anonymously</strong><small>Your name will be displayed as Anonymous to report viewers.</small></span></label></div><small class="small-note">Anonymous reports remain linked to your signed-in account privately for report ownership, security, and abuse prevention. Your name is not shown on the submitted report.</small>';
+ const name=$('#rpt-name')?.closest('.form-group');if(name)name.before(mode);else reporterCard.appendChild(mode);
+ const sync=()=>{const anon=$('input[name="rpt-identity"]:checked')?.value==='anonymous';const input=$('#rpt-name');if(input){input.disabled=anon;input.required=!anon;input.value=anon?'':(input.value||getCommuterReportName?.()||'');input.closest('.form-group').style.opacity=anon?'.55':'1';}};mode.querySelectorAll('input').forEach(x=>x.addEventListener('change',sync));sync();}
+const oldGenerate=window.generateReport;
+if(typeof oldGenerate==='function')window.generateReport=function(){const mode=$('input[name="rpt-identity"]:checked')?.value||'identified';window._gfReportMode=mode;const name=$('#rpt-name');if(name&&mode==='anonymous')name.value='Anonymous';else if(name&&!name.value.trim()&&typeof getCommuterReportName==='function')name.value=getCommuterReportName();const result=oldGenerate.apply(this,arguments);if(window._currentReport){window._currentReport.reporter_mode=mode;window._currentReport.complainant=mode==='anonymous'?'Anonymous':(name?.value||window._currentReport.complainant);const fields=$('#rp-fields');if(fields){const complainant=Array.from(fields.querySelectorAll('.rp-field')).find(x=>x.querySelector('.rp-key')?.textContent==='Complainant');if(complainant)complainant.querySelector('.rp-val').textContent=window._currentReport.complainant;}}return result;};
+const oldSubmitReport=window.submitReport;
+if(typeof oldSubmitReport==='function')window.submitReport=async function(r){if(!r)return;const mode=r.reporter_mode||window._gfReportMode||'identified';r.reporter_mode=mode;r.complainant=mode==='anonymous'?'Anonymous':(r.complainant||'Name not provided');if(!r||r._submitting)return;r._submitting=true;setBusy(true,'Submitting report…');try{if(usingSupabase()){
+ const details=[`Rider Public ID: ${r.rider_public_id||'Not matched'}`,`Rider Status: ${r.rider_registered?'Registered':'Unregistered / plate-based'}`,`Plate Number: ${r.plate}`,`Fare Demanded: ${Number(r.fare).toFixed(2)}`,`Reporter Mode: ${mode}`,`Complainant Name: ${mode==='anonymous'?'Anonymous':r.complainant}`,'',r.description].join('\n');
+ const payload={reference_no:r.reference_no,complainant_id:null,reporter_user_id:state.user.id,reporter_mode:mode,complainant_name:mode==='anonymous'?null:r.complainant,rider_reference:r.rider_public_id||r.plate,category:r.category,incident_datetime:r.incident_datetime,location_text:r.route,description:details,status:'New'};
+ const {data,error}=await supabaseClient.from('incidents').insert(payload).select('*').single();if(error)throw error;await addAudit('Report created',data.id,{target_type:'incident',reference_no:data.reference_no,rider_reference:data.rider_reference,reporter_mode:mode,status:data.status});
+ }else{const a=read(STORAGE.reports,[]);if(a.some(x=>x.reference_no===r.reference_no))throw new Error('Duplicate report reference.');a.unshift({...r,id:crypto.randomUUID?crypto.randomUUID():`report-${Date.now()}`,complainant_id:state.user.id,reporter_user_id:state.user.id,reporter_mode:mode});write(STORAGE.reports,a);}
+ await loadData();renderReports();renderAdmin();notify(`Report ${r.reference_no} was saved successfully.`,'success');
+ }catch(error){console.error('Report submission failed:',error);notify(`Report was not saved to the database: ${error.message||'database rejected the submission'}. The local saved copy remains available.`,'error');}finally{r._submitting=false;setBusy(false);}};
+const oldVisibleReports=window.gfVisibleReportsForCurrentUser;if(typeof oldVisibleReports==='function')window.gfVisibleReportsForCurrentUser=function(){if(state?.role==='commuter'){const uid=String(state.user?.id||'');return (state.reports||[]).filter(r=>String(r.reporter_user_id||r.complainant_id||r.user_id||'')===uid);}return oldVisibleReports.apply(this,arguments);};
+const oldRenderReports=window.renderReports;if(typeof oldRenderReports==='function')window.renderReports=function(){const result=oldRenderReports.apply(this,arguments);document.querySelectorAll('#reports-content .report-record-card').forEach(card=>{const id=card.dataset.reportId;const r=(state.reports||[]).find(x=>String(x.id)===String(id));if(r?.reporter_mode==='anonymous'&&state?.role==='admin'){const grid=card.querySelector('.report-meta-grid');if(grid){let field=grid.querySelector('.gf-anonymous-submitter');if(!field){field=document.createElement('div');field.className='gf-anonymous-submitter';field.innerHTML='<small>Submitted by</small><strong>Anonymous</strong>';grid.appendChild(field);}else field.querySelector('strong').textContent='Anonymous';}}});return result;};
+
+// Privacy notice, explicit acknowledgement and durable Supabase consent record.
+const privacyVersion='2026-11-18-v1';
+async function gfHasPrivacyConsent(userId){
+ if(!userId)return false;
+ if(!usingSupabase())return localStorage.getItem(`geofare.privacy.${userId}`)===privacyVersion;
+ const {data,error}=await supabaseClient.from('privacy_consents').select('id').eq('user_id',userId).eq('policy_version',privacyVersion).maybeSingle();
+ if(error)throw error;
+ return !!data;
+}
+if(!$('#gf-privacy-modal')){const modal=document.createElement('div');modal.id='gf-privacy-modal';modal.className='gf-privacy-modal';modal.innerHTML='<section class="gf-privacy-dialog" role="dialog" aria-modal="true" aria-labelledby="gf-privacy-title"><span class="report-section-kicker">DATA PRIVACY NOTICE</span><h2 id="gf-privacy-title">Your privacy matters</h2><p>GeoFare processes personal information to provide fare computation, account services, rider verification, incident reporting, ratings, and public safety features.</p><ul><li><b>Information collected:</b> account details, contact information you provide, route and fare calculation records, ratings, incident reports, and SOS location or evidence when you submit an alert.</li><li><b>Purpose:</b> operate the service, verify riders, calculate fares, review reports, respond to safety alerts, prevent misuse, and maintain audit records.</li><li><b>Access:</b> information is available only to authorized personnel according to their role and applicable access controls. Public views should not expose private contact, license, or identity details.</li><li><b>Retention:</b> records may be retained for legitimate administrative, safety, audit, and legal purposes. Contact the system administrator for access, correction, or other privacy requests.</li><li><b>Your rights:</b> you may exercise applicable rights under the Data Privacy Act of 2012 (RA 10173), subject to lawful limitations.</li></ul><p>Do not submit sensitive personal information unless it is necessary for your report. Anonymous reports hide your name from report viewers, but remain privately linked to your account for security and report ownership.</p><label style="display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:13px"><input type="checkbox" id="gf-privacy-ack" style="margin-top:3px"><span>I have read and understood this Data Privacy Notice.</span></label><div class="gf-privacy-actions"><button class="btn btn-secondary" id="gf-privacy-close" type="button">Review later</button><button class="btn btn-primary" id="gf-privacy-accept" type="button" disabled>I acknowledge</button></div></section>';document.body.appendChild(modal);
+ $('#gf-privacy-ack').addEventListener('change',e=>$('#gf-privacy-accept').disabled=!e.target.checked);
+ $('#gf-privacy-close').addEventListener('click',()=>modal.classList.remove('active'));
+ $('#gf-privacy-accept').addEventListener('click',async()=>{
+  const userId=state?.user?.id;if(!userId){notify('Please sign in again before saving your acknowledgement.','error');return;}
+  const btn=$('#gf-privacy-accept');btn.disabled=true;btn.textContent='Saving…';
+  try{
+   if(usingSupabase()){
+    // Check first, then INSERT. This avoids requiring an UPDATE policy for an upsert.
+    const alreadyAccepted=await gfHasPrivacyConsent(userId);
+    if(!alreadyAccepted){
+     const {error}=await supabaseClient.from('privacy_consents').insert({user_id:userId,policy_version:privacyVersion,accepted_at:new Date().toISOString()});
+     // A duplicate key means the same consent was saved by another tab/device.
+     if(error&&error.code!=='23505')throw error;
+    }
+   }else{localStorage.setItem(`geofare.privacy.${userId}`,privacyVersion);}
+   localStorage.setItem(`geofare.privacy.${userId}`,privacyVersion);
+   modal.classList.remove('active');
+   const profile=$('#gf-profile-privacy');if(profile){const status=profile.querySelector('.score-row strong');if(status)status.textContent='Acknowledged';}
+   notify('Privacy notice acknowledgement saved.','success');
+  }catch(e){console.error('GeoFare privacy acknowledgement failed:',e);notify(`Could not save acknowledgement: ${e.message||e.details||'database request failed'}`,'error');}
+  finally{btn.textContent='I acknowledge';btn.disabled=!$('#gf-privacy-ack')?.checked;}
+ });
+}
+function addPrivacyLink(){const nav=$('#role-nav');if(!nav||$('#gf-privacy-link'))return;const b=document.createElement('button');b.id='gf-privacy-link';b.type='button';b.className='nav-link';b.innerHTML='<span class="nav-icon">🔒</span><span class="nav-label">Data Privacy</span>';b.addEventListener('click',()=>$('#gf-privacy-modal')?.classList.add('active'));nav.appendChild(b);}
+async function checkPrivacy(){if(!state?.user?.id)return;addPrivacyLink();try{const accepted=await gfHasPrivacyConsent(state.user.id);if(accepted){localStorage.setItem(`geofare.privacy.${state.user.id}`,privacyVersion);$('#gf-privacy-modal')?.classList.remove('active');}else $('#gf-privacy-modal')?.classList.add('active');}catch(e){console.error('GeoFare privacy consent lookup failed:',e);$('#gf-privacy-modal')?.classList.add('active');notify(`Could not verify privacy acknowledgement: ${e.message||e.details||'database request failed'}`,'error');}}
+const oldRenderNav=window.renderNav;if(typeof oldRenderNav==='function')window.renderNav=function(){const r=oldRenderNav.apply(this,arguments);if(state?.role)document.documentElement.dataset.role=state.role;addPrivacyLink();return r;};
+window.gfCheckPrivacy=checkPrivacy;const privacyTimer=setInterval(()=>{if(state?.user?.id){checkPrivacy();clearInterval(privacyTimer);}},700);
+
+// KPI hierarchy: emphasize high-priority operational indicators without deleting existing metrics.
+const oldRenderAdmin=window.renderAdmin;if(typeof oldRenderAdmin==='function')window.renderAdmin=function(){const r=oldRenderAdmin.apply(this,arguments);const grid=$('#admin-stats');if(grid){const cards=Array.from(grid.children);const rank=label=>({'Active SOS Alerts':0,'Pending Reports':1,'Pending Verification':2,'Verified Riders':3,'Active Fare Rows':4}[label]??10);cards.sort((a,b)=>rank(a.querySelector('.stat-label')?.textContent?.trim())-rank(b.querySelector('.stat-label')?.textContent?.trim()));cards.forEach((el,i)=>{grid.appendChild(el);el.classList.toggle('gf-kpi-priority',i<3);});}return r;};
+
+setTimeout(()=>{if(state?.user?.id){document.documentElement.dataset.role=state.role||'';loadData().then(()=>{window.renderFareResolutions?.();if(state.currentPanel==='matrix')renderMatrix();}).catch(e=>console.warn('Initial resolution refresh failed:',e));}},1200);
+})();
+</script>
+
+<style id="geofare-defense-ui-v2">
+/* ════════════════════════════════════════════════════════════════
+   GeoFare — post-defense UI layer (v2)
+   One typography scale · one spacing rhythm · fewer scrolls
+   ════════════════════════════════════════════════════════════════ */
+:root{
+  --gf-font:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  /* type scale (1.125 / 1.2 ratio, 16px root) */
+  --fs-xs:12px; --fs-sm:13px; --fs-md:14.5px; --fs-lg:16px; --fs-xl:18px; --fs-2xl:22px; --fs-3xl:28px; --fs-kpi:40px;
+  --lh-tight:1.2; --lh-base:1.5;
+  --fw-reg:400; --fw-med:500; --fw-semi:600; --fw-bold:700;
+  /* spacing rhythm */
+  --gf-gap:16px; --gf-pad:24px;
+}
+[hidden]{display:none!important}
+.gf-hidden,.gf-pg-hide{display:none!important}
+
+/* ───────── typography: one family, one scale ───────── */
+html body,html body button,html body input,html body select,html body textarea,
+html body .nav-link,html body .panel-title,html body .logo,html body h1,html body h2,html body h3,html body h4{font-family:var(--gf-font)!important}
+html body{font-size:var(--fs-md);line-height:var(--lh-base);font-weight:var(--fw-reg);-webkit-font-smoothing:antialiased}
+html body h1{font-size:var(--fs-3xl);line-height:var(--lh-tight);font-weight:var(--fw-bold);letter-spacing:-.02em}
+html body .panel-title{font-size:var(--fs-2xl)!important;line-height:var(--lh-tight);font-weight:var(--fw-bold)!important;letter-spacing:-.015em}
+html body .panel-sub{font-size:var(--fs-sm);line-height:var(--lh-base);color:var(--text2);margin-top:4px}
+html body h2{font-size:var(--fs-xl);line-height:var(--lh-tight);font-weight:var(--fw-bold);letter-spacing:-.01em}
+html body h3,html body .card-title{font-size:var(--fs-lg);line-height:1.3;font-weight:var(--fw-semi);letter-spacing:-.005em}
+html body .form-label{font-size:var(--fs-sm);font-weight:var(--fw-semi);color:var(--text)}
+html body .form-input,html body .form-select,html body .form-textarea{font-size:var(--fs-md);line-height:1.4}
+html body .btn{font-size:var(--fs-sm);font-weight:var(--fw-semi);letter-spacing:0}
+html body .btn-sm{font-size:var(--fs-sm)}
+html body .nav-link{font-size:var(--fs-md);font-weight:var(--fw-med)}
+html body .nav-link.active{font-weight:var(--fw-semi)}
+html body th{font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:.04em;text-transform:uppercase}
+html body td{font-size:var(--fs-sm)}
+html body :is(.small-note,.muted,.form-hint,.stat-label,.kpi-label,.section-label,.kicker,.status-badge,.role-chip,.nav-badge,.logo-sub,.report-section-kicker,.live-monitor-pill,.dev-badge){font-size:var(--fs-xs)}
+html body :is(.stat-value,.kpi-value){font-size:var(--fs-2xl);font-weight:var(--fw-bold);letter-spacing:-.02em}
+html body :is(.score-row,.data-card){font-size:var(--fs-sm)}
+
+/* ───────── desktop sidebar: hidden until the cursor reaches the left edge ───────── */
+.gf-sb-pin{position:absolute;z-index:10;top:14px;right:14px;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;border:1px solid var(--nav-line,var(--border));background:var(--nav-chip,var(--surface2));color:var(--nav-text,var(--text2));cursor:pointer;transition:transform .2s,background .2s,color .2s}
+.gf-sb-pin:hover{transform:scale(1.08)}
+.gf-sb-pin[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sidebar-header{position:relative}
+html body #sidebar .collapse-toggle{display:none!important}
+.gf-sb-tab{display:none;position:fixed;left:0;top:calc(50% - 38px);z-index:90;width:22px;height:76px;padding:0;border:0;border-radius:0 14px 14px 0;background:var(--accent);color:#fff;align-items:center;justify-content:center;cursor:pointer;box-shadow:4px 0 18px rgba(8,30,56,.22);opacity:.88;transition:width .18s,opacity .18s}
+.gf-sb-tab:hover,.gf-sb-tab:focus-visible{width:30px;opacity:1}
+@keyframes gfTabHint{0%,100%{width:22px}50%{width:34px}}
+@media(min-width:769px){
+  html.gf-sb-auto.gf-app-on:not(.gf-sb-open) .gf-sb-tab{display:flex;animation:gfTabHint 1.4s ease-in-out 2 1.2s}
+  html.gf-sb-auto body #sidebar{width:0!important;min-width:0!important;flex-basis:0!important;border-right-width:0!important;box-shadow:none!important;overflow:hidden!important;transition:width .28s cubic-bezier(.4,0,.2,1),box-shadow .28s ease}
+  html.gf-sb-auto body #sidebar>*{width:var(--nav-w)}
+  html.gf-sb-auto.gf-sb-open body #sidebar{width:var(--nav-w)!important;min-width:var(--nav-w)!important;flex-basis:var(--nav-w)!important;border-right-width:1px!important;box-shadow:14px 0 40px rgba(5,20,40,.28)!important}
+}
+@media(max-width:768px){.gf-sb-pin,.gf-sb-tab{display:none!important}}
+
+/* grouped navigation */
+.gf-nav-group{padding:14px 14px 4px;font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:.09em;text-transform:uppercase;color:color-mix(in srgb,var(--nav-text,var(--text2)) 58%,transparent);user-select:none}
+.nav-links{gap:2px!important}
+html body .nav-link{padding-top:10px;padding-bottom:10px}
+
+/* ───────── page frame: sticky header, tabs, denser layout ───────── */
+html body .panel.active>.panel-header{position:sticky;top:0;z-index:30;padding:16px var(--gf-pad) 12px;backdrop-filter:saturate(1.1) blur(8px)}
+html body .panel.active>.panel-header .panel-title{margin:0}
+.gf-tabs{display:flex;gap:2px;margin:12px calc(var(--gf-pad)*-1) -12px;padding:0 calc(var(--gf-pad) - 6px);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gf-tabs::-webkit-scrollbar{display:none}
+.gf-tab{flex:none;appearance:none;border:0;background:none;padding:11px 14px;margin-bottom:0;font:var(--fw-semi) var(--fs-sm)/1 var(--gf-font);color:var(--text2);cursor:pointer;white-space:nowrap;border-radius:8px 8px 0 0}
+.gf-tab:hover{color:var(--text);background:var(--accent-dim)}
+.gf-tab[aria-selected="true"]{color:var(--accent)}
+.gf-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+.gf-pane{display:none}
+.gf-pane.on{display:flex;flex-direction:column;gap:var(--gf-gap);animation:gfPane .22s ease}
+@keyframes gfPane{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+@media(min-width:1025px){
+  html body .panel.active>:is(.management-content,.dashboard-wrap,.matrix-content,.logs-content,.report-content,.about-content){max-width:1480px;margin-inline:auto;padding:18px var(--gf-pad) 36px}
+}
+html body :is(.management-content,.dashboard-wrap,.matrix-content,.report-content){display:flex;flex-direction:column;gap:var(--gf-gap)}
+html body :is(.management-content,.dashboard-wrap,.matrix-content,.report-content)>*{margin-top:0!important;margin-bottom:0!important}
+.form-card{margin:0}
+
+/* long collections become responsive card grids */
+@media(min-width:900px){
+  #reports-content,#integrated-safety-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:14px;align-items:start}
+  #reports-content>*,#integrated-safety-content>*{margin:0!important}
+  #rider-results.card-grid,#ratings-content .card-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))!important;gap:14px}
+}
+#rider-search-make,#rider-search-qr{grid-column:auto}
+.gf-more{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px;margin-top:4px;border:1px dashed var(--border);border-radius:12px;background:var(--surface);font-size:var(--fs-sm);color:var(--text2)}
+.gf-linkbtn{appearance:none;border:0;background:none;padding:0;font:var(--fw-semi) var(--fs-sm)/1.2 var(--gf-font);color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gf-linkbtn:hover{color:var(--text)}
+.table-scroll,.table-wrap{border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+html body .data-table thead th{position:sticky;top:0;background:var(--surface2);z-index:1}
+
+/* compact rider/commuter hero + report hero */
+html body .hero-card{padding:20px 24px}
+html body .hero-card h2{font-size:var(--fs-2xl);margin:8px 0 6px}
+html body .hero-card p{font-size:var(--fs-sm);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:68ch}
+html body .hero-stat{padding:18px 20px}
+.report-hero{padding:16px 20px!important}.report-hero p{font-size:var(--fs-sm)!important;margin:4px 0 0!important}
+.report-stepper{margin:0!important}
+.safety-hero{padding:16px 20px!important}.safety-hero p{display:none}
+#rider-kpis,#commuter-kpis{gap:12px}
+#rider-kpis .kpi.gf-kpi-lead{grid-column:span 2}
+.kpi.tone-ok{border-left:4px solid var(--green)}.kpi.tone-warn{border-left:4px solid var(--gold)}.kpi.tone-danger{border-left:4px solid var(--red)}
+.kpi.gf-kpi-lead .kpi-value{font-size:var(--fs-3xl)!important}
+
+/* ───────── KPI hierarchy (admin) ───────── */
+html.gf-kpi-on #admin-stats{display:none!important}
+.gf-kpis{display:flex;flex-direction:column;gap:12px}
+.gf-kpi-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gf-kpi-head h2{margin:0;font-size:var(--fs-xl)}
+.gf-kpi-head span{font-size:var(--fs-xs);color:var(--text3)}
+.gf-kpi-head-2{margin-top:6px}
+.gf-kpi-tier1{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.gf-kpi-tier2{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.gf-kpi{position:relative;display:flex;flex-direction:column;gap:4px;padding:16px 18px;border:1px solid var(--border);border-radius:16px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden}
+.gf-kpi-label{font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:.05em;text-transform:uppercase;color:var(--text2)}
+.gf-kpi-value{font-size:var(--fs-kpi);line-height:1.05;font-weight:var(--fw-bold);letter-spacing:-.03em;color:var(--text)}
+.gf-kpi-sub{font-size:var(--fs-sm);color:var(--text2)}
+.gf-kpi-hero{padding:20px 22px 16px;border-left-width:6px}
+.gf-kpi-hero.tone-danger{border-left-color:var(--red);background:linear-gradient(135deg,var(--red-dim),var(--surface) 60%)}
+.gf-kpi-hero.tone-danger .gf-kpi-value{color:var(--red)}
+.gf-kpi-hero.tone-warn{border-left-color:var(--gold);background:linear-gradient(135deg,var(--gold-dim),var(--surface) 60%)}
+.gf-kpi-hero.tone-ok{border-left-color:var(--green);background:linear-gradient(135deg,var(--green-dim),var(--surface) 60%)}
+.gf-kpi-hero .gf-kpi-value{font-size:52px}
+.gf-kpi-cta{align-self:flex-start;margin-top:8px;appearance:none;border:0;background:none;padding:0;font:var(--fw-semi) var(--fs-sm)/1 var(--gf-font);color:var(--accent);cursor:pointer}
+.gf-kpi-cta:hover{text-decoration:underline;text-underline-offset:3px}
+.gf-kpi-mini .gf-kpi-value{font-size:var(--fs-2xl)}
+.gf-insight{display:flex;gap:12px;align-items:baseline;padding:12px 16px;border-radius:12px;background:var(--accent-dim);color:var(--text);font-size:var(--fs-sm);line-height:1.5}
+.gf-insight strong{flex:none;font-size:var(--fs-xs);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.gf-kpi-ctx{font-size:var(--fs-xs);color:var(--text3);margin:0}
+
+/* ───────── fare calculator ───────── */
+.gf-stepper{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 2px;padding:0}
+#panel-map .map-ctrl-body>*{flex-shrink:0}
+#panel-map .map-ctrl-body{gap:10px}
+.gf-stepper li button{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 6px;white-space:nowrap;min-width:0;border:1px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text2);font:var(--fw-semi) var(--fs-sm)/1 var(--gf-font);cursor:pointer;text-align:left;transition:all .18s}
+.gf-stepper li b{flex:none;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--border);color:var(--text2);font-size:var(--fs-xs)}
+.gf-stepper li.active button{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.gf-stepper li.active b{background:var(--accent);color:#fff}
+.gf-stepper li.done b{background:var(--green);color:#fff;font-size:0}
+.gf-stepper li.done b::before{content:"✓";font-size:var(--fs-sm)}
+.gf-stepper li.done button{color:var(--text)}
+.gf-stepper.is-live li button{opacity:.5}
+.gf-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:12px;background:var(--surface2);border:1px solid var(--border)}
+.gf-seg button{border:0;border-radius:9px;padding:9px 8px;background:none;color:var(--text2);font:var(--fw-semi) var(--fs-sm)/1.1 var(--gf-font);cursor:pointer;transition:all .18s}
+.gf-seg button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:var(--shadow)}
+html body #panel-map .map-mode-btns{position:static!important}
+#panel-map .pin-row{min-height:0!important;padding:10px 12px!important}
+#panel-map .map-instruction{padding:9px 12px;font-size:var(--fs-sm);line-height:1.4}
+#panel-map .gf-primary-cta{min-height:48px;font-size:var(--fs-lg)!important;font-weight:var(--fw-bold)!important}
+#panel-map .gf-primary-cta:disabled{opacity:.5;cursor:not-allowed}
+.gf-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gf-tools .btn{margin:0!important;width:100%}
+html body #panel-map .fare-result{position:static!important;box-shadow:0 8px 24px rgba(12,36,60,.12)}
+#panel-map .fare-result .gf-save{margin:10px 14px 14px;width:calc(100% - 28px)}
+.gf-live-tools{border:1px solid var(--border);border-radius:12px;background:var(--surface2);overflow:hidden}
+.gf-live-tools>summary{cursor:pointer;padding:11px 14px;font-size:var(--fs-sm);font-weight:var(--fw-semi);list-style:none;display:flex;align-items:center;gap:8px}
+.gf-live-tools>summary::-webkit-details-marker{display:none}
+.gf-live-tools>summary small{margin-left:auto;font-weight:var(--fw-reg);color:var(--text3)}
+.gf-live-tools>summary::after{content:"▾";color:var(--text3);margin-left:6px;transition:transform var(--dur-3,.28s) var(--ease-out,ease)}
+.gf-live-tools[open]>summary::after{transform:rotate(180deg)}
+.gf-live-body{display:flex;flex-direction:column;gap:8px;padding:0 12px 12px}
+.map-safety-strip{font-size:var(--fs-xs)!important;line-height:1.45}
+@media(min-width:769px){#panel-map .map-sidebar{max-height:none!important}}
+
+/* ───────── fare resolutions ───────── */
+.gf-latest-res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:14px;background:var(--surface)}
+.gf-latest-res>div{flex:1 1 260px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.gf-latest-res strong{font-size:var(--fs-md)}.gf-latest-res span{font-size:var(--fs-sm);color:var(--text2)}
+.gf-latest-tag{flex:none;padding:4px 10px;border-radius:99px;background:var(--accent-dim);color:var(--accent)!important;font-size:var(--fs-xs)!important;font-weight:var(--fw-bold);letter-spacing:.05em;text-transform:uppercase}
+.gf-resolution-card{display:block!important}
+.gf-resolution-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:12px;margin-top:12px}
+.gf-resolution-item{display:flex!important;gap:14px;align-items:flex-start}
+.gf-resolution-item>div{min-width:0}
+.gf-resolution-item p{margin:6px 0!important}
+.gf-res-thumb{flex:none;width:84px;height:108px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--surface2)}
+.gf-res-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.gf-res-icon{flex:none;width:84px;height:108px;display:flex;align-items:center;justify-content:center;font-size:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface2)}
+.gf-res-link{font-size:var(--fs-sm);font-weight:var(--fw-semi);color:var(--accent)}
+#panel-fare-admin .gf-resolution-fields{padding:14px;margin-top:12px;border:1px dashed var(--accent);border-radius:14px;background:var(--accent-dim)}
+#panel-fare-admin .gf-resolution-fields::before{content:"Evidence for this update · required";grid-column:1/-1;font-size:var(--fs-xs);font-weight:var(--fw-bold);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+
+/* ───────── identity choice + privacy ───────── */
+.gf-report-mode label:has(input:checked){border-color:var(--accent);background:var(--accent-dim)}
+.gf-consent{margin:6px 0 12px}
+.gf-check{display:flex;gap:10px;align-items:flex-start;font-size:var(--fs-sm);line-height:1.45;color:var(--text2);cursor:pointer}
+.gf-check input{margin-top:3px;accent-color:var(--accent);flex:none;width:18px;height:18px}
+.gf-privacy-points{margin:10px 0 14px 18px;font-size:var(--fs-sm);line-height:1.6;color:var(--text2)}
+.gf-privacy-modal.gf-readonly #gf-privacy-ack,.gf-privacy-modal.gf-readonly #gf-privacy-ack+span,.gf-privacy-modal.gf-readonly #gf-privacy-accept{display:none}
+.gf-privacy-modal.gf-readonly label{display:none!important}
+.gf-privacy-modal.gf-readonly #gf-privacy-close{width:100%}
+.gf-privacy-modal{z-index:13000}
+#gf-privacy-link{margin-top:2px}
+
+/* ───────── responsiveness ───────── */
+@media(max-width:1100px){
+  .gf-kpi-tier2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gf-kpi-hero .gf-kpi-value{font-size:44px}
+}
+@media(max-width:900px){
+  .gf-kpi-tier1{grid-template-columns:1fr}
+  .gf-kpi-hero{padding:16px 18px 14px}
+  .gf-kpi-hero .gf-kpi-value{font-size:40px}
+}
+@media(max-width:768px){
+  :root{--gf-pad:16px;--gf-gap:12px}
+  html body .panel.active>.panel-header{padding:14px var(--gf-pad) 10px;padding-left:60px}
+  html body .panel.active>.panel-header .panel-sub{display:none}
+  html body .panel-title{font-size:var(--fs-xl)!important}
+  .gf-tabs{margin-left:-60px}
+  html body :is(.form-input,.form-select,.form-textarea){font-size:16px}
+  html body :is(.btn,.nav-link,.gf-tab,.gf-seg button,.gf-stepper li button){min-height:44px}
+  .gf-kpi-tier2{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .gf-kpi{padding:14px}
+  .gf-kpi-mini .gf-kpi-value{font-size:var(--fs-xl)}
+  .gf-insight{flex-direction:column;gap:4px}
+  #rider-kpis .kpi.gf-kpi-lead{grid-column:span 2}
+  .gf-resolution-item{flex-direction:column}
+  .gf-res-thumb,.gf-res-icon{width:100%;height:150px}
+  .gf-latest-res{padding:12px}
+  .gf-more{flex-wrap:wrap}
+  .gf-stepper li button span{font-size:var(--fs-xs)}
+  .gf-stepper li button{padding:8px;gap:6px}
+}
+@media(max-width:420px){
+  .gf-kpi-tier2{grid-template-columns:1fr}
+  .gf-stepper li button{flex-direction:column;text-align:center;gap:4px}
+}
+@media(prefers-reduced-motion:reduce){
+  .gf-pane.on,.gf-sb-tab{animation:none!important}
+  html.gf-sb-auto body #sidebar{transition:none!important}
+}
+
+/* ───────── compaction pass ───────── */
+#rider-kpis,#commuter-kpis{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}
+#rider-kpis .kpi,#commuter-kpis .kpi{display:grid!important;grid-template-columns:auto 1fr;grid-template-areas:"i v" "i l";column-gap:12px;align-items:center;padding:14px 16px!important;border-top-width:1px!important;min-width:0}
+#rider-kpis .kpi .kpi-icon,#commuter-kpis .kpi .kpi-icon{grid-area:i;width:40px;height:40px;margin:0!important}
+#rider-kpis .kpi .kpi-value,#commuter-kpis .kpi .kpi-value{grid-area:v;font-size:var(--fs-2xl)!important;line-height:1.1;margin:0!important}
+#rider-kpis .kpi .kpi-label,#commuter-kpis .kpi .kpi-label{grid-area:l;margin:0!important}
+#rider-kpis .kpi.gf-kpi-lead{grid-column:auto!important}
+.kpi.tone-ok{border-top:3px solid var(--green)!important;border-left-width:1px}
+.kpi.tone-warn{border-top:3px solid var(--gold)!important;border-left-width:1px}
+.kpi.tone-danger{border-top:3px solid var(--red)!important;border-left-width:1px}
+@media(max-width:900px){#rider-kpis,#commuter-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+html body .report-content .report-hero{padding:14px 18px!important;min-height:0!important;gap:14px}
+html body .report-content .report-hero h2{font-size:var(--fs-xl)!important;margin:2px 0!important}
+html body .report-content .report-hero p{font-size:var(--fs-sm)!important;margin:2px 0 0!important}
+html body .report-content .report-hero-icon{width:44px!important;height:44px!important;font-size:22px!important}
+html body .report-content .report-notice{padding:10px 14px!important;font-size:var(--fs-sm)!important}
+html body .info-banner{padding:10px 14px;font-size:var(--fs-sm);line-height:1.45}
+@media(min-width:769px){
+  html body .matrix-table td{padding-top:9px!important;padding-bottom:9px!important}
+  html body .matrix-table th{padding-top:12px!important;padding-bottom:12px!important}
+}
+
+/* keep the guided order inside the mobile bottom sheet and pin the primary action */
+#panel-map .map-ctrl-body>*{order:0!important}
+@media(max-width:768px){
+  #panel-map #fare-actions{position:sticky;bottom:0;z-index:4;background:var(--surface);padding:8px 0 6px;margin-bottom:-2px;box-shadow:0 -10px 14px -10px rgba(8,30,56,.25)}
+}
+
+html body .gf-sb-tab:active{transform:none}
+
+</style>
+<script id="geofare-defense-ui-v2-runtime">
+/* GeoFare — post-defense UI layer (v2)
+   Sidebar hover-reveal · grouped navigation · tabbed modules · paginated lists
+   KPI hierarchy · guided fare calculator · data-privacy surfaces.
+   All DOM moves preserve element IDs and handlers so existing logic keeps working. */
+(()=>{
+'use strict';
+if(window.__gfV2)return;window.__gfV2=true;
+
+const S=()=>typeof state!=='undefined'?state:null;
+const q=(s,r=document)=>r.querySelector(s);
+const qa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const root=document.documentElement;
+const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const roleNow=()=>S()?.role||'';
+const safe=fn=>(...a)=>{try{return fn(...a);}catch(e){console.warn('[GeoFare UI]',e);}};
+const go=p=>{try{window.showPanel(p);}catch(e){console.warn(e);}};
+const NAV_W=280;
+
+/* ───────── 0 · app-visible flag ───────── */
+const appEl=q('#app');
+const syncApp=()=>root.classList.toggle('gf-app-on',!!appEl&&appEl.style.display!=='none');
+if(appEl){new MutationObserver(syncApp).observe(appEl,{attributes:true,attributeFilter:['style']});syncApp();}
+
+/* ───────── 1 · desktop sidebar: hover the left edge to reveal ───────── */
+const mqDesk=window.matchMedia('(min-width:769px)');
+let sbMode=localStorage.getItem('geofare.sidebarMode')==='pinned'?'pinned':'auto';
+let sbSticky=false,openT=0,closeT=0;
+const sb=q('#sidebar');
+
+function sbApply(){
+  if(!sb)return;
+  sb.classList.remove('collapsed');                       // legacy 74px rail is replaced by auto-hide / pinned
+  const auto=mqDesk.matches&&sbMode==='auto';
+  root.classList.toggle('gf-sb-auto',auto);
+  if(!auto){root.classList.remove('gf-sb-open');sbSticky=false;}
+  const pin=q('#gf-sb-pin');
+  if(pin){pin.setAttribute('aria-pressed',String(sbMode==='pinned'));pin.title=sbMode==='pinned'?'Unpin: auto-hide the sidebar':'Pin the sidebar open';}
+  const tab=q('#gf-sb-tab');if(tab)tab.setAttribute('aria-expanded',String(root.classList.contains('gf-sb-open')));
+  mapResize();
+}
+function sbOpen(sticky){if(!root.classList.contains('gf-sb-auto'))return;clearTimeout(closeT);closeT=0;root.classList.add('gf-sb-open');sbSticky=!!sticky;q('#gf-sb-tab')?.setAttribute('aria-expanded','true');}
+function sbClose(){clearTimeout(openT);openT=0;root.classList.remove('gf-sb-open');sbSticky=false;q('#gf-sb-tab')?.setAttribute('aria-expanded','false');}
+function mapResize(){clearTimeout(mapResize.t);mapResize.t=setTimeout(()=>{try{if(typeof map!=='undefined'&&map&&map.invalidateSize)map.invalidateSize();}catch(e){}},90);}
+
+safe(()=>{
+  if(!sb)return;
+  // pin button + edge tab
+  const head=q('.sidebar-header',sb);
+  if(head&&!q('#gf-sb-pin')){
+    const b=document.createElement('button');b.id='gf-sb-pin';b.type='button';b.className='gf-sb-pin';b.setAttribute('aria-label','Pin sidebar');
+    b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M14.5 3.5l6 6-3 .8-3.2 3.2.4 4.2-1.6 1.6-3.4-3.4-5.3 5.3-1-1 5.3-5.3L5.3 11.6 6.9 10l4.2.4 3.2-3.2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+    b.addEventListener('click',()=>{sbMode=sbMode==='pinned'?'auto':'pinned';localStorage.setItem('geofare.sidebarMode',sbMode);sbApply();if(sbMode==='auto')sbClose();});
+    head.appendChild(b);
+  }
+  if(!q('#gf-sb-tab')){
+    const t=document.createElement('button');t.id='gf-sb-tab';t.type='button';t.className='gf-sb-tab';
+    t.setAttribute('aria-label','Open navigation menu');t.setAttribute('aria-expanded','false');t.title='Menu';
+    t.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    t.addEventListener('click',()=>sbOpen(true));
+    t.addEventListener('mouseenter',()=>{if(!openT)openT=setTimeout(()=>{openT=0;sbOpen(false);},70);});
+    t.addEventListener('mouseleave',()=>{clearTimeout(openT);openT=0;});
+    document.body.appendChild(t);
+  }
+  document.addEventListener('mousemove',e=>{
+    if(!root.classList.contains('gf-sb-auto')||!root.classList.contains('gf-app-on'))return;
+    const open=root.classList.contains('gf-sb-open');
+    if(!open){
+      if(e.clientX<=10){if(!openT)openT=setTimeout(()=>{openT=0;sbOpen(false);},70);}
+      else if(!(e.target&&e.target.closest&&e.target.closest('#gf-sb-tab'))){clearTimeout(openT);openT=0;}
+    }else if(!sbSticky){
+      if(e.clientX>NAV_W+26){if(!closeT)closeT=setTimeout(()=>{closeT=0;if(!sb.contains(document.activeElement)||document.activeElement===document.body)sbClose();},300);}
+      else{clearTimeout(closeT);closeT=0;}
+    }
+  },{passive:true});
+  document.addEventListener('mouseleave',()=>{if(root.classList.contains('gf-sb-open')&&!sbSticky){closeT=setTimeout(()=>{closeT=0;sbClose();},250);}});
+  // touch / keyboard: a sticky-open sidebar closes when work resumes in the main area or on Escape
+  q('.main')?.addEventListener('click',()=>{if(sbSticky)sbClose();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&root.classList.contains('gf-sb-open')&&sbMode==='auto')sbClose();});
+  sb.addEventListener('transitionend',e=>{if(e.propertyName==='width')mapResize();});
+  if(mqDesk.addEventListener)mqDesk.addEventListener('change',sbApply);
+  const mapEl=q('#map');if(mapEl&&window.ResizeObserver)new ResizeObserver(mapResize).observe(mapEl);
+  sbApply();
+})();
+
+/* riders must never reach the verified-rider directory, whatever other wrappers return */
+const navBase=window.navForRole;
+if(typeof navBase==='function')window.navForRole=function(role){const n=navBase.apply(this,arguments)||[];return role==='rider'?n.filter(x=>x[0]!=='riders'):n;};
+
+/* ───────── 2 · navigation grouped by task ───────── */
+const NAV_GROUPS={
+  commuter:[['',['commuter-dashboard']],['Fare',['map','matrix','logs']],['Safety & trust',['riders','ratings','safety','report','reports']],['Account',['profile','gf-privacy','about']]],
+  rider:[['',['rider-dashboard']],['Fare tools',['map','matrix','logs']],['Safety & feedback',['safety','reports','ratings']],['Account',['profile','gf-privacy','about']]],
+  admin:[['',['admin']],['Fare policy',['map','matrix','fare-admin']],['People',['registered-riders','riders','users']],['Safety & accountability',['reports','route-records','ratings','audit']],['Account',['profile','gf-privacy','about']]],
+  responder:[['',['responder']],['Safety',['safety','reports','route-records']],['Account',['profile','gf-privacy','about']]]
+};
+const groupNav=safe(()=>{
+  const nav=q('#role-nav');const spec=NAV_GROUPS[roleNow()];if(!nav||!spec)return;
+  qa('.section-divider,.gf-nav-group',nav).forEach(x=>x.remove());
+  const byId=id=>id==='gf-privacy'?q('#gf-privacy-link',nav):q('#nav-'+id,nav);
+  const used=new Set();
+  spec.forEach(([label,ids])=>{
+    const els=ids.map(byId).filter(Boolean);if(!els.length)return;
+    if(label){const h=document.createElement('div');h.className='gf-nav-group';h.setAttribute('role','presentation');h.textContent=label;nav.appendChild(h);}
+    els.forEach(e=>{nav.appendChild(e);used.add(e);});
+  });
+  qa(':scope>.nav-link',nav).filter(e=>!used.has(e)).forEach(e=>nav.appendChild(e));
+});
+const oldRenderNav=window.renderNav;
+if(typeof oldRenderNav==='function'){
+  window.renderNav=function(){const r=oldRenderNav.apply(this,arguments);if(roleNow()==='rider')q('#nav-riders')?.remove();groupNav();return r;};
+}
+
+/* ───────── 3 · tabbed modules (less scrolling, one task per view) ───────── */
+const owner=sel=>()=>q(sel)?.closest('section,.form-card')||null;
+const TAB_CFG={
+  admin:[
+    {id:'overview',label:'Overview',items:['#gf-admin-kpis','.admin-grid']},
+    {id:'accounts',label:'Accounts & activity',items:['.account-monitor-grid']}
+  ],
+  'rider-dashboard':[
+    {id:'overview',label:'Overview',items:['.hero-grid','#rider-kpis','.dashboard-grid']},
+    {id:'qr',label:'My QR code',items:['.qr-panel']}
+  ],
+  safety:[
+    {id:'queue',label:'Alert queue',items:['#admin-safety-block'],when:r=>r==='admin'},
+    {id:'sos',label:'Send SOS',items:['>.alert-card','#sos-form-card'],when:r=>r!=='responder'},
+    {id:'mine',label:'My alerts',items:['.safety-recent-card'],when:r=>r!=='responder'}
+  ],
+  ratings:[
+    {id:'list',label:'Ratings',items:['>.info-banner','#ratings-content']},
+    {id:'give',label:'Give feedback',items:['#rating-form'],when:r=>r==='commuter'}
+  ],
+  report:[
+    {id:'new',label:'New report',items:['.report-hero','.report-notice','.report-stepper','.report-layout','#report-preview','#report-actions']},
+    {id:'saved',label:'Saved reports',items:['#saved-reports-section']}
+  ],
+  reports:[
+    {id:'rider',label:'Rider reports',items:['>.toolbar-row','#reports-content','#integrated-safety-section-anchor']},
+    {id:'sos',label:'SOS alerts',items:['#integrated-safety-section'],when:r=>r==='admin'},
+    {id:'export',label:'Export records',items:['#admin-record-tools'],when:r=>r==='admin'}
+  ],
+  'fare-admin':[
+    {id:'rules',label:'Fare rules',items:['>.info-banner','#fare-admin-form','#fare-admin-table']},
+    {id:'resolutions',label:'Joint Resolution archive',items:[owner('#gf-admin-resolutions')]}
+  ],
+  matrix:[
+    {id:'table',label:'Fare table',items:['#gf-latest-resolution','>.matrix-table','>.matrix-note']},
+    {id:'resolutions',label:'Official resolutions',items:[owner('#gf-public-resolutions')]}
+  ]
+};
+const HOSTS='.management-content,.dashboard-wrap,.matrix-content,.logs-content,.report-content,.about-content';
+
+const buildTabs=safe(panelId=>{
+  const cfg=TAB_CFG[panelId];const panel=q('#panel-'+panelId);if(!cfg||!panel)return;
+  const host=q(HOSTS,panel)||panel;
+  const head=q('.panel-header',panel);
+  let bar=q('.gf-tabs',panel);
+  if(!bar){
+    bar=document.createElement('div');bar.className='gf-tabs';bar.setAttribute('role','tablist');
+    cfg.forEach(t=>{
+      const b=document.createElement('button');b.type='button';b.className='gf-tab';b.dataset.tab=t.id;b.setAttribute('role','tab');b.textContent=t.label;
+      b.id=`gf-tab-${panelId}-${t.id}`;b.setAttribute('aria-controls',`gf-pane-${panelId}-${t.id}`);
+      b.addEventListener('click',()=>selectTab(panelId,t.id));bar.appendChild(b);
+      const pane=document.createElement('div');pane.className='gf-pane';pane.dataset.pane=t.id;pane.id=`gf-pane-${panelId}-${t.id}`;pane.setAttribute('role','tabpanel');pane.setAttribute('aria-labelledby',`gf-tab-${panelId}-${t.id}`);host.appendChild(pane);
+    });
+    bar.addEventListener('keydown',e=>{
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+      const tabs=qa('.gf-tab',bar).filter(x=>!x.hidden);const i=tabs.indexOf(document.activeElement);if(i<0)return;
+      e.preventDefault();
+      const n=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+      tabs[n].focus();selectTab(panelId,tabs[n].dataset.tab);
+    });
+    if(window.ResizeObserver)new ResizeObserver(()=>inkTabs(bar)).observe(bar);
+    (head||host).appendChild(bar);
+  }
+  // (re)assign elements, including ones created lazily by other scripts
+  const assign=()=>{
+    cfg.forEach(t=>{
+      const pane=q(`.gf-pane[data-pane="${t.id}"]`,host);if(!pane)return;
+      t.items.forEach(it=>{
+        const els=typeof it==='function'?[it()].filter(Boolean):it[0]==='>'?qa(':scope>'+it.slice(1),host):qa(it,panel);
+        els.forEach(el=>{
+          if(el.closest('.gf-pane')||el.closest('.panel-header')||el===pane||el.contains(pane))return;
+          const bar=el.nextElementSibling&&el.nextElementSibling.classList.contains('gf-more')?el.nextElementSibling:null;
+          pane.appendChild(el);if(bar)pane.appendChild(bar);
+        });
+      });
+    });
+  };
+  const resolve=it=>typeof it==='function'?[it()].filter(Boolean):it[0]==='>'?qa(':scope>'+it.slice(1),host):qa(it,panel);
+  const reorder=()=>cfg.forEach(t=>{
+    const pane=q(`.gf-pane[data-pane="${t.id}"]`,host);if(!pane)return;
+    const want=[];t.items.forEach(it=>resolve(it).forEach(el=>{if(el.parentElement===pane)want.push(el);}));
+    const have=qa(':scope>*',pane).filter(el=>want.includes(el));
+    if(want.some((el,i)=>have[i]!==el))want.forEach(el=>{const bar=el.nextElementSibling&&el.nextElementSibling.classList.contains('gf-more')?el.nextElementSibling:null;pane.appendChild(el);if(bar)pane.appendChild(bar);});
+  });
+  assign();reorder();
+  if(!host.dataset.gfObs){host.dataset.gfObs='1';let tm;new MutationObserver(()=>{clearTimeout(tm);tm=setTimeout(()=>{assign();reorder();},40);}).observe(host,{childList:true});}
+  // hide leftover empty wrappers (e.g. an emptied grid)
+  qa(':scope>*',host).forEach(el=>{if(!el.classList.contains('gf-pane')&&!el.children.length&&!el.textContent.trim())el.hidden=true;});
+  if(panelId==='fare-admin')qa('.info-banner',panel)[1]?.setAttribute('hidden','');   // redundant explainer
+  const r=roleNow();
+  const vis=cfg.filter(t=>!t.when||t.when(r));
+  qa('.gf-tab',bar).forEach(b=>{const t=cfg.find(x=>x.id===b.dataset.tab);b.hidden=!!(t.when&&!t.when(r));});
+  bar.hidden=vis.length<2;
+  let cur=sessionStorage.getItem('gf.tab.'+panelId);
+  if(!vis.some(t=>t.id===cur))cur=vis[0]?.id;
+  selectTab(panelId,cur,true);
+});
+function inkTabs(bar){
+  const t=q('.gf-tab[aria-selected="true"]',bar);if(!t||t.hidden||!t.offsetWidth)return;
+  bar.style.setProperty('--ink-x',t.offsetLeft+'px');bar.style.setProperty('--ink-w',t.offsetWidth+'px');
+}
+function selectTab(panelId,id,quiet){
+  const panel=q('#panel-'+panelId);if(!panel||!id)return;
+  qa('.gf-tab',panel).forEach(b=>{const on=b.dataset.tab===id;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;});
+  const bar=q('.gf-tabs',panel);if(bar)inkTabs(bar);
+  qa('.gf-pane',panel).forEach(p=>p.classList.toggle('on',p.dataset.pane===id));
+  if(!quiet)sessionStorage.setItem('gf.tab.'+panelId,id);else if(!sessionStorage.getItem('gf.tab.'+panelId))sessionStorage.setItem('gf.tab.'+panelId,id);
+  if(!quiet){const a=q('.panel.active');if(a)a.scrollTo?.({top:0});}
+}
+window.gfSelectTab=selectTab;
+
+/* ───────── 4 · progressive disclosure for long lists ───────── */
+const rows=h=>qa('tbody tr',h);
+const kids=h=>qa(':scope>*',h);
+const PAGERS=[
+  ['#reports-content',h=>qa('.report-record-card',h),6],
+  ['#integrated-safety-content',kids,5],
+  ['#admin-safety-content',h=>qa('.data-card,article,tbody tr',h),6],
+  ['#my-safety-alerts',kids,5],
+  ['#rider-results',kids,12],
+  ['#registered-riders-content',h=>{const t=q('.table-scroll',h);return t&&t.offsetParent!==null?rows(t):qa('.rider-mobile-list>*',h);},15],
+  ['#users-content',rows,15],
+  ['#audit-content',rows,15],
+  ['#route-records-content',rows,15],
+  ['#ratings-content',h=>qa('.card-grid>*',h),6],
+  ['#logs-list',kids,10],
+  ['#saved-reports-list',kids,6],
+  ['#admin-account-events',kids,8],
+  ['#admin-live-users',kids,6]
+];
+function pager(sel,items,size){
+  const host=q(sel);if(!host||host.dataset.gfPg)return;host.dataset.gfPg='1';
+  const bar=document.createElement('div');bar.className='gf-more';bar.hidden=true;host.after(bar);
+  let shown=size;
+  const apply=()=>{
+    const list=items(host);const total=list.length;
+    list.forEach((el,i)=>el.classList.toggle('gf-pg-hide',i>=shown));
+    if(total<=shown){bar.hidden=true;return;}
+    const next=Math.min(size,total-shown);
+    bar.hidden=false;
+    bar.innerHTML=`<span>Showing ${shown} of ${total}</span><button type="button" class="btn btn-secondary btn-sm" data-act="more">Show ${next} more</button><button type="button" class="gf-linkbtn" data-act="all">Show all</button>`;
+  };
+  bar.addEventListener('click',e=>{const a=e.target.closest('[data-act]')?.dataset.act;if(!a)return;shown=a==='all'?1e9:shown+size;apply();});
+  let t;new MutationObserver(()=>{clearTimeout(t);t=setTimeout(apply,30);}).observe(host,{childList:true,subtree:true});
+  apply();
+}
+const initPagers=safe(()=>PAGERS.forEach(([s,i,n])=>pager(s,i,n)));
+
+/* ───────── 5 · KPI hierarchy for data-driven decisions (administrator) ───────── */
+const ageDays=d=>(Date.now()-new Date(d||Date.now()).getTime())/864e5;
+const fmtAge=d=>d<1?`${Math.max(1,Math.round(d*24))} h`:`${d.toFixed(d<10?1:0)} d`;
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+const catLabel=c=>typeof reportTypeLabel==='function'?reportTypeLabel(c):String(c||'Other');
+function adminKpis(){
+  const s=S();if(!s||s.role!=='admin')return;
+  const anchor=q('#admin-stats');if(!anchor)return;
+  let box=q('#gf-admin-kpis');
+  if(!box){box=document.createElement('section');box.id='gf-admin-kpis';box.className='gf-kpis';anchor.before(box);}
+  root.classList.add('gf-kpi-on');
+  const reports=s.reports||[],pendRep=reports.filter(r=>['New','Under Review'].includes(r.status));
+  const sos=(s.safetyAlerts||[]).filter(a=>!['Resolved','Dismissed'].includes(a.status));
+  const riders=s.riders||[],vOf=r=>r.verification_status||r.status;
+  const pendV=riders.filter(r=>vOf(r)==='Pending'),verified=riders.filter(r=>vOf(r)==='Verified');
+  const oldest=list=>list.length?Math.max(...list.map(x=>ageDays(x.created_at||x.updated_at))):0;
+  const rt=s.ratings||[];
+  const rAvg=rt.length?rt.reduce((a,x)=>a+(Number(x.professionalism||0)+Number(x.safety||0)+Number(x.punctuality||0)+Number(x.service_quality||0))/4,0)/rt.length:null;
+  const resolved=reports.filter(r=>r.status==='Resolved').length;
+  const calcs=(s.calculations||[]);
+  const inDays=(x,a,b)=>{const d=ageDays(x.calculated_at||x.created_at);return d>=a&&d<b;};
+  const c7=calcs.filter(x=>inDays(x,0,7)).length,c14=calcs.filter(x=>inDays(x,7,14)).length;
+  const r7=reports.filter(x=>inDays(x,0,7)).length,r14=reports.filter(x=>inDays(x,7,14)).length;
+  const cats={};reports.filter(x=>ageDays(x.created_at)<=30).forEach(x=>{const k=x.category||'other';cats[k]=(cats[k]||0)+1;});
+  const top=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
+  const total30=Object.values(cats).reduce((a,b)=>a+b,0);
+  const trend=(a,b)=>a===b?'no change':`${a>b?'▲':'▼'} ${Math.abs(a-b)} vs prior week`;
+  const hero=(tone,label,val,sub,go,cta)=>`<article class="gf-kpi gf-kpi-hero tone-${tone}"><span class="gf-kpi-label">${label}</span><strong class="gf-kpi-value">${val}</strong><span class="gf-kpi-sub">${sub}</span><button type="button" class="gf-kpi-cta" data-go="${go}">${cta} →</button></article>`;
+  const mini=(label,val,sub)=>`<article class="gf-kpi gf-kpi-mini"><span class="gf-kpi-label">${label}</span><strong class="gf-kpi-value">${val}</strong><span class="gf-kpi-sub">${sub}</span></article>`;
+  const sosTone=sos.length?'danger':'ok',repTone=pendRep.length?(oldest(pendRep)>3?'danger':'warn'):'ok',verTone=pendV.length?'warn':'ok';
+  const prev=box.dataset.sig;
+  box.innerHTML=`
+   <div class="gf-kpi-head"><h2>Needs attention</h2><span>Ranked by urgency · updates with live data</span></div>
+   <div class="gf-kpi-tier1">
+    ${hero(sosTone,'Active SOS alerts',sos.length,sos.length?`Oldest open ${fmtAge(oldest(sos))} · respond first`:'No open alerts','safety','Open alert queue')}
+    ${hero(repTone,'Reports awaiting action',pendRep.length,pendRep.length?`Oldest waiting ${fmtAge(oldest(pendRep))}`:'Queue is clear','reports','Review reports')}
+    ${hero(verTone,'Riders awaiting verification',pendV.length,pendV.length?`Oldest waiting ${fmtAge(oldest(pendV))}`:'No pending applications','registered-riders','Verify riders')}
+   </div>
+   <div class="gf-kpi-head gf-kpi-head-2"><h2>Service health</h2><span>Indicators for policy and enforcement decisions</span></div>
+   <div class="gf-kpi-tier2">
+    ${mini('Report resolution rate',reports.length?pct(resolved,reports.length)+'%':'—',`${resolved} of ${reports.length} resolved`)}
+    ${mini('Verified rider coverage',riders.length?pct(verified.length,riders.length)+'%':'—',`${verified.length} of ${riders.length} registered`)}
+    ${mini('Average rider rating',rAvg?rAvg.toFixed(1)+' / 5':'—',`${rt.length} rating${rt.length===1?'':'s'}`)}
+    ${mini('Fare checks (7 days)',c7,trend(c7,c14))}
+   </div>
+   <div class="gf-insight" role="note"><strong>Insight</strong><span>${top?`Most reported issue in the last 30 days: <b>${E(catLabel(top[0]))}</b> (${top[1]} of ${total30}, ${pct(top[1],total30)}%).`:'No reports in the last 30 days.'} Reports this week: <b>${r7}</b> (${trend(r7,r14)}).</span></div>
+   <p class="gf-kpi-ctx">${(s.users||[]).length} users · ${(s.users||[]).filter(u=>u.role==='commuter').length} commuters · ${(s.users||[]).filter(u=>u.role==='rider').length} rider accounts · ${riders.length} registered riders · ${reports.length} total reports · ${(typeof activeFareRows==='function'?activeFareRows().length:0)} active fare rows</p>`;
+  const sig=[sos.length,pendRep.length,pendV.length,reports.length,riders.length,Math.round((rAvg||0)*10)].join('|');
+  box.dataset.sig=sig;
+  if(sig!==prev&&window.gfCountUp)window.gfCountUp(box);
+}
+document.addEventListener('click',e=>{const b=e.target.closest?.('[data-go]');if(b&&b.closest('#gf-admin-kpis'))go(b.dataset.go);});
+const oldRenderAdmin=window.renderAdmin;
+if(typeof oldRenderAdmin==='function'){window.renderAdmin=function(){const r=oldRenderAdmin.apply(this,arguments);safe(adminKpis)();return r;};}
+
+/* rider dashboard: emphasise status, then the daily task */
+const oldRiderDash=window.renderRiderDashboard;
+if(typeof oldRiderDash==='function'){
+  window.renderRiderDashboard=function(){
+    const r=oldRiderDash.apply(this,arguments);
+    safe(()=>{
+      const k=qa('#rider-kpis .kpi');
+      k.forEach((el,i)=>{el.classList.remove('tone-ok','tone-warn','tone-danger');el.classList.toggle('gf-kpi-lead',i===0);});
+      const v=(q('#rider-verification')?.textContent||'').trim();
+      if(k[0])k[0].classList.add(v==='Verified'?'tone-ok':v==='Rejected'||v==='Suspended'?'tone-danger':'tone-warn');
+      if(k[2]&&Number(k[2].querySelector('.kpi-value')?.textContent)>0)k[2].classList.add('tone-warn');
+      if(k[3]&&Number(k[3].querySelector('.kpi-value')?.textContent)>0)k[3].classList.add('tone-danger');
+    })();
+    return r;
+  };
+}
+
+/* ───────── 6 · official fare resolutions visible to every signed-in user ───────── */
+const isImg=p=>/\.(png|jpe?g|webp)$/i.test(String(p||''));
+window.renderFareResolutions=function(){
+  const rows=(S()?.fareResolutions)||[];
+  const card=r=>{
+    const url=r.public_url||r.file_url||'';
+    const date=r.created_at?new Date(r.created_at).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}):'';
+    return `<article class="gf-resolution-item">${url&&isImg(r.document_path)?`<a class="gf-res-thumb" href="${E(url)}" target="_blank" rel="noopener"><img src="${E(url)}" alt="Joint Resolution document preview" loading="lazy"></a>`:`<span class="gf-res-icon" aria-hidden="true">📄</span>`}
+      <div><strong>${E(r.resolution_title||'Joint Resolution')}</strong><small>${E(date)}${r.version_code?' · '+E(r.version_code):''}</small>
+      <p>${E(r.description||'No description provided.')}</p>${url?`<a class="gf-res-link" href="${E(url)}" target="_blank" rel="noopener">Open supporting document ↗</a>`:''}</div></article>`;
+  };
+  const list=rows.length?'<div class="gf-resolution-list">'+rows.map(card).join('')+'</div>':'<p class="small-note">No Joint Resolution has been published with a fare update yet.</p>';
+  ['gf-public-resolutions','gf-admin-resolutions'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=list;});
+  // latest-evidence banner above the public fare table
+  const mc=q('#panel-matrix .matrix-content');
+  if(mc){
+    let b=q('#gf-latest-resolution');
+    if(!b){b=document.createElement('div');b.id='gf-latest-resolution';b.className='gf-latest-res';const t=q('.matrix-table',mc);if(t&&t.parentNode)t.parentNode.insertBefore(b,t);else mc.insertBefore(b,mc.firstChild);}
+    const r=rows[0];const url=r&&(r.public_url||r.file_url);
+    b.innerHTML=r?`<span class="gf-latest-tag">Latest basis</span><div><strong>${E(r.resolution_title||'Joint Resolution')}</strong><span>${E(r.description||'').slice(0,160)}${(r.description||'').length>160?'…':''}</span></div>${url?`<a class="btn btn-secondary btn-sm" href="${E(url)}" target="_blank" rel="noopener">View document</a>`:''}<button type="button" class="gf-linkbtn" data-open-res>All resolutions</button>`:'<span class="gf-latest-tag muted-tag">Basis</span><div><strong>Joint Resolution No. 1, s. 2026</strong><span>Supporting documents for future fare updates will appear here.</span></div>';
+  }
+};
+document.addEventListener('click',e=>{if(e.target.closest?.('[data-open-res]')){buildTabs('matrix');selectTab('matrix','resolutions');}});
+
+/* ───────── 7 · fare calculator: three guided steps ───────── */
+const calcSteps=[['1','Pickup'],['2','Drop-off'],['3','Fare']];
+const buildCalc=safe(()=>{
+  const body=q('#panel-map .map-ctrl-body');
+  if(!body||body.dataset.gfCalc)return;body.dataset.gfCalc='1';
+  const t=q('#panel-map .map-ctrl-title');if(t)t.textContent='Plan your fare';
+  const st=q('#panel-map .map-ctrl-sub');if(st)st.textContent='Three quick steps · distance follows real roads';
+  q('#gf-route-guide')?.remove();q('#gf-route-help')?.remove();
+
+  const stepper=document.createElement('ol');stepper.id='gf-stepper';stepper.className='gf-stepper';
+  stepper.innerHTML=calcSteps.map(([n,l])=>`<li data-s="${n}"><button type="button"><b>${n}</b><span>${l}</span></button></li>`).join('');
+  stepper.addEventListener('click',e=>{
+    const li=e.target.closest('li');if(!li)return;
+    if(li.dataset.s==='1')window.setMode('pickup');
+    else if(li.dataset.s==='2')window.setMode('dropoff');
+    else if(S()?.pickupMarker&&S()?.dropoffMarker)window.calculateFare(true);
+  });
+
+  const seg=document.createElement('div');seg.id='gf-mode-seg';seg.className='gf-seg';seg.setAttribute('role','group');seg.setAttribute('aria-label','How do you want to measure the trip?');
+  seg.innerHTML='<button type="button" data-m="route" aria-pressed="true">📍 On the map</button><button type="button" data-m="live" aria-pressed="false">📡 Live GPS</button>';
+  seg.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.m==='live')window.setMode('live');
+    else{const s=S();window.setMode(s?.pickupMarker&&!s?.dropoffMarker?'dropoff':'pickup');}
+  });
+
+  const modes=q('.map-mode-btns',body);
+  (modes||body.firstChild).before?.(stepper,seg);
+  modes?.classList.add('gf-hidden');
+
+  // tools row: current location + reset
+  const actions=q('#fare-actions');
+  const reset=actions&&qa('button',actions).find(b=>/clearAll/.test(b.getAttribute('onclick')||''));
+  const locate=q('#locate-btn');
+  const tools=document.createElement('div');tools.id='gf-tools-row';tools.className='gf-tools';
+  if(locate){locate.textContent='◎ Use my location';tools.appendChild(locate);}
+  if(reset){reset.textContent='↺ Reset';tools.appendChild(reset);}
+
+  // live tracking tools: optional, collapsed
+  const live=document.createElement('details');live.id='gf-live-tools';live.className='gf-live-tools';
+  live.innerHTML='<summary>📡 Live GPS trip tracking <small>optional</small></summary><div class="gf-live-body"></div>';
+  const lb=q('.gf-live-body',live);
+  ['#live-monitor-card','#live-trip-btn','#stop-live-trip-btn','#live-trip-status'].forEach(s=>{const el=q(s);if(el)lb.appendChild(el);});
+
+  // save button belongs to the result
+  const save=q('#save-btn'),res=q('#fare-result');
+  if(save&&res){save.classList.add('gf-save');res.appendChild(save);}
+
+  // final order
+  const order=[stepper,seg,modes,q('#pickup-row'),q('#dropoff-row'),q('#map-instruction'),actions,tools,res,live,q('.map-safety-strip'),q('#sos-map-btn')].filter(Boolean);
+  order.forEach(el=>body.appendChild(el));
+  const calc=q('#calculate-btn');if(calc){calc.textContent='Calculate fare';calc.classList.add('gf-primary-cta');}
+  refreshCalc();
+});
+function refreshCalc(){
+  const s=S();if(!s)return;
+  const stepper=q('#gf-stepper');if(!stepper)return;
+  const p=!!s.pickupMarker,d=!!s.dropoffMarker,live=s.currentMode==='live';
+  const res=q('#fare-result');const shown=!!res&&res.style.display&&res.style.display!=='none';
+  const active=live?0:!p?1:!d?2:3;
+  qa('li',stepper).forEach(li=>{
+    const n=+li.dataset.s;
+    li.classList.toggle('done',live?false:(n===1?p:n===2?d:shown));
+    li.classList.toggle('active',n===active);
+  });
+  stepper.classList.toggle('is-live',live);
+  qa('#gf-mode-seg button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.m==='live')===live)));
+  q('#map-sidebar')?.classList.toggle('gf-live',live);
+  const det=q('#gf-live-tools');if(det&&live&&!det.open)det.open=true;
+  const calc=q('#calculate-btn');if(calc)calc.disabled=!live&&!(p&&d);
+  const fs=q('#gf-fare-status');if(fs)fs.hidden=/^ready to calculate\.?$/i.test(fs.textContent.trim());
+  if(shown&&!refreshCalc.was){setTimeout(()=>res.scrollIntoView({block:'nearest',behavior:'smooth'}),120);}
+  refreshCalc.was=shown;
+}
+['setMode','clearAll','clearPin'].forEach(n=>{const f=window[n];if(typeof f==='function'){window[n]=function(){const r=f.apply(this,arguments);try{refreshCalc();}catch(e){}return r;};}});
+safe(()=>{
+  const sbEl=q('#map-sidebar');if(!sbEl)return;let raf=0;
+  new MutationObserver(()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>safe(refreshCalc)());}).observe(sbEl,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['style']});
+})();
+
+/* ───────── 8 · data privacy surfaces ───────── */
+const PRIVACY_VERSION='2026-11-18-v1';
+const openPrivacy=()=>{const m=q('#gf-privacy-modal');if(!m)return;m.classList.toggle('gf-readonly',!S()?.user?.id);m.classList.add('active');};
+const profilePrivacy=safe(()=>{
+  const host=q('#profile-content');const s=S();if(!host||!s?.user||q('#gf-profile-privacy'))return;
+  let accepted=false;try{accepted=localStorage.getItem('geofare.privacy.'+s.user.id)===PRIVACY_VERSION;}catch(e){}
+  const mail='mailto:mfrta@manolofortich.gov.ph?subject='+encodeURIComponent('GeoFare data privacy request')+'&body='+encodeURIComponent('Request type (access / correction / deletion):\nAccount email: '+(s.user.email||'')+'\nDetails:\n');
+  const c=document.createElement('section');c.id='gf-profile-privacy';c.className='form-card gf-privacy-card';
+  c.innerHTML=`<h3>Data privacy</h3>
+   <div class="score-row"><span>Privacy notice</span><strong>${accepted?'Acknowledged':'Not yet acknowledged'}</strong></div>
+   <ul class="gf-privacy-points"><li>Your contact details are visible only to authorised MFRTA personnel.</li><li>Public rider views show verification information only, never private contact or licence details.</li><li>Reports can be filed anonymously. Your name is then hidden from report viewers.</li></ul>
+   <div class="toolbar-row"><button type="button" class="btn btn-secondary btn-sm" id="gf-open-privacy">Read privacy notice</button><a class="btn btn-secondary btn-sm" href="${mail}">Request access, correction or deletion</a></div>`;
+  host.appendChild(c);q('#gf-open-privacy',c).addEventListener('click',openPrivacy);if(typeof window.gfCheckPrivacy==='function')window.gfCheckPrivacy().then(()=>{const status=c.querySelector('.score-row strong');if(status&&localStorage.getItem('geofare.privacy.'+s.user.id)===PRIVACY_VERSION)status.textContent='Acknowledged';}).catch(()=>{});
+});
+const oldRenderProfile=window.renderProfile;
+if(typeof oldRenderProfile==='function'){window.renderProfile=function(){const r=oldRenderProfile.apply(this,arguments);profilePrivacy();return r;};}
+safe(()=>{const l=q('#signup-privacy-link');if(l)l.addEventListener('click',openPrivacy);})();
+
+/* ───────── 9 · orchestration ───────── */
+const oldShow=window.showPanel;
+if(typeof oldShow==='function'){
+  window.showPanel=function(){
+    const args=Array.from(arguments);
+    if(roleNow()==='rider'&&args[0]==='riders')args[0]='rider-dashboard';   // no verified-profile directory for rider accounts
+    const r=oldShow.apply(this,args);
+    safe(()=>{
+      const id=S()?.currentPanel;
+      buildTabs(id);initPagers();
+      if(id==='admin')adminKpis();
+      if(id==='map')buildCalc();
+      if(id==='matrix'||id==='fare-admin')window.renderFareResolutions();
+      const uid=S()?.user?.id;if(uid&&window.__gfPrivUser!==uid){window.__gfPrivUser=uid;window.gfCheckPrivacy?.();}
+      root.dataset.panel=id||'';
+    })();
+    return r;
+  };
+}
+// first paint after login: panels that were opened before this script wrapped showPanel
+safe(()=>{
+  buildCalc();initPagers();
+  ['admin','rider-dashboard','safety','ratings','report','reports','fare-admin','matrix'].forEach(buildTabs);
+})();
+// if the session restored before this layer loaded, re-render the current view once through the wrapped functions
+safe(()=>{if(S()?.user&&S()?.role&&appEl&&appEl.style.display!=='none')window.showPanel(S().currentPanel);})();
+window.addEventListener('resize',()=>{sbApply();},{passive:true});
+})();
+
+</script>
+<style id="geofare-design-system-v3">
+/* ════════════════════════════════════════════════════════════════
+   GeoFare — design-system layer (v3)
+   Palette · motion · interaction states · layout gutter
+   Supersedes earlier, conflicting definitions.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ───────── tokens: palette (WCAG AA verified) ───────── */
+html:root,html:root:root:not([data-theme="dark"]){
+  --ease-out:cubic-bezier(.22,1,.36,1) !important;
+  --ease-std:cubic-bezier(.4,0,.2,1) !important;
+  --ease-spring:cubic-bezier(.34,1.45,.64,1) !important;
+  --dur-1:120ms !important; --dur-2:180ms !important; --dur-3:280ms !important; --dur-4:420ms !important;
+
+  --bg:#e8eef6 !important; --surface:#ffffff !important; --surface2:#f0f4fa !important; --surface3:#e2e9f3 !important;
+  --border:#c6d3e3 !important; --border-strong:#8296ae !important;
+  --text:#0e1d2b !important; --text2:#30465c !important; --text3:#4e6277 !important;
+  --accent:#0b5a9e !important; --accent2:#1676c4 !important; --accent-dim:rgba(11,90,158,.11) !important;
+  --green:#0f6a3a !important; --green-dim:rgba(15,106,58,.10) !important;
+  --gold:#80540a !important; --gold-dim:rgba(176,118,12,.13) !important;
+  --red:#b3261e !important; --red-dim:rgba(179,38,30,.09) !important;
+  --shadow:0 1px 2px rgba(14,29,43,.06),0 6px 18px rgba(14,29,43,.08) !important;
+  --shadow-hover:0 2px 4px rgba(14,29,43,.08),0 12px 28px rgba(14,29,43,.14) !important;
+  --shadow-lg:0 12px 40px rgba(14,29,43,.18) !important;
+  --focus-ring:0 0 0 3px rgba(22,118,196,.32) !important;
+  --gf-gutter:clamp(22px,2.4vw,40px) !important;
+}
+html:root[data-theme="dark"]{
+  --bg:#060e18 !important; --surface:#0f2134 !important; --surface2:#16304a !important; --surface3:#1d3b58 !important;
+  --border:#2c4b69 !important; --border-strong:#5d7d9d !important;
+  --text:#f2f7fc !important; --text2:#d0deec !important; --text3:#a6bcd1 !important;
+  --accent:#66b8f4 !important; --accent2:#3fa8ee !important; --accent-dim:rgba(102,184,244,.18) !important;
+  --green:#5bd18b !important; --green-dim:rgba(91,209,139,.14) !important;
+  --gold:#e8c26f !important; --gold-dim:rgba(232,194,111,.14) !important;
+  --red:#ff8c8c !important; --red-dim:rgba(255,140,140,.14) !important;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 22px rgba(0,0,0,.35) !important;
+  --shadow-hover:0 2px 4px rgba(0,0,0,.45),0 14px 32px rgba(0,0,0,.5) !important;
+  --shadow-lg:0 16px 48px rgba(0,0,0,.6) !important;
+  --focus-ring:0 0 0 3px rgba(102,184,244,.4) !important;
+}
+html body{background-color:var(--bg)}
+::selection{background:var(--accent-dim);color:var(--text)}
+*{scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:var(--text3);background-clip:content-box;border:3px solid transparent}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ───────── surfaces ───────── */
+html body :is(.form-card,.data-card,.kpi,.gf-kpi-mini,.gf-latest-res,.gf-live-tools,.table-scroll,.table-wrap){background:var(--surface);border-color:var(--border);box-shadow:var(--shadow)}
+html body :is(.form-card,.data-card,.kpi,.stat-card,.hero-stat,.log-card,.report-card):hover:not(#_gf){transform:none!important}
+html body .panel.active>.panel-header{background:color-mix(in srgb,var(--bg) 82%,var(--surface));border-bottom:1px solid var(--border)}
+html body .topbar{background:color-mix(in srgb,var(--surface) 88%,var(--bg));border-bottom:1px solid var(--border)}
+html body .info-banner{background:var(--accent-dim);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);color:var(--text)}
+html body :is(.small-note,.muted,.form-hint){color:var(--text3)}
+
+/* ───────── motion: one vocabulary ───────── */
+html body :is(button,.btn,a,summary,.nav-link,.icon-btn,.form-input,.form-select,.form-textarea,.gf-tab,.gf-seg button,.gf-stepper li button,.pin-row,.status-badge,.data-card,.form-card,.kpi,.gf-kpi,.gf-check,.gf-linkbtn,.gf-sb-pin,.gf-sb-tab):not(#_gf){
+  transition:background-color var(--dur-2) var(--ease-std),border-color var(--dur-2) var(--ease-std),color var(--dur-2) var(--ease-std),box-shadow var(--dur-2) var(--ease-std),opacity var(--dur-2) var(--ease-std),transform var(--dur-2) var(--ease-out),filter var(--dur-2) var(--ease-std)!important}
+@keyframes gf3-fade{from{opacity:0}to{opacity:1}}
+@keyframes gf3-pop{from{opacity:0;transform:translateY(14px) scale(.965)}to{opacity:1;transform:none}}
+@keyframes gf3-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes gf3-toast{from{opacity:0;transform:translateY(-14px) scale(.97)}to{opacity:1;transform:none}}
+html body .panel.active{animation:gf3-rise var(--dur-3) var(--ease-out)}
+html body .gf-pane.on{animation:gf3-rise var(--dur-3) var(--ease-out)}
+html body .toast{animation:gf3-toast var(--dur-3) var(--ease-out)}
+:is(.profile-modal,.user-edit-modal,.scan-modal,.gf-receipt-modal,.gf-camera-modal,.gf-privacy-modal).active{animation:gf3-fade var(--dur-3) var(--ease-std)}
+:is(.profile-modal,.user-edit-modal,.scan-modal,.gf-receipt-modal,.gf-camera-modal,.gf-privacy-modal).active>*{animation:gf3-pop var(--dur-3) var(--ease-spring)}
+html.gf-theme-anim *,html.gf-theme-anim *::before,html.gf-theme-anim *::after{transition:background-color .38s var(--ease-std),color .38s var(--ease-std),border-color .38s var(--ease-std),fill .38s var(--ease-std),stroke .38s var(--ease-std),box-shadow .38s var(--ease-std)!important}
+
+/* ───────── interaction states: hover · active · focus · disabled ───────── */
+html body :is(button,a,summary,[role="tab"],[tabindex]):focus{outline:none}
+html body :is(button,a,summary,[role="tab"],input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html body :is(.form-input,.form-select,.form-textarea){background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;color:var(--text)}
+html body :is(.form-input,.form-select,.form-textarea)::placeholder{color:var(--text3);opacity:1}
+html body :is(.form-input,.form-select,.form-textarea):hover:not(:disabled):not(:focus){border-color:color-mix(in srgb,var(--accent) 55%,var(--border-strong))}
+html body :is(.form-input,.form-select,.form-textarea):focus{outline:none;border-color:var(--accent);box-shadow:var(--focus-ring)}
+html body :is(.form-input,.form-select,.form-textarea):disabled{background:var(--surface3);color:var(--text3);cursor:not-allowed;opacity:.8}
+html body :is(.form-input,.form-select,.form-textarea):user-invalid{border-color:var(--red);box-shadow:0 0 0 3px var(--red-dim)}
+input[type="checkbox"],input[type="radio"]{accent-color:var(--accent);cursor:pointer}
+
+html body .btn{border-radius:12px;font-weight:var(--fw-semi)}
+html body .btn-primary{background:linear-gradient(180deg,var(--accent2),var(--accent));color:#fff;border:1px solid color-mix(in srgb,var(--accent) 80%,#000);box-shadow:0 1px 2px rgba(11,90,158,.35),0 6px 14px -6px rgba(11,90,158,.55)}
+html[data-theme="dark"] body .btn-primary{color:#04223a}
+html body .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border-strong);box-shadow:none}
+html body .btn-danger{background:var(--red);color:#fff;border:1px solid color-mix(in srgb,var(--red) 80%,#000)}
+html[data-theme="dark"] body .btn-danger{color:#2b0606}
+html body .btn:hover:not(:disabled){transform:translateY(-1px)}
+html body .btn-primary:hover:not(:disabled){filter:brightness(1.07);box-shadow:0 2px 4px rgba(11,90,158,.4),0 10px 20px -6px rgba(11,90,158,.6)}
+html body .btn-secondary:hover:not(:disabled){background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+html body .btn-danger:hover:not(:disabled){filter:brightness(1.08)}
+html body :is(.btn,.icon-btn,.nav-link,.gf-tab,.gf-seg button,.gf-stepper li button):active:not(:disabled){transform:translateY(0) scale(.98);transition-duration:var(--dur-1)}
+html body :is(button,.btn):disabled,html body .btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important;filter:grayscale(.2)}
+html body .icon-btn:hover:not(:disabled){background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+html body .gf-tab:hover:not([aria-selected="true"]){background:var(--accent-dim);color:var(--text)}
+
+/* theme switch */
+html body #theme-toggle{position:relative;overflow:hidden}
+html body #theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* sidebar navigation */
+html body .nav-link{position:relative}
+html body .nav-link:hover:not(.active){background:var(--nav-chip,rgba(255,255,255,.12));transform:translateX(3px)}
+html body .nav-link:focus-visible{outline:2px solid var(--nav-text,#fff);outline-offset:-2px}
+html body #sidebar .nav-links{flex:1 1 0!important;min-height:0;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--nav-line) transparent;scroll-behavior:smooth;
+  --fade-t:0px;--fade-b:0px;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 var(--fade-t),#000 calc(100% - var(--fade-b)),transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 var(--fade-t),#000 calc(100% - var(--fade-b)),transparent 100%)}
+html body #sidebar .nav-links[data-fade~="top"]{--fade-t:28px}
+html body #sidebar .nav-links[data-fade~="bottom"]{--fade-b:28px}
+html body #sidebar .nav-links::-webkit-scrollbar{width:6px}
+html body #sidebar .nav-links::-webkit-scrollbar-thumb{background:var(--nav-line);border:0;background-clip:border-box}
+html body #sidebar>.sidebar-header,html body #sidebar>.sidebar-footer,html body #sidebar>.nav-footer{flex:none}
+html body #sidebar{display:flex;flex-direction:column}
+.gf-sb-pin:hover{transform:none;background:var(--accent);color:#fff;border-color:var(--accent)}
+.gf-sb-tab{box-shadow:6px 0 22px rgba(8,30,56,.28)}
+.gf-sb-tab:hover,.gf-sb-tab:focus-visible{background:var(--accent2)}
+
+/* ───────── layout: gutters keep the UI centred when the sidebar is hidden ───────── */
+@media(min-width:769px){
+  html body #app .main{margin-inline:var(--gf-gutter);min-width:0;transition:margin var(--dur-3) var(--ease-std)}
+  html body #app .main{border-inline:1px solid color-mix(in srgb,var(--border) 70%,transparent);background:var(--bg);box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 60px -30px rgba(14,29,43,.35)}
+}
+/* narrow desktops/tablets: the sidebar overlays instead of squeezing the page */
+@media(min-width:769px) and (max-width:1100px){
+  html.gf-sb-auto body #sidebar{position:fixed!important;left:0;top:0;bottom:0;z-index:120}
+}
+
+/* ───────── tabs & segmented controls ───────── */
+.gf-tabs{position:relative}
+.gf-tabs::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:var(--ink-w,0);transform:translateX(var(--ink-x,0));background:var(--accent);border-radius:3px 3px 0 0;transition:transform var(--dur-3) var(--ease-out),width var(--dur-3) var(--ease-out)}
+.gf-seg{position:relative}
+.gf-seg::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:9px;background:var(--surface);box-shadow:var(--shadow);transition:transform var(--dur-3) var(--ease-out)}
+.gf-seg:has(button:nth-child(2)[aria-pressed="true"])::before{transform:translateX(100%)}
+.gf-seg button{position:relative;z-index:1;background:none!important;box-shadow:none!important}
+.gf-seg button[aria-pressed="true"]{color:var(--accent)}
+.gf-seg button:hover:not([aria-pressed="true"]){color:var(--text)}
+
+/* steps */
+.gf-stepper li button:hover{border-color:var(--accent);color:var(--text);background:var(--surface)}
+.gf-stepper li b{transition:background-color var(--dur-3) var(--ease-std),color var(--dur-3) var(--ease-std),transform var(--dur-3) var(--ease-spring)}
+.gf-stepper li.active b,.gf-stepper li.done b{transform:scale(1.08)}
+
+/* KPI cards: informative, not clickable → settle on shadow only */
+.gf-kpi:hover{box-shadow:var(--shadow-hover)}
+.gf-kpi-cta{transition:color var(--dur-2) var(--ease-std),gap var(--dur-2) var(--ease-out)}
+.gf-kpi-cta:hover{color:var(--text)}
+.gf-kpi-value{font-variant-numeric:tabular-nums}
+
+/* radio cards (report identity) */
+.gf-report-mode label{transition:border-color var(--dur-2) var(--ease-std),background-color var(--dur-2) var(--ease-std),box-shadow var(--dur-2) var(--ease-std)}
+.gf-report-mode label:hover{border-color:var(--accent)}
+.gf-report-mode label:has(input:checked){box-shadow:0 0 0 3px var(--accent-dim)}
+.gf-report-mode label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+
+/* ───────── contrast corrections ───────── */
+html[data-theme="dark"] body .rider-source-table th{background:var(--surface3)!important;color:var(--text)!important}
+html body .gf-kpi-sub{color:var(--text2)}
+html body .gf-kpi-ctx,html body .gf-kpi-head span{color:var(--text3)}
+html body .gf-insight strong{color:var(--accent)}
+html body .leaflet-container a{color:var(--accent)}
+html[data-theme="dark"] body .leaflet-control-attribution a{color:#0b4f87}
+
+/* ───────── reduced motion ───────── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+</style>
+<script id="geofare-interaction-v3-runtime">
+/* GeoFare — interaction polish (v3)
+   KPI count-up · sidebar scroll affordance · accessible theme switch · modal keys */
+(()=>{
+'use strict';
+if(window.__gfV3)return;window.__gfV3=true;
+const q=(s,r=document)=>r.querySelector(s);
+const qa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const root=document.documentElement;
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+
+/* KPI numbers count up once when their data changes (never when motion is reduced) */
+window.gfCountUp=function(scope){
+  if(reduce.matches)return;
+  qa('.gf-kpi-value',scope).forEach(el=>{
+    const m=/^(\d+(?:\.\d+)?)(%| \/ 5)?$/.exec(el.textContent.trim());if(!m)return;
+    const end=parseFloat(m[1]),suffix=m[2]||'',dec=m[1].includes('.')?1:0;if(!end)return;
+    const t0=performance.now(),dur=620;
+    const step=t=>{const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);
+      if(k<1){el.textContent=(end*e).toFixed(dec)+suffix;requestAnimationFrame(step);}else el.textContent=m[1]+suffix;};
+    el.textContent=(0).toFixed(dec)+suffix;requestAnimationFrame(step);
+  });
+};
+
+/* sidebar: show that the list scrolls, and reveal the active item when it opens */
+const nav=q('#sidebar .nav-links');
+if(nav){
+  const fade=()=>{
+    const top=nav.scrollTop>4,bottom=nav.scrollTop+nav.clientHeight<nav.scrollHeight-4;
+    const v=[top&&'top',bottom&&'bottom'].filter(Boolean).join(' ');
+    if(nav.dataset.fade!==v)nav.dataset.fade=v;
+  };
+  nav.addEventListener('scroll',fade,{passive:true});
+  if(window.ResizeObserver)new ResizeObserver(fade).observe(nav);
+  new MutationObserver(()=>requestAnimationFrame(fade)).observe(nav,{childList:true});
+  let wasOpen=false;
+  new MutationObserver(()=>{
+    const open=root.classList.contains('gf-sb-open')||!root.classList.contains('gf-sb-auto');
+    if(open&&!wasOpen)q('.nav-link.active',nav)?.scrollIntoView({block:'nearest'});
+    wasOpen=open;fade();
+  }).observe(root,{attributes:true,attributeFilter:['class']});
+  fade();
+}
+
+/* theme control is a switch: stable label, announced state, smooth colour change */
+const tt=q('#theme-toggle');
+if(tt){
+  tt.setAttribute('role','switch');
+  const sync=()=>{tt.setAttribute('aria-checked',String(root.getAttribute('data-theme')==='dark'));tt.setAttribute('aria-label','Dark mode');};
+  sync();
+  new MutationObserver(sync).observe(root,{attributes:true,attributeFilter:['data-theme']});
+  tt.addEventListener('click',()=>{
+    root.classList.add('gf-theme-anim');clearTimeout(tt._t);
+    tt._t=setTimeout(()=>root.classList.remove('gf-theme-anim'),480);
+  },true);
+}
+
+/* Escape closes the topmost open dialog */
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  const open=qa('.profile-modal.active,.user-edit-modal.active,.scan-modal.active,.gf-receipt-modal.active,.gf-privacy-modal.active').pop();
+  if(!open)return;
+  const close=q('[id$="close"],[id*="close-"],.modal-close,[data-close],#gf-privacy-close',open);
+  if(close)close.click();else open.classList.remove('active');
+});
+})();
+
+</script>
+<style id="geofare-design-system-v4">
+/* GeoFare v4 — single authoritative layer. Consolidates the stacked overrides above:
+   one type family, one card language, one icon chip, one motion vocabulary, modern toggles. */
+html:root:root{--r-sm:10px;--r-md:14px;--r-lg:20px;--r-xl:24px;--gf-gutter-v4:clamp(10px,1.4vw,22px);
+  --ring-soft:0 0 0 1px color-mix(in srgb,var(--border) 80%,transparent);
+  --card-shadow:0 1px 2px rgba(14,29,43,.05),0 8px 24px -10px rgba(14,29,43,.14)}
+html:root[data-theme="dark"]{--card-shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -12px rgba(0,0,0,.6)}
+
+/* type: one family everywhere (Syne was referenced but never loaded) */
+html body,html body :is(h1,h2,h3,h4,.logo,.panel-title,.topbar-title strong,.kpi-value,.stat-value,.num,.big,.gf-kpi-value,.auth-card h1,.hero-card h2){font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif}
+html body :is(button,input,select,textarea){font-family:inherit}
+html body :is(.panel-title,.gf-kpi-head h2){font-weight:700;letter-spacing:-.02em}
+html body :is(.kpi-value,.stat-value,.num,.gf-kpi-value){font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+
+/* layout: a floating canvas instead of a boxed column with hard side borders */
+@media(min-width:769px){
+  html:root:root body #app{background:var(--bg)}
+  html:root:root body #app .main{height:auto;margin:10px var(--gf-gutter-v4);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--card-shadow);background:var(--bg)}
+}
+html:root:root body #app .panel>.panel-header{padding-block:18px 14px}
+html:root:root body #app .panel-sub{max-width:68ch}
+
+/* cards: one radius, one shadow, no gradient washes, no hover lift */
+html:root:root body #app :is(.form-card,.data-card,.table-wrap,.table-scroll,.kpi,.stat-card,.safety-kpi,.hero-stat,.gf-kpi,.gf-insight,.log-card,.report-card){
+  background-image:none!important;background-color:var(--surface)!important;border:1px solid var(--border)!important;border-radius:var(--r-lg)!important;box-shadow:var(--card-shadow)!important;transform:none!important}
+html:root:root body #app :is(.kpi,.stat-card,.safety-kpi,.hero-stat,.gf-kpi){min-height:0!important;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s!important}
+html:root:root body #app :is(.kpi,.stat-card,.safety-kpi,.gf-kpi):hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--border))!important}
+html:root:root body #app .gf-kpi-hero{border-left-width:1px!important}
+html:root:root body #app .gf-kpi-hero::after{content:"";position:absolute;left:0;top:18px;bottom:18px;width:4px;border-radius:0 4px 4px 0;background:var(--accent)}
+html:root:root body #app .gf-kpi-hero.tone-danger::after{background:var(--red)}
+html:root:root body #app .gf-kpi-hero.tone-warn::after{background:var(--gold)}
+html:root:root body #app .gf-kpi-hero.tone-ok::after{background:var(--green)}
+html:root:root body #app .gf-kpi-label,html:root:root body #app .safety-kpi .label{text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--text2);padding-right:52px}
+html:root:root body #app .gf-kpi-hero .gf-kpi-value{font-size:clamp(38px,4vw,52px)}
+
+/* dashboard icons — restored, one chip style for every card type */
+html:root:root body #app :is(.kpi-icon,.stat-icon,.gf-ico){display:grid!important;place-items:center;width:40px!important;height:40px!important;border-radius:12px!important;
+  background:var(--accent-dim)!important;color:var(--accent)!important;border:0!important;box-shadow:none!important;filter:none!important;
+  font-size:20px!important;line-height:1;visibility:visible!important;opacity:1!important;margin:0 0 10px!important;transition:transform .25s var(--ease-spring),background-color .2s!important}
+html:root:root body #app :is(.gf-kpi,.safety-kpi) .gf-ico{position:absolute;top:16px;right:16px;margin:0!important}
+html:root:root body #app .gf-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+html:root:root body #app .gf-kpi-hero.tone-danger .gf-ico{background:var(--red-dim)!important;color:var(--red)!important}
+html:root:root body #app .gf-kpi-hero.tone-warn .gf-ico{background:var(--gold-dim)!important;color:var(--gold)!important}
+html:root:root body #app .gf-kpi-hero.tone-ok .gf-ico{background:var(--green-dim)!important;color:var(--green)!important}
+html:root:root body #app :is(.gf-kpi,.safety-kpi,.kpi):hover :is(.gf-ico,.kpi-icon){transform:scale(1.06)}
+
+/* toggles: theme switch animates between sun and moon instead of snapping */
+html:root:root body :is(.collapse-toggle,.menu-toggle){border-radius:12px;display:inline-grid;place-items:center;transition:background-color .2s,transform .2s var(--ease-out),border-color .2s}
+html:root:root body .collapse-toggle{width:32px;height:32px;padding:0;line-height:1}
+html:root:root body .collapse-toggle:hover{transform:translateX(-2px)}
+
+/* toggles: checkboxes + radios, animated, theme-aware */
+html body input[type="checkbox"]{-webkit-appearance:none;appearance:none;width:20px;height:20px;flex:none;vertical-align:middle;border:1.5px solid var(--border-strong);border-radius:6px;background:var(--surface) center/13px no-repeat;cursor:pointer;transition:background-color .18s,border-color .18s,box-shadow .18s,transform .18s var(--ease-spring)}
+html body input[type="checkbox"]:hover:not(:disabled){border-color:var(--accent)}
+html body input[type="checkbox"]:active:not(:disabled){transform:scale(.88)}
+html body input[type="checkbox"]:checked{background-color:var(--accent);border-color:var(--accent);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='m2.5 7.5 3 3 6-6.5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+html[data-theme="dark"] body input[type="checkbox"]:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='m2.5 7.5 3 3 6-6.5' fill='none' stroke='%2304223a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+html body input[type="radio"]{-webkit-appearance:none;appearance:none;width:20px;height:20px;flex:none;vertical-align:middle;border:1.5px solid var(--border-strong);border-radius:50%;background:var(--surface) radial-gradient(circle,var(--accent) 0 46%,transparent 50%) center/0 0 no-repeat;cursor:pointer;transition:background-size .22s var(--ease-spring),border-color .18s,box-shadow .18s}
+html body input[type="radio"]:checked{border-color:var(--accent);background-size:100% 100%}
+html body input[type="radio"]:hover:not(:disabled){border-color:var(--accent)}
+html body :is(input[type="checkbox"],input[type="radio"]):disabled{opacity:.5;cursor:not-allowed}
+html body :is(input[type="checkbox"],input[type="radio"]):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* controls: consistent heights and states inside panels (topbar sizing is left alone) */
+html:root:root body #app .panel :is(.btn,.form-input,.form-select){min-height:42px}
+html:root:root body #app .panel .btn-sm{min-height:34px}
+html:root:root body #app .panel .btn{padding-inline:16px;border-radius:var(--r-md)}
+html:root:root body #app :is(.form-input,.form-select,.form-textarea){border-radius:var(--r-md)}
+
+/* badges + tables */
+html:root:root body #app .status-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none}
+html:root:root body #app .status-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+html:root:root body #app .data-table th{background:var(--surface2);font-size:12px;font-weight:600;letter-spacing:.01em;text-transform:none;color:var(--text2);border-bottom:1px solid var(--border)}
+html:root:root body #app .data-table td{border-bottom:1px solid color-mix(in srgb,var(--border) 60%,transparent)}
+html:root:root body #app .data-table tbody tr{transition:background-color .15s}
+html:root:root body #app .data-table tbody tr:hover{background:var(--accent-dim)}
+html:root:root body #app .data-table tbody tr:last-child td{border-bottom:0}
+
+/* motion: panels settle in once; KPI values stay still on live refresh */
+html:root:root body .panel.active{animation:gf3-rise .32s var(--ease-out)}
+@media(max-width:768px){html:root:root body #app .gf-ico{width:36px!important;height:36px!important}
+  html:root:root body #app :is(.gf-kpi,.safety-kpi) .gf-ico{top:12px;right:12px}
+  html:root:root body #app .gf-kpi-tier1,html:root:root body #app .gf-kpi-tier2{grid-template-columns:1fr 1fr}
+  html:root:root body #app .gf-kpi-tier1>.gf-kpi-hero:first-child{grid-column:1/-1}}
+</style>
+<script id="geofare-design-v4-runtime">
+/* Restores dashboard icons on the admin KPI cards and safety KPIs (rebuilt via innerHTML, so re-applied on change). */
+(()=>{'use strict';if(window.__gfV4)return;window.__gfV4=true;
+const P=d=>`<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const I={
+ alert:P('<path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 10v4.5M12 17.5h.01"/>'),
+ report:P('<rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/>'),
+ rider:P('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 11l2 2 4-4"/>'),
+ done:P('<circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.6 2.6L16 9.5"/>'),
+ shield:P('<path d="M12 3 4.5 6v5.5c0 4.5 3 8 7.5 9.5 4.5-1.5 7.5-5 7.5-9.5V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/>'),
+ star:P('<path d="m12 3.5 2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.8l-5.3 2.8 1-5.8L3.5 9.7l5.9-.9L12 3.5Z"/>'),
+ calc:P('<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7.5h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/>'),
+ bell:P('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>'),
+ mail:P('<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/>'),
+ crit:P('<path d="M8.3 3h7.4L21 8.3v7.4L15.7 21H8.3L3 15.7V8.3L8.3 3Z"/><path d="M12 8v5M12 16h.01"/>'),
+ pulse:P('<path d="M3 12h4l3-8 4 16 3-8h4"/>'),
+ grid:P('<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'),
+ table:P('<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 10h18M9 10v10"/>'),
+ clock:P('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+ user:P('<circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 4-6 8-6s7 2 8 6"/>'),
+ lock:P('<rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
+ info:P('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'),
+ users:P('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c2 .7 3.2 2.5 3.5 5.2"/>'),
+ list:P('<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>')};
+const navPick=t=>{t=t.toLowerCase();return /dashboard/.test(t)?I.grid:/calculator/.test(t)?I.calc:/matrix|policy|fare manage/.test(t)?I.table:/history|log/.test(t)?I.clock:/verified|verify/.test(t)?I.shield:/rating|review/.test(t)?I.star:/safety|sos|alert/.test(t)?I.alert:/my report/.test(t)?I.list:/report/.test(t)?I.report:/user/.test(t)?I.users:/rider/.test(t)?I.rider:/profile|account/.test(t)?I.user:/privacy/.test(t)?I.lock:/about/.test(t)?I.info:/audit/.test(t)?I.list:I.pulse};
+const pick=t=>{t=t.toLowerCase();
+ return /sos|active alert/.test(t)?I.alert:/total alert/.test(t)?I.bell:/unread/.test(t)?I.mail:/critical/.test(t)?I.crit:
+ /awaiting action|report/.test(t)?I.report:/awaiting verification/.test(t)?I.rider:/resolution|resolved/.test(t)?I.done:
+ /coverage|verified/.test(t)?I.shield:/rating/.test(t)?I.star:/fare/.test(t)?I.calc:I.pulse};
+const run=()=>{document.querySelectorAll('.gf-kpi:not([data-ico]),.safety-kpi:not([data-ico])').forEach(c=>{
+  const l=c.querySelector('.gf-kpi-label,.label');c.dataset.ico='1';
+  const s=document.createElement('span');s.className='gf-ico';s.setAttribute('aria-hidden','true');s.innerHTML=pick(l?l.textContent:'');
+  c.insertBefore(s,c.firstChild);});document.querySelectorAll('#sidebar .nav-link:not([data-ico])').forEach(c=>{const ic=c.querySelector('.nav-icon'),lb=c.querySelector('.nav-label');c.dataset.ico='1';if(ic&&lb){ic.innerHTML=navPick(lb.textContent);ic.setAttribute('aria-hidden','true');}});document.querySelectorAll('.kpi:not([data-ico])').forEach(c=>{const l=c.querySelector('.kpi-label'),i=c.querySelector('.kpi-icon');c.dataset.ico='1';if(i&&l){i.innerHTML=pick(l.textContent);i.setAttribute('aria-hidden','true');}});};
+let raf=0;new MutationObserver(()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(run);}).observe(document.body,{childList:true,subtree:true});
+run();
+})();
+</script>
+
+<style id="geofare-interaction-system-v5">
+/* GeoFare v5 — ONE interaction vocabulary. Supersedes every earlier hover/transition/animation rule.
+   Press = scale down. Hover = tint + shadow (buttons lift 1px). Cards never move. Toggles use a spring. Hover only on real pointers. */
+html:root:root:root{--m-fast:140ms;--m-med:240ms;--m-slow:420ms;
+  --g-std:cubic-bezier(.4,0,.2,1);--g-out:cubic-bezier(.22,1,.36,1);--g-spring:cubic-bezier(.34,1.56,.64,1);
+  --g-pad:clamp(16px,2vw,28px);--g-gap:clamp(12px,1.4vw,18px);
+  --card-shadow-hover:0 2px 4px rgba(14,29,43,.07),0 14px 30px -12px rgba(14,29,43,.26)}
+html:root:root:root[data-theme="dark"]{--card-shadow-hover:0 2px 4px rgba(0,0,0,.4),0 16px 34px -14px rgba(0,0,0,.75)}
+
+/* 1 ─ transitions: every interactive surface shares the same timing (beats the stacked !important lists) */
+html:root:root:root body :is(#app,#auth-screen) :is(.btn,.icon-btn,.collapse-toggle,.menu-toggle,.gf-tab,.pin-row,.nav-link,.nav-icon,.status-badge,.form-input,.form-select,.form-textarea,.kpi,.stat-card,.safety-kpi,.gf-kpi,.hero-stat,.report-card,.log-card,.qr-card,.rating-grid label,.admin-record-check,.gf-check,.gf-linkbtn,.data-table tbody tr){
+  transition:background-color var(--m-fast) var(--g-std),border-color var(--m-fast) var(--g-std),color var(--m-fast) var(--g-std),box-shadow var(--m-med) var(--g-out),transform var(--m-med) var(--g-spring),opacity var(--m-fast) var(--g-std),filter var(--m-fast) var(--g-std)!important}
+
+/* 2 ─ press feedback (all devices) */
+html:root:root:root body :is(#app,#auth-screen) :is(.btn,.pin-row,.gf-tab,.nav-link):active:not(:disabled){transform:scale(.97)!important;filter:none!important;transition-duration:var(--m-fast)!important}
+html:root:root:root body :is(#app,#auth-screen) .icon-btn:active:not(:disabled){transform:scale(.92)!important}
+html:root:root:root body :is(#app,#auth-screen) .btn:not(.loading)::before{content:none!important}
+
+/* 3 ─ hover (real pointers only: no stuck hover on touch) */
+@media(hover:hover) and (pointer:fine){
+  html:root:root:root body :is(#app,#auth-screen) .btn:hover:not(:disabled){transform:translateY(-1px)!important;filter:brightness(1.05)!important}
+  html:root:root:root body :is(#app,#auth-screen) .btn-primary:hover:not(:disabled){box-shadow:0 2px 4px rgba(11,90,158,.3),0 10px 22px -8px rgba(11,90,158,.55)!important}
+  html:root:root:root body :is(#app,#auth-screen) .btn-secondary:hover:not(:disabled){background:var(--accent-dim)!important;border-color:var(--accent)!important;color:var(--accent)!important;filter:none!important}
+  html:root:root:root body #app .icon-btn:hover:not(:disabled):not(#theme-toggle){background:var(--accent-dim)!important;border-color:var(--accent)!important;color:var(--accent)!important;box-shadow:none!important;transform:none!important}
+  html:root:root:root body #app :is(.kpi,.stat-card,.safety-kpi,.gf-kpi,.hero-stat,.report-card,.log-card,.report-record-card,.safety-record):hover{transform:none!important;box-shadow:var(--card-shadow-hover)!important;border-color:color-mix(in srgb,var(--accent) 38%,var(--border))!important}
+  html:root:root:root body #app :is(.kpi,.safety-kpi,.gf-kpi):hover :is(.kpi-icon,.gf-ico){transform:scale(1.06)!important}
+  html:root:root:root body #app .pin-row:hover{background:var(--surface2)!important;transform:none!important}
+  html:root:root:root body #app .data-table tbody tr:hover{background:var(--accent-dim)}
+}
+/* containers that hold forms or tables never react to hover */
+html:root:root:root body #app :is(.form-card,.data-card):hover{transform:none!important;box-shadow:var(--card-shadow)!important;border-color:var(--border)!important}
+html:root:root:root body #app .form-group:focus-within>.form-label{color:var(--accent)}
+
+/* 4 ─ sidebar: tint on hover, gradient fades in on active, icon chip follows — no sliding or rotating */
+html:root:root:root body #sidebar .nav-link{position:relative;isolation:isolate;background:transparent!important;border:1px solid transparent!important;color:var(--nav-text)!important;transform:none!important;box-shadow:none!important}
+html:root:root:root body #sidebar .nav-link::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--nav-active);opacity:0;transform:scale(.96);transition:opacity var(--m-med) var(--g-std),transform var(--m-med) var(--g-spring)}
+html:root:root:root body #sidebar .nav-link.active::before{opacity:1;transform:none}
+html:root:root:root body #sidebar .nav-link.active{color:#fff!important;box-shadow:0 10px 22px -10px rgba(5,20,40,.55)!important}
+@media(hover:hover) and (pointer:fine){html:root:root:root body #sidebar .nav-link:hover:not(.active){background:var(--nav-hover)!important;color:var(--nav-text)!important}}
+html:root:root:root body #sidebar .nav-icon{background:var(--nav-chip)!important;color:inherit!important;border:0!important;box-shadow:none!important;transform:none!important;filter:none!important;text-shadow:none!important;border-radius:10px!important}
+html:root:root:root body #sidebar .nav-link.active .nav-icon{background:rgba(255,255,255,.2)!important}
+html:root:root:root body #sidebar .nav-link:hover .nav-icon{transform:none!important}
+
+/* 5 ─ toggles. Mobile/tablet: sun↔moon icon swap. Desktop: sliding pill switch. */
+html:root:root:root body #theme-toggle{position:relative;overflow:hidden}
+html:root:root:root body #theme-toggle .theme-svg{display:block!important;position:absolute;inset:0;margin:auto;opacity:0;transform:rotate(-80deg) scale(.4);transition:opacity var(--m-med) var(--g-std),transform var(--m-slow) var(--g-spring)!important}
+html:root:root:root body #theme-toggle:not(.theme-is-dark) .theme-moon,html:root:root:root body #theme-toggle.theme-is-dark .theme-sun{opacity:1;transform:none}
+html:root:root:root body #theme-toggle.theme-is-dark .theme-moon{transform:rotate(80deg) scale(.4)}
+@media(min-width:769px){
+  html:root:root:root body .topbar-actions #theme-toggle{width:60px!important;min-width:60px!important;max-width:60px!important;height:32px!important;min-height:32px!important;padding:0!important;border-radius:999px!important;
+    background:var(--surface3)!important;border:1px solid var(--border-strong)!important;box-shadow:inset 0 1px 2px rgba(14,29,43,.14)!important;
+    transition:background-color var(--m-med) var(--g-std),border-color var(--m-fast) var(--g-std)!important}
+  html:root:root:root body .topbar-actions #theme-toggle.theme-is-dark{background:color-mix(in srgb,var(--accent) 32%,var(--surface2))!important}
+  html:root:root:root body .topbar-actions #theme-toggle:hover{border-color:var(--accent)!important}
+  html:root:root:root body .topbar-actions #theme-toggle::before{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--surface);box-shadow:0 1px 3px rgba(14,29,43,.3);transition:transform var(--m-slow) var(--g-spring)}
+  html:root:root:root body .topbar-actions #theme-toggle.theme-is-dark::before{transform:translateX(28px)}
+  html:root:root:root body .topbar-actions #theme-toggle:active::before{width:28px}
+  html:root:root:root body .topbar-actions #theme-toggle.theme-is-dark:active::before{width:28px;transform:translateX(24px)}
+  html:root:root:root body .topbar-actions #theme-toggle .theme-svg{inset:auto;top:7px;width:16px!important;height:16px!important;margin:0;transform:scale(.4) rotate(-90deg);opacity:0}
+  html:root:root:root body .topbar-actions #theme-toggle .theme-sun{left:7px;color:#b8741a}
+  html:root:root:root body .topbar-actions #theme-toggle .theme-moon{left:35px;color:var(--accent)}
+  html:root:root:root body .topbar-actions #theme-toggle:not(.theme-is-dark) .theme-sun,html:root:root:root body .topbar-actions #theme-toggle.theme-is-dark .theme-moon{opacity:1;transform:none}
+  html:root:root:root body .topbar-actions #theme-toggle:not(.theme-is-dark) .theme-moon,html:root:root:root body .topbar-actions #theme-toggle.theme-is-dark .theme-sun{opacity:0;transform:scale(.4) rotate(90deg)}
+}
+html:root:root:root body :is(.collapse-toggle,.menu-toggle):active{transform:scale(.92)}
+
+/* 6 ─ one panel entrance (the earlier !important version was winning) */
+@keyframes gf5-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+html:root:root:root body #app .panel.active{animation:gf5-enter .28s var(--g-out) backwards!important}
+
+/* 7 ─ layout rhythm: same gutter, width and gap on every screen */
+html:root:root:root body #app :is(.dashboard-wrap,.management-content,.logs-content,.matrix-content,.about-content){padding:var(--g-pad)!important;max-width:1320px;margin-inline:auto;width:100%}
+html:root:root:root body #app :is(.kpi-grid,.stats-grid,.dashboard-grid,.card-grid,.safety-kpi-grid,.hero-grid,.gf-kpi-tier1,.gf-kpi-tier2){gap:var(--g-gap)!important}
+html:root:root:root body #app .panel>.panel-header{padding-inline:var(--g-pad)}
+
+/* 8 ─ overlays and map controls match the system */
+html:root:root:root body :is(.profile-modal,.user-edit-modal,.scan-modal,.gf-receipt-modal,.gf-camera-modal,.gf-privacy-modal){-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+html:root:root:root body .leaflet-bar{border:1px solid var(--border)!important;border-radius:12px!important;box-shadow:var(--card-shadow)!important;overflow:hidden}
+html:root:root:root body .leaflet-bar a{background:var(--surface);color:var(--text);border-bottom-color:var(--border);transition:background-color var(--m-fast) var(--g-std),color var(--m-fast) var(--g-std)}
+html:root:root:root body .leaflet-bar a:hover{background:var(--accent-dim);color:var(--accent)}
+</style>
+
+<style id="geofare-fixes-v6">
+/* GeoFare v6 — defects found by rendering the app in a real browser. */
+
+/* ── layout: .main overflowed the viewport (height:100% + 20px margins), clipping its bottom edge */
+@media(min-width:769px){
+  html:root:root:root body #app .main{height:calc(100% - 20px)!important;max-height:calc(100% - 20px)!important;margin:10px var(--gf-gutter-v4)!important}
+  /* the hamburger is the mobile control: on desktop the edge tab opens the sidebar, and the hamburger covered the logo */
+  html:root:root:root body #menu-toggle{display:none!important}
+}
+/* eyebrow words were three bare spans with no gap: "GEOSPATIALTRANSPORTATIONSYSTEM" */
+html:root:root:root body .eyebrow{display:inline-flex;flex-wrap:wrap;column-gap:.6em}
+/* one header language: topbar and panel header share a surface and a hairline instead of stacked shadows */
+html:root:root:root body #app .topbar{box-shadow:none!important;border-bottom:1px solid var(--border)!important}
+html:root:root:root body #app .panel>.panel-header{box-shadow:none!important;background:transparent!important;border-bottom:1px solid var(--border)!important;
+  padding-inline:max(var(--g-pad),calc((100% - 1320px)/2 + var(--g-pad)))}
+html:root:root:root body #app .report-redesign{max-width:1320px!important}
+
+/* ── sidebar: navy in BOTH themes (dark mode used a pale sidebar with white-on-white active text) */
+html:root:root:root{--nav-bg:#0b2a49!important;--nav-grad:linear-gradient(185deg,#12406d 0%,#0a2340 100%)!important;--nav-head:rgba(255,255,255,.06)!important;
+  --nav-text:#eef5fc!important;--nav-muted:#a9c1d8!important;--nav-line:rgba(255,255,255,.14)!important;--nav-hover:rgba(255,255,255,.09)!important;
+  --nav-chip:rgba(255,255,255,.1)!important;--nav-active:linear-gradient(135deg,#1b78c8,#0f5fa6)!important}
+html:root:root:root[data-theme="dark"]{--nav-grad:linear-gradient(185deg,#0f2742 0%,#071524 100%)!important;--nav-active:linear-gradient(135deg,#1f7acb,#134f8c)!important}
+html:root:root:root[data-theme="dark"] body #sidebar,html:root:root:root body #sidebar{background:var(--nav-grad)!important;color:var(--nav-text)}
+
+/* ── dark mode: notices and hero must not be bright islands / low-contrast */
+html:root:root:root[data-theme="dark"] body #app :is(.report-notice,.alert-card){background:color-mix(in srgb,var(--gold) 14%,var(--surface))!important;border-color:color-mix(in srgb,var(--gold) 45%,var(--border))!important;color:var(--text)!important}
+html:root:root:root[data-theme="dark"] body #app :is(.report-notice,.alert-card) :is(strong,b){color:var(--gold)!important}
+html:root:root:root[data-theme="dark"] body #app .report-hero{background:linear-gradient(135deg,#1c5f9c,#123f6b)!important;color:#fff!important}
+
+/* ── checkbox/radio: keep shape in every context (.gf-check made them round); radio uses a ring + dot, no gradient tricks */
+html:root:root:root body input[type="checkbox"]{width:20px!important;height:20px!important;border-radius:6px!important}
+html:root:root:root body input[type="radio"]{background-image:none!important;background-color:var(--surface)!important;box-shadow:none}
+html:root:root:root body input[type="radio"]:checked{background-color:var(--accent)!important;border-color:var(--accent)!important;box-shadow:inset 0 0 0 4px var(--surface)}
+html:root:root:root body input[type="checkbox"]:checked{background-color:var(--accent)!important}
+
+/* ── components that had no CSS at all */
+html:root:root:root body #app .report-rider-list{display:grid;gap:10px;padding:10px;max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface2)}
+html:root:root:root body #app .report-rider-card{display:grid;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);box-shadow:none;transition:border-color var(--m-fast) var(--g-std),box-shadow var(--m-med) var(--g-out)}
+html:root:root:root body #app .report-rider-card:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+html:root:root:root body #app .report-rider-card.selected{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+html:root:root:root body #app .report-rider-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+html:root:root:root body #app .report-rider-name{font-weight:700;font-size:15px;letter-spacing:-.01em}
+html:root:root:root body #app .report-rider-meta{margin-top:2px;font-size:12px;color:var(--text3);font-variant-numeric:tabular-nums}
+html:root:root:root body #app .report-rider-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}
+html:root:root:root body #app .report-rider-info>div{display:grid;gap:2px;min-width:0}
+html:root:root:root body #app .report-rider-info small{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.02em}
+html:root:root:root body #app .report-rider-info strong{font-weight:600;font-size:13px;overflow-wrap:anywhere}
+html:root:root:root body #app .report-rider-card .btn{justify-self:start}
+html:root:root:root body #app .report-rider-empty{padding:18px;text-align:center;color:var(--text3);font-size:13px}
+html:root:root:root body #app :is(.rating-record-card,.safety-recent-card){padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface)}
+html:root:root:root body #app .gf-rating-stars{display:inline-flex;gap:2px;color:#f5b301}
+html:root:root:root body #app .gf-rating-number{font-weight:700;font-variant-numeric:tabular-nums}
+html:root:root:root body #app :is(.muted-tag,.gf-record-type,.report-status){display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+
+/* ── icon chips for the commuter/rider KPI cards (emoji replaced by the same SVG set as the admin cards) */
+html:root:root:root body #app .kpi-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* sidebar: icons are one SVG set; active item is a solid pill (legacy ::before bar removed) */
+html:root:root:root body #sidebar .nav-link::before{content:none!important}
+html:root:root:root body #sidebar .nav-link.active{background:var(--nav-active)!important;color:#fff!important}
+html:root:root:root body #sidebar .nav-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+html:root:root:root body #sidebar .nav-icon{display:grid;place-items:center;font-size:0}
+
+@media(max-width:480px){html:root:root:root body .topbar-title .eyebrow{display:none}}
+</style>
+
 </body></html>

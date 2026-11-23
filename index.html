@@ -2157,6 +2157,32 @@ if(gfRatingFinalPanel)new MutationObserver(()=>setTimeout(gfRefreshRatingUIFinal
 html:root:root:root body #app #users-content .status-badge{position:static;display:inline-flex;align-items:center;justify-content:flex-start;gap:7px;padding:4px 11px;white-space:nowrap;line-height:1.35;vertical-align:middle}
 html:root:root:root body #app #users-content .status-badge::before{position:static;left:auto;top:auto;transform:none;width:6px;height:6px;min-width:6px;flex:0 0 6px;margin:0;opacity:.9}
 </style>
+
+<style id="gf-fare-status-layout-fix">
+/* Keep fare-matrix status indicator and label on one clean, non-overlapping line. */
+#fare-admin-table td:nth-child(6) .status-badge,
+#fare-admin-table .status-badge {
+  position: static !important; display: inline-flex !important; flex-direction: row !important;
+  align-items: center !important; justify-content: flex-start !important; gap: 7px !important;
+  width: max-content !important; max-width: 100%; min-height: 24px; box-sizing: border-box;
+  padding: 4px 10px !important; white-space: nowrap !important; line-height: 1.35 !important;
+  vertical-align: middle !important; text-indent: 0 !important;
+}
+#fare-admin-table td:nth-child(6) .status-badge::before,
+#fare-admin-table .status-badge::before {
+  content: "" !important; position: static !important; inset: auto !important;
+  display: inline-block !important; flex: 0 0 7px !important; width: 7px !important;
+  height: 7px !important; min-width: 7px !important; margin: 0 !important;
+  transform: none !important; border-radius: 50% !important; opacity: 1 !important;
+}
+#fare-admin-table td:nth-child(6) { white-space: nowrap; vertical-align: middle; }
+#fare-admin-table .data-table { table-layout: auto; }
+@media (max-width: 700px) {
+  #fare-admin-table .table-wrap { overflow-x: auto; }
+  #fare-admin-table .data-table { min-width: 760px; }
+}
+</style>
+
 </head>
 <body>
 <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" title="Open navigation menu" aria-label="Open navigation menu" aria-expanded="false" type="button">☰</button>
@@ -4160,7 +4186,7 @@ $('fare-cancel-edit')?.addEventListener('click',resetFareEditor);
 $('fare-admin-form').onsubmit=async e=>{
   e.preventDefault();if(state.role!=='admin')return;
   const id=$('fare-edit-id').value.trim(),min=Number($('fare-min').value),max=Number($('fare-max').value),regular=Number($('fare-regular').value),discount=Number($('fare-discount').value),version=($('fare-version').value||'').trim(),existing=fareRowById(id),status=(id&&existing?.status)||'active',effective=$('fare-effective-from').value;
-  if(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<min||!Number.isFinite(regular)||regular<0||!Number.isFinite(discount)||discount<0){toast('Enter a valid distance range and fare values.','error');return;}
+  if(!Number.isFinite(min)||!Number.isFinite(max)||min<=0||max<min||!Number.isFinite(regular)||regular<0||!Number.isFinite(discount)||discount<0){toast('Enter a valid distance range and fare values.','error');return;}
   const overlap=(state.fareMatrix||[]).some(f=>String(f.id)!==String(id)&&String(f.status).toLowerCase()==='active'&&status==='active'&&min<=Number(f.maximum_distance)&&max>=Number(f.minimum_distance));
   if(overlap)return toast('This active distance range overlaps an existing active fare rule.','error');
   setBusy(true,id?'Updating fare rule…':'Creating fare rule…');
@@ -7878,7 +7904,7 @@ if(fareForm){fareForm.onsubmit=async e=>{
  e.preventDefault();if(state?.role!=='admin')return notify('Only authorized administrators can update the fare matrix.','error');
  const id=$('fare-edit-id')?.value.trim()||'',min=Number($('#fare-min')?.value),max=Number($('#fare-max')?.value),regular=Number($('#fare-regular')?.value),discount=Number($('#fare-discount')?.value),version=($('#fare-version')?.value||'').trim(),effective=$('#fare-effective-from')?.value;
  const title=$('#fare-resolution-title')?.value.trim(),description=$('#fare-resolution-description')?.value.trim(),file=$('#fare-resolution-file')?.files?.[0];
- if(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<min||!Number.isFinite(regular)||regular<0||!Number.isFinite(discount)||discount<0)return notify('Enter valid distance and fare values.','error');
+ if(!Number.isFinite(min)||!Number.isFinite(max)||min<=0||max<min||!Number.isFinite(regular)||regular<0||!Number.isFinite(discount)||discount<0)return notify('Enter valid distance and fare values.','error');
  if(!title||!description||!file)return notify('A Joint Resolution title, description, and supporting file are required for every fare update.','error');
  if(file.size>10*1024*1024)return notify('The resolution file must be 10 MB or smaller.','error');
  if(!/^application\/(pdf|x-pdf)$/.test(file.type)&&!/^image\/(jpeg|png|webp)$/.test(file.type))return notify('Upload a PDF, JPG, PNG, or WEBP file.','error');
@@ -7888,12 +7914,12 @@ if(fareForm){fareForm.onsubmit=async e=>{
  let uploadedPath=null;
  try{
   const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=`${state.user.id}/${new Date().toISOString().replace(/[:.]/g,'-')}-${crypto.randomUUID()}-${safeName}`;
-  const upload=await supabaseClient.storage.from('fare-resolutions').upload(path,file,{contentType:file.type,upsert:false});if(upload.error)throw upload.error;uploadedPath=path;
+  const upload=await supabaseClient.storage.from('fare-resolutions').upload(path,file,{contentType:file.type,upsert:false});if(upload.error){const message=String(upload.error.message||'');if(/bucket.*not found|not found.*bucket/i.test(message))throw new Error("Supabase Storage bucket 'fare-resolutions' does not exist. Create the bucket using the GeoFare storage setup SQL, then retry. No fare matrix record was changed.");throw upload.error;}uploadedPath=path;
   const payload={minimum_distance:min,maximum_distance:max,regular_fare:regular,discounted_fare:discount,status:id?(fareRowById(id)?.status||'active'):'active',effective_from:effective?new Date(effective).toISOString():new Date().toISOString(),version_code:version||`MFRTA-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`};
   const rpc=await supabaseClient.rpc('geofare_save_fare_matrix_with_resolution',{p_fare_id:id||null,p_payload:payload,p_document_path:path,p_resolution_title:title,p_description:description});if(rpc.error)throw rpc.error;
   const result=rpc.data||{};await addAudit(id?'Fare matrix updated with Joint Resolution':'Fare matrix created with Joint Resolution',result.fare_id||id||null,{target_type:'fare_matrix',version_code:payload.version_code,resolution_title:title,document_path:path});
   await loadData();resetFareEditor();$('#fare-resolution-title').value='';$('#fare-resolution-description').value='';$('#fare-resolution-file').value='';renderFareAdmin();renderMatrix();renderAdmin();renderFareResolutions();notify('Fare matrix and supporting Joint Resolution published successfully.','success');
- }catch(err){console.error('Fare resolution update failed:',err);notify('Fare update could not be completed: '+(err?.message||'database rejected the change')+'. The existing fare matrix was not intentionally overwritten.', 'error');if(uploadedPath){try{await supabaseClient.storage.from('fare-resolutions').remove([uploadedPath]);}catch(cleanupError){console.warn('Unused resolution upload remains in storage:',cleanupError);}}}
+ }catch(err){console.error('Fare resolution update failed:',err);notify('Fare update could not be completed: '+(err?.message||'database rejected the change')+'. Your existing fare matrix remains unchanged.', 'error');if(uploadedPath){try{await supabaseClient.storage.from('fare-resolutions').remove([uploadedPath]);}catch(cleanupError){console.warn('Unused resolution upload remains in storage:',cleanupError);}}}
  finally{setBusy(false);}
 };}
 

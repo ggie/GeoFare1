@@ -3510,7 +3510,7 @@ function getFare(km){
   const distance=Number(km);
   if(!Number.isFinite(distance)||distance<0) throw new Error('Invalid road distance.');
   if(!rows.length) throw new Error('No active fare matrix is available.');
-  const chargeableKm=Math.max(1,Math.floor(distance+1e-9));
+  const chargeableKm=Math.max(1,Math.floor(distance+0.5+1e-9));
   const range=rows.find(f=>{
     const min=Number(f.minimum_distance??f.km??1);
     const max=Number(f.maximum_distance??f.km??min);
